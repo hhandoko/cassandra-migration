@@ -17,7 +17,7 @@ package com.contrastsecurity.cassandra.migration.resolver.java.dummy;
 
 import com.contrastsecurity.cassandra.migration.api.migration.MigrationChecksumProvider;
 import com.contrastsecurity.cassandra.migration.api.migration.MigrationInfoProvider;
-import com.contrastsecurity.cassandra.migration.info.MigrationVersion;
+import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
 import com.datastax.driver.core.Session;
 
 /**

@@ -18,7 +18,7 @@
  */
 package com.contrastsecurity.cassandra.migration.api.migration
 
-import com.contrastsecurity.cassandra.migration.info.MigrationVersion
+import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 
 /**
  * Migration implementors that also implement this interface will be able to specify

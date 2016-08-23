@@ -21,7 +21,7 @@ import com.contrastsecurity.cassandra.migration.api.migration.MigrationInfoProvi
 import com.contrastsecurity.cassandra.migration.api.migration.java.JavaMigration;
 import com.contrastsecurity.cassandra.migration.api.MigrationType;
 import com.contrastsecurity.cassandra.migration.config.ScriptsLocation;
-import com.contrastsecurity.cassandra.migration.info.MigrationVersion;
+import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.info.ResolvedMigration;
 import com.contrastsecurity.cassandra.migration.resolver.MigrationInfoHelper;
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;

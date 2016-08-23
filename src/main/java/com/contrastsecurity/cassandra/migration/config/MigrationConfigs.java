@@ -1,6 +1,6 @@
 package com.contrastsecurity.cassandra.migration.config;
 
-import com.contrastsecurity.cassandra.migration.info.MigrationVersion;
+import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.utils.StringUtils;
 
 public class MigrationConfigs {

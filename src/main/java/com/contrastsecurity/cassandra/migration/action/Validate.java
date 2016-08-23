@@ -2,7 +2,7 @@ package com.contrastsecurity.cassandra.migration.action;
 
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO;
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoService;
-import com.contrastsecurity.cassandra.migration.info.MigrationVersion;
+import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.logging.Log;
 import com.contrastsecurity.cassandra.migration.logging.LogFactory;
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;

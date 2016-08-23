@@ -15,6 +15,8 @@
  */
 package com.contrastsecurity.cassandra.migration.info;
 
+import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
+
 /**
  * The current context of the migrations.
  */

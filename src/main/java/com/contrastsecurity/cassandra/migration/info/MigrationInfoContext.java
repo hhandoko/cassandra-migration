@@ -47,12 +47,12 @@ public class MigrationInfoContext {
     /**
      * The last resolved migration.
      */
-    public MigrationVersion lastResolved = MigrationVersion.EMPTY;
+    public MigrationVersion lastResolved = MigrationVersion.Companion.getEMPTY();
 
     /**
      * The last applied migration.
      */
-    public MigrationVersion lastApplied = MigrationVersion.EMPTY;
+    public MigrationVersion lastApplied = MigrationVersion.Companion.getEMPTY();
 
     @SuppressWarnings("SimplifiableIfStatement")
     @Override

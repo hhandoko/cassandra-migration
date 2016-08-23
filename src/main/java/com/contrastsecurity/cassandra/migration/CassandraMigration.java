@@ -68,10 +68,10 @@ public class CassandraMigration {
     public int migrate() {
         return execute(new Action<Integer>() {
             public Integer execute(Session session) {
-                new Initialize().run(session, keyspace, MigrationVersion.CURRENT.getTable());
+                new Initialize().run(session, keyspace, MigrationVersion.Companion.getCURRENT().getTable());
 
                 MigrationResolver migrationResolver = createMigrationResolver();
-                SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.getTable());
+                SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(session, keyspace, MigrationVersion.Companion.getCURRENT().getTable());
                 Migrate migrate = new Migrate(migrationResolver, configs.getTarget(), schemaVersionDAO, session,
                         keyspace.getCluster().getUsername(), configs.isAllowOutOfOrder());
 
@@ -84,7 +84,7 @@ public class CassandraMigration {
         return execute(new Action<MigrationInfoService>() {
             public MigrationInfoService execute(Session session) {
                 MigrationResolver migrationResolver = createMigrationResolver();
-                SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.getTable());
+                SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(session, keyspace, MigrationVersion.Companion.getCURRENT().getTable());
                 MigrationInfoService migrationInfoService =
                         new MigrationInfoService(migrationResolver, schemaVersionDAO, configs.getTarget(), false, true);
                 migrationInfoService.refresh();
@@ -99,7 +99,7 @@ public class CassandraMigration {
     		@Override
     		public String execute(Session session) {
     			MigrationResolver migrationResolver = createMigrationResolver();
-    			SchemaVersionDAO schemaVersionDao = new SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.getTable());
+    			SchemaVersionDAO schemaVersionDao = new SchemaVersionDAO(session, keyspace, MigrationVersion.Companion.getCURRENT().getTable());
     			Validate validate = new Validate(migrationResolver, schemaVersionDao, configs.getTarget(), true, false);
     			return validate.run();
     		}

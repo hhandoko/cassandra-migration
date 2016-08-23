@@ -33,7 +33,7 @@ public class Version3dot5 extends DummyAbstractJavaMigration implements Migratio
     }
 
     public MigrationVersion getVersion() {
-        return MigrationVersion.fromVersion("3.5");
+        return MigrationVersion.Companion.fromVersion("3.5");
     }
 
     public String getDescription() {

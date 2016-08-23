@@ -49,7 +49,7 @@ public class MigrationInfoDumperTest {
         MigrationInfoService migrationInfoService =
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration("1"), createAvailableMigration("2.2014.09.11.55.45613")),
-                        createSchemaVersionDAO(), MigrationVersion.LATEST, false, true);
+                        createSchemaVersionDAO(), MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         String table = MigrationInfoDumper.dumpToAsciiTable(migrationInfoService.all());
@@ -69,7 +69,7 @@ public class MigrationInfoDumperTest {
      */
     private ResolvedMigration createAvailableMigration(String version) {
         ResolvedMigration migration = new ResolvedMigration();
-        migration.setVersion(MigrationVersion.fromVersion(version));
+        migration.setVersion(MigrationVersion.Companion.fromVersion(version));
         migration.setDescription("abc very very very very very very very very very very long");
         migration.setScript("x");
         migration.setType(MigrationType.CQL);

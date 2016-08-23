@@ -39,7 +39,7 @@ public class MigrationInfoServiceTest {
         MigrationInfoService migrationInfoService =
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration(1), createAvailableMigration(2)),
-                        createSchemaVersionDAO(), MigrationVersion.LATEST, false, true);
+                        createSchemaVersionDAO(), MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         assertNull(migrationInfoService.current());
@@ -53,7 +53,7 @@ public class MigrationInfoServiceTest {
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration(1), createAvailableMigration(2)),
                         createSchemaVersionDAO(createAppliedMigration(1), createAppliedMigration(2)),
-                        MigrationVersion.LATEST, false, true);
+                        MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         assertEquals("2", migrationInfoService.current().getVersion().toString());
@@ -67,7 +67,7 @@ public class MigrationInfoServiceTest {
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration(1)),
                         createSchemaVersionDAO(createAppliedMigration(1, "xyz")),
-                        MigrationVersion.LATEST, false, true);
+                        MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         assertEquals("1", migrationInfoService.current().getVersion().toString());
@@ -82,7 +82,7 @@ public class MigrationInfoServiceTest {
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration(1), createAvailableMigration(2)),
                         createSchemaVersionDAO(createAppliedMigration(1)),
-                        MigrationVersion.LATEST, false, true);
+                        MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         assertEquals("1", migrationInfoService.current().getVersion().toString());
@@ -96,7 +96,7 @@ public class MigrationInfoServiceTest {
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration(1), createAvailableMigration(2)),
                         createSchemaVersionDAO(createAppliedMigration(2)),
-                        MigrationVersion.LATEST, false, true);
+                        MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         assertEquals("2", migrationInfoService.current().getVersion().toString());
@@ -111,7 +111,7 @@ public class MigrationInfoServiceTest {
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration(1)),
                         createSchemaVersionDAO(createAppliedMigration(1), createAppliedMigration(2)),
-                        MigrationVersion.LATEST, false, true);
+                        MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         assertEquals("2", migrationInfoService.current().getVersion().toString());
@@ -127,7 +127,7 @@ public class MigrationInfoServiceTest {
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration(1)),
                         createSchemaVersionDAO(createAppliedInitMigration(2)),
-                        MigrationVersion.LATEST, false, true);
+                        MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         assertEquals("2", migrationInfoService.current().getVersion().toString());
@@ -142,7 +142,7 @@ public class MigrationInfoServiceTest {
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration(2)),
                         createSchemaVersionDAO(createAppliedMigration(1), createAppliedMigration(2)),
-                        MigrationVersion.LATEST, false, true);
+                        MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         assertEquals("2", migrationInfoService.current().getVersion().toString());
@@ -157,7 +157,7 @@ public class MigrationInfoServiceTest {
                 new MigrationInfoService(
                         createMigrationResolver(createAvailableMigration(1)),
                         createSchemaVersionDAO(createAppliedSchemaMigration(), createAppliedMigration(1)),
-                        MigrationVersion.LATEST, false, true);
+                        MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
         assertEquals("1", migrationInfoService.current().getVersion().toString());
@@ -175,7 +175,7 @@ public class MigrationInfoServiceTest {
      */
     private ResolvedMigration createAvailableMigration(int version) {
         ResolvedMigration migration = new ResolvedMigration();
-        migration.setVersion(MigrationVersion.fromVersion(Integer.toString(version)));
+        migration.setVersion(MigrationVersion.Companion.fromVersion(Integer.toString(version)));
         migration.setDescription("abc");
         migration.setScript("x");
         migration.setType(MigrationType.CQL);
@@ -200,7 +200,7 @@ public class MigrationInfoServiceTest {
      * @return The applied migration.
      */
     private AppliedMigration createAppliedMigration(int version, String description) {
-        return new AppliedMigration(version, version, MigrationVersion.fromVersion(Integer.toString(version)), description,
+        return new AppliedMigration(version, version, MigrationVersion.Companion.fromVersion(Integer.toString(version)), description,
                 MigrationType.CQL, "x", null, new Date(), "sa", 123, true);
     }
 
@@ -211,7 +211,7 @@ public class MigrationInfoServiceTest {
      * @return The applied baseline migration.
      */
     private AppliedMigration createAppliedInitMigration(int version) {
-        return new AppliedMigration(version, version, MigrationVersion.fromVersion(Integer.toString(version)), "abc",
+        return new AppliedMigration(version, version, MigrationVersion.Companion.fromVersion(Integer.toString(version)), "abc",
                 MigrationType.BASELINE, "x", null, new Date(), "sa", 0, true);
     }
 
@@ -221,7 +221,7 @@ public class MigrationInfoServiceTest {
      * @return The applied schema migration.
      */
     private AppliedMigration createAppliedSchemaMigration() {
-        return new AppliedMigration(0, 0, MigrationVersion.fromVersion(Integer.toString(0)), "<< Schema Creation >>",
+        return new AppliedMigration(0, 0, MigrationVersion.Companion.fromVersion(Integer.toString(0)), "<< Schema Creation >>",
                 MigrationType.SCHEMA, "x", null, new Date(), "sa", 0, true);
     }
 

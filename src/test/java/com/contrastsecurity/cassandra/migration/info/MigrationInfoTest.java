@@ -23,7 +23,7 @@ import static org.junit.Assert.assertTrue;
 public class MigrationInfoTest {
     @Test
     public void validate() {
-        MigrationVersion version = MigrationVersion.fromVersion("1");
+        MigrationVersion version = MigrationVersion.Companion.fromVersion("1");
         String description = "test";
         String user = "testUser";
         MigrationType type = MigrationType.CQL;

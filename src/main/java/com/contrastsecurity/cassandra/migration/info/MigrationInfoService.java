@@ -68,7 +68,7 @@ public class MigrationInfoService {
 
         migrationInfos = mergeAvailableAndAppliedMigrations(availableMigrations, appliedMigrations);
 
-        if (MigrationVersion.CURRENT == target) {
+        if (MigrationVersion.Companion.getCURRENT() == target) {
             target = current().getVersion();
         }
     }

@@ -27,14 +27,14 @@ import static org.junit.Assert.assertTrue;
 public class MigrationVersionTest {
     @Test
     public void compareTo() {
-        MigrationVersion v1 = MigrationVersion.fromVersion("1");
-        MigrationVersion v10 = MigrationVersion.fromVersion("1.0");
-        MigrationVersion v11 = MigrationVersion.fromVersion("1.1");
-        MigrationVersion v1100 = MigrationVersion.fromVersion("1.1.0.0");
-        MigrationVersion v1101 = MigrationVersion.fromVersion("1.1.0.1");
-        MigrationVersion v2 = MigrationVersion.fromVersion("2");
-        MigrationVersion v201004171859 = MigrationVersion.fromVersion("201004171859");
-        MigrationVersion v201004180000 = MigrationVersion.fromVersion("201004180000");
+        MigrationVersion v1 = MigrationVersion.Companion.fromVersion("1");
+        MigrationVersion v10 = MigrationVersion.Companion.fromVersion("1.0");
+        MigrationVersion v11 = MigrationVersion.Companion.fromVersion("1.1");
+        MigrationVersion v1100 = MigrationVersion.Companion.fromVersion("1.1.0.0");
+        MigrationVersion v1101 = MigrationVersion.Companion.fromVersion("1.1.0.1");
+        MigrationVersion v2 = MigrationVersion.Companion.fromVersion("2");
+        MigrationVersion v201004171859 = MigrationVersion.Companion.fromVersion("201004171859");
+        MigrationVersion v201004180000 = MigrationVersion.Companion.fromVersion("201004180000");
 
         assertTrue(v1.compareTo(v10) == 0);
         assertTrue(v10.compareTo(v1) == 0);
@@ -49,45 +49,45 @@ public class MigrationVersionTest {
         assertTrue(v201004171859.compareTo(v201004180000) < 0);
         assertTrue(v201004180000.compareTo(v201004171859) > 0);
 
-        assertTrue(v2.compareTo(MigrationVersion.LATEST) < 0);
-        assertTrue(MigrationVersion.LATEST.compareTo(v2) > 0);
-        assertTrue(v201004180000.compareTo(MigrationVersion.LATEST) < 0);
-        assertTrue(MigrationVersion.LATEST.compareTo(v201004180000) > 0);
+        assertTrue(v2.compareTo(MigrationVersion.Companion.getLATEST()) < 0);
+        assertTrue(MigrationVersion.Companion.getLATEST().compareTo(v2) > 0);
+        assertTrue(v201004180000.compareTo(MigrationVersion.Companion.getLATEST()) < 0);
+        assertTrue(MigrationVersion.Companion.getLATEST().compareTo(v201004180000) > 0);
     }
 
     @Test
     public void testEquals() {
-        final MigrationVersion a1 = MigrationVersion.fromVersion("1.2.3.3");
-        final MigrationVersion a2 = MigrationVersion.fromVersion("1.2.3.3");
+        final MigrationVersion a1 = MigrationVersion.Companion.fromVersion("1.2.3.3");
+        final MigrationVersion a2 = MigrationVersion.Companion.fromVersion("1.2.3.3");
         assertTrue(a1.compareTo(a2) == 0);
         assertEquals(a1.hashCode(), a2.hashCode());
     }
 
     @Test
     public void testNumber() {
-        final MigrationVersion a1 = MigrationVersion.fromVersion("1.2.13.3");
-        final MigrationVersion a2 = MigrationVersion.fromVersion("1.2.3.3");
+        final MigrationVersion a1 = MigrationVersion.Companion.fromVersion("1.2.13.3");
+        final MigrationVersion a2 = MigrationVersion.Companion.fromVersion("1.2.3.3");
         assertTrue(a1.compareTo(a2) > 0);
     }
 
     @Test
     public void testLength1() {
-        final MigrationVersion a1 = MigrationVersion.fromVersion("1.2.1.3");
-        final MigrationVersion a2 = MigrationVersion.fromVersion("1.2.1");
+        final MigrationVersion a1 = MigrationVersion.Companion.fromVersion("1.2.1.3");
+        final MigrationVersion a2 = MigrationVersion.Companion.fromVersion("1.2.1");
         assertTrue(a1.compareTo(a2) > 0);
     }
 
     @Test
     public void testLength2() {
-        final MigrationVersion a1 = MigrationVersion.fromVersion("1.2.1");
-        final MigrationVersion a2 = MigrationVersion.fromVersion("1.2.1.1");
+        final MigrationVersion a1 = MigrationVersion.Companion.fromVersion("1.2.1");
+        final MigrationVersion a2 = MigrationVersion.Companion.fromVersion("1.2.1.1");
         assertTrue(a1.compareTo(a2) < 0);
     }
 
     @Test
     public void leadingZeroes() {
-        final MigrationVersion v1 = MigrationVersion.fromVersion("1.0");
-        final MigrationVersion v2 = MigrationVersion.fromVersion("001.0");
+        final MigrationVersion v1 = MigrationVersion.Companion.fromVersion("1.0");
+        final MigrationVersion v2 = MigrationVersion.Companion.fromVersion("001.0");
         assertTrue(v1.compareTo(v2) == 0);
         assertTrue(v1.equals(v2));
         assertEquals(v1.hashCode(), v2.hashCode());
@@ -95,8 +95,8 @@ public class MigrationVersionTest {
 
     @Test
     public void trailingZeroes() {
-        final MigrationVersion v1 = MigrationVersion.fromVersion("1.00");
-        final MigrationVersion v2 = MigrationVersion.fromVersion("1");
+        final MigrationVersion v1 = MigrationVersion.Companion.fromVersion("1.00");
+        final MigrationVersion v2 = MigrationVersion.Companion.fromVersion("1");
         assertTrue(v1.compareTo(v2) == 0);
         assertTrue(v1.equals(v2));
         assertEquals(v1.hashCode(), v2.hashCode());
@@ -104,28 +104,28 @@ public class MigrationVersionTest {
 
     @Test
     public void fromVersionFactory() {
-        assertEquals(MigrationVersion.LATEST, MigrationVersion.fromVersion(MigrationVersion.LATEST.getVersion()));
-        assertEquals(MigrationVersion.EMPTY, MigrationVersion.fromVersion(MigrationVersion.EMPTY.getVersion()));
-        assertEquals("1.2.3", MigrationVersion.fromVersion("1.2.3").getVersion());
+        assertEquals(MigrationVersion.Companion.getLATEST(), MigrationVersion.Companion.fromVersion(MigrationVersion.Companion.getLATEST().getVersion()));
+        assertEquals(MigrationVersion.Companion.getEMPTY(), MigrationVersion.Companion.fromVersion(MigrationVersion.Companion.getEMPTY().getVersion()));
+        assertEquals("1.2.3", MigrationVersion.Companion.fromVersion("1.2.3").getVersion());
     }
 
     @Test
     public void empty() {
-        assertEquals(MigrationVersion.EMPTY, MigrationVersion.EMPTY);
-        assertTrue(MigrationVersion.EMPTY.compareTo(MigrationVersion.EMPTY) == 0);
+        assertEquals(MigrationVersion.Companion.getEMPTY(), MigrationVersion.Companion.getEMPTY());
+        assertTrue(MigrationVersion.Companion.getEMPTY().compareTo(MigrationVersion.Companion.getEMPTY()) == 0);
     }
 
 
     @Test
     public void latest() {
-        assertEquals(MigrationVersion.LATEST, MigrationVersion.LATEST);
-        assertTrue(MigrationVersion.LATEST.compareTo(MigrationVersion.LATEST) == 0);
+        assertEquals(MigrationVersion.Companion.getLATEST(), MigrationVersion.Companion.getLATEST());
+        assertTrue(MigrationVersion.Companion.getLATEST().compareTo(MigrationVersion.Companion.getLATEST()) == 0);
     }
 
     @Test
     public void zeros() {
-        final MigrationVersion v1 = MigrationVersion.fromVersion("0.0");
-        final MigrationVersion v2 = MigrationVersion.fromVersion("0");
+        final MigrationVersion v1 = MigrationVersion.Companion.fromVersion("0.0");
+        final MigrationVersion v2 = MigrationVersion.Companion.fromVersion("0");
         assertTrue(v1.compareTo(v2) == 0);
         assertTrue(v1.equals(v2));
         assertEquals(v1.hashCode(), v2.hashCode());
@@ -133,43 +133,43 @@ public class MigrationVersionTest {
 
     @Test(expected = CassandraMigrationException.class)
     public void missingNumber() {
-        MigrationVersion.fromVersion("1..1");
+        MigrationVersion.Companion.fromVersion("1..1");
     }
 
     @Test(expected = CassandraMigrationException.class)
     public void dot() {
-        MigrationVersion.fromVersion(".");
+        MigrationVersion.Companion.fromVersion(".");
     }
 
     @Test(expected = CassandraMigrationException.class)
     public void startDot() {
-        MigrationVersion.fromVersion(".1");
+        MigrationVersion.Companion.fromVersion(".1");
     }
 
     @Test(expected = CassandraMigrationException.class)
     public void endDot() {
-        MigrationVersion.fromVersion("1.");
+        MigrationVersion.Companion.fromVersion("1.");
     }
 
     @Test(expected = CassandraMigrationException.class)
     public void letters() {
-        MigrationVersion.fromVersion("abc1.0");
+        MigrationVersion.Companion.fromVersion("abc1.0");
     }
 
     @Test(expected = CassandraMigrationException.class)
     public void dash() {
-        MigrationVersion.fromVersion("1.2.1-3");
+        MigrationVersion.Companion.fromVersion("1.2.1-3");
     }
 
     @Test(expected = CassandraMigrationException.class)
     public void alphaNumeric() {
-        MigrationVersion.fromVersion("1.2.1a-3");
+        MigrationVersion.Companion.fromVersion("1.2.1a-3");
     }
 
     @Test
     public void testWouldOverflowLong() {
         final String raw = "9999999999999999999999999999999999.8888888231231231231231298797298789132.22";
-        MigrationVersion longVersions = MigrationVersion.fromVersion(raw);
+        MigrationVersion longVersions = MigrationVersion.Companion.fromVersion(raw);
         assertEquals(raw, longVersions.getVersion());
     }
 }

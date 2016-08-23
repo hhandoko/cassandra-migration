@@ -43,7 +43,7 @@ public class Migrate {
             MigrationInfoService infoService = new MigrationInfoService(migrationResolver, schemaVersionDAO, target, allowOutOfOrder, true);
             infoService.refresh();
 
-            MigrationVersion currentSchemaVersion = MigrationVersion.EMPTY;
+            MigrationVersion currentSchemaVersion = MigrationVersion.Companion.getEMPTY();
             if (infoService.current() != null) {
                 currentSchemaVersion = infoService.current().getVersion();
             }

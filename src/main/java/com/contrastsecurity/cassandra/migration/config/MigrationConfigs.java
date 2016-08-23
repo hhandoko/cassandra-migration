@@ -65,7 +65,7 @@ public class MigrationConfigs {
     /**
      * The target version. Migrations with a higher version number will be ignored. (default: the latest version)
      */
-    private MigrationVersion target = MigrationVersion.LATEST;
+    private MigrationVersion target = MigrationVersion.Companion.getLATEST();
 
     public String getEncoding() {
         return encoding;
@@ -104,6 +104,6 @@ public class MigrationConfigs {
      * @param target Target version
      */
     public void setTargetAsString(String target) {
-        this.target = MigrationVersion.fromVersion(target);
+        this.target = MigrationVersion.Companion.fromVersion(target);
     }
 }

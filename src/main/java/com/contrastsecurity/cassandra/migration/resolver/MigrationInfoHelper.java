@@ -54,6 +54,6 @@ public class MigrationInfoHelper {
 
         String version = cleanMigrationName.substring(0, descriptionPos);
         String description = cleanMigrationName.substring(descriptionPos + separator.length()).replaceAll("_", " ");
-        return Pair.of(MigrationVersion.fromVersion(version), description);
+        return Pair.of(MigrationVersion.Companion.fromVersion(version), description);
     }
 }

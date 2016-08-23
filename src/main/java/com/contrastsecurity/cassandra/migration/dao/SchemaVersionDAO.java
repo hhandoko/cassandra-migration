@@ -177,7 +177,7 @@ public class SchemaVersionDAO {
             resultsList.add(new AppliedMigration(
                     row.getInt("version_rank"),
                     row.getInt("installed_rank"),
-                    MigrationVersion.fromVersion(row.getString("version")),
+                    MigrationVersion.Companion.fromVersion(row.getString("version")),
                     row.getString("description"),
                     MigrationType.valueOf(row.getString("type")),
                     row.getString("script"),
@@ -244,7 +244,7 @@ public class SchemaVersionDAO {
         List<MigrationVersion> migrationVersions = new ArrayList<>();
         HashMap<String, MigrationMetaHolder> migrationMetaHolders = new HashMap<>();
         for (Row versionRow : versionRows) {
-            migrationVersions.add(MigrationVersion.fromVersion(versionRow.getString("version")));
+            migrationVersions.add(MigrationVersion.Companion.fromVersion(versionRow.getString("version")));
             migrationMetaHolders.put(versionRow.getString("version"), new MigrationMetaHolder(
                     versionRow.getInt("version_rank")
             ));

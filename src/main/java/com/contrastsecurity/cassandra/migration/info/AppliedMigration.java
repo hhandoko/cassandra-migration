@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.info;
 
-import com.contrastsecurity.cassandra.migration.config.MigrationType;
+import com.contrastsecurity.cassandra.migration.api.MigrationType;
 
 import java.util.Date;
 

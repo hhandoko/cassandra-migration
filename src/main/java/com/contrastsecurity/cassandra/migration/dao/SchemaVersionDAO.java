@@ -1,7 +1,7 @@
 package com.contrastsecurity.cassandra.migration.dao;
 
 import com.contrastsecurity.cassandra.migration.config.Keyspace;
-import com.contrastsecurity.cassandra.migration.config.MigrationType;
+import com.contrastsecurity.cassandra.migration.api.MigrationType;
 import com.contrastsecurity.cassandra.migration.info.AppliedMigration;
 import com.contrastsecurity.cassandra.migration.info.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.logging.Log;

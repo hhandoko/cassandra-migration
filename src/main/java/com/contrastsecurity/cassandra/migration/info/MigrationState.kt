@@ -103,6 +103,12 @@ enum class MigrationState(
      * Its version is higher than the highest version available locally.
      * It most likely failed during the installation of a future version of this deployable.
      */
-    FUTURE_FAILED("FutFail", false, true, true)
+    FUTURE_FAILED("FutFail", false, true, true),
+
+    /** This is a repeatable migration that is outdated and should be re-applied. */
+    OUTDATED("Outdate", true, true, false),
+
+    /** This is a repeatable migration that is outdated and has already been superseded by a newer run. */
+    SUPERSEDED("Superse", true, true, false)
 
 }

@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.utils.scanner.classpath;
 
-import com.contrastsecurity.cassandra.migration.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.logging.Log;
 import com.contrastsecurity.cassandra.migration.logging.LogFactory;
 import com.contrastsecurity.cassandra.migration.utils.ClassUtils;

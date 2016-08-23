@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration
+package com.contrastsecurity.cassandra.migration.api
 
 /**
  * Exception thrown when Cassandra migration encounters a problem.

@@ -1,6 +1,6 @@
 package com.contrastsecurity.cassandra.migration.action;
 
-import com.contrastsecurity.cassandra.migration.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO;
 import com.contrastsecurity.cassandra.migration.info.*;
 import com.contrastsecurity.cassandra.migration.logging.Log;

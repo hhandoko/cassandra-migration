@@ -1,6 +1,6 @@
 package com.contrastsecurity.cassandra.migration.resolver.cql;
 
-import com.contrastsecurity.cassandra.migration.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.config.ScriptsLocation;
 import com.contrastsecurity.cassandra.migration.info.ResolvedMigration;
 import com.contrastsecurity.cassandra.migration.utils.scanner.classpath.ClassPathResource;

@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.info;
 
-import com.contrastsecurity.cassandra.migration.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 
 import java.math.BigInteger;
 import java.util.ArrayList;

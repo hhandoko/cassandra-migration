@@ -1,6 +1,6 @@
 package com.contrastsecurity.cassandra.migration.config;
 
-import com.contrastsecurity.cassandra.migration.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 
 public final class ScriptsLocation implements Comparable<ScriptsLocation> {
 

@@ -1,5 +1,6 @@
 package com.contrastsecurity.cassandra.migration;
 
+import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.config.MigrationType;
 import com.contrastsecurity.cassandra.migration.info.MigrationInfo;
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoDumper;

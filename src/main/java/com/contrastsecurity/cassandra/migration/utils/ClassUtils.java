@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.utils;
 
-import com.contrastsecurity.cassandra.migration.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;

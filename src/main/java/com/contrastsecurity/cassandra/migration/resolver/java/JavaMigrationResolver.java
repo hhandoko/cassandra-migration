@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.resolver.java;
 
-import com.contrastsecurity.cassandra.migration.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.api.migration.MigrationChecksumProvider;
 import com.contrastsecurity.cassandra.migration.api.migration.MigrationInfoProvider;
 import com.contrastsecurity.cassandra.migration.api.migration.java.JavaMigration;

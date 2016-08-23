@@ -1,5 +1,5 @@
 /**
- * File     : MigrationResolver.kt
+ * File     : MigrationExecutor.kt
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -16,21 +16,20 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.resolver
+package com.contrastsecurity.cassandra.migration.api.resolver
 
-import com.contrastsecurity.cassandra.migration.info.ResolvedMigration
+import com.datastax.driver.core.Session
 
 /**
- * Resolves available migrations. This interface can be implemented to create custom resolvers. A custom resolver
- * can be used to create additional types of migrations not covered by the standard resolvers (jdbc, sql, spring-jdbc).
+ * Executes a migration.
  */
-interface MigrationResolver {
+interface MigrationExecutor {
 
     /**
-     * Resolves the available migrations.
+     * Executes the migration this executor is associated with.
      *
-     * @return The available migrations.
+     * @param session The Cassandra session connection to use to execute the migration.
      */
-    fun resolveMigrations(): Collection<ResolvedMigration>
+    fun execute(session: Session)
 
 }

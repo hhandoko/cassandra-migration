@@ -12,7 +12,7 @@ import com.contrastsecurity.cassandra.migration.info.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.logging.Log;
 import com.contrastsecurity.cassandra.migration.logging.LogFactory;
 import com.contrastsecurity.cassandra.migration.resolver.CompositeMigrationResolver;
-import com.contrastsecurity.cassandra.migration.resolver.MigrationResolver;
+import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;
 import com.contrastsecurity.cassandra.migration.utils.VersionPrinter;
 import com.datastax.driver.core.Host;
 import com.datastax.driver.core.KeyspaceMetadata;

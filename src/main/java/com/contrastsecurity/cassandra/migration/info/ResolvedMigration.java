@@ -16,7 +16,7 @@
 package com.contrastsecurity.cassandra.migration.info;
 
 import com.contrastsecurity.cassandra.migration.config.MigrationType;
-import com.contrastsecurity.cassandra.migration.resolver.MigrationExecutor;
+import com.contrastsecurity.cassandra.migration.api.resolver.MigrationExecutor;
 
 /**
  * A migration available on the classpath.

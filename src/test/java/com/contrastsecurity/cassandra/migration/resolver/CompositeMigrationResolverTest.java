@@ -16,6 +16,7 @@
 package com.contrastsecurity.cassandra.migration.resolver;
 
 import com.contrastsecurity.cassandra.migration.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;
 import com.contrastsecurity.cassandra.migration.config.MigrationType;
 import com.contrastsecurity.cassandra.migration.config.ScriptsLocations;
 import com.contrastsecurity.cassandra.migration.info.MigrationVersion;

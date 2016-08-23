@@ -5,7 +5,7 @@ import com.contrastsecurity.cassandra.migration.info.MigrationInfoService;
 import com.contrastsecurity.cassandra.migration.info.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.logging.Log;
 import com.contrastsecurity.cassandra.migration.logging.LogFactory;
-import com.contrastsecurity.cassandra.migration.resolver.MigrationResolver;
+import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;
 import com.contrastsecurity.cassandra.migration.utils.StopWatch;
 import com.contrastsecurity.cassandra.migration.utils.TimeFormat;
 

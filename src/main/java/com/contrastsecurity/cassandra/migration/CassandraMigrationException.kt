@@ -1,5 +1,5 @@
 /**
- * File     : JavaMigration.kt
+ * File     : CassandraMigrationException.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -16,22 +16,26 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.api.migration.java
-
-import com.datastax.driver.core.Session
+package com.contrastsecurity.cassandra.migration
 
 /**
- * Java-based Cassandra schema migration interface.
+ * Exception thrown when Cassandra migration encounters a problem.
  */
-interface JavaMigration {
+class CassandraMigrationException : RuntimeException {
 
     /**
-     * Runs the Java-based Cassandra schema migration.
+     * Creates a new CassandraMigrationException with this message.
      *
-     * @param session The Cassandra session connection to use to execute the migration.
-     * @throws Exception when the execution of the migration failed.
+     * @param message The exception message.
      */
-    @Throws(Exception::class)
-    fun migrate(session: Session)
+    constructor(message: String) : super(message) { }
+
+    /**
+     * Creates a new CassandraMigrationException with this message and this cause.
+     *
+     * @param message The exception message.
+     * @param cause The exception cause.
+     */
+    constructor(message: String, cause: Throwable) : super(message, cause) { }
 
 }

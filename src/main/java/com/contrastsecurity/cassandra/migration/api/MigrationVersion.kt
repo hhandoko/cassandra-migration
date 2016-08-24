@@ -87,19 +87,19 @@ class MigrationVersion : Comparable<MigrationVersion?> {
     }
 
     /**
-     * @return The version instance hash value.
+     * @return The computed version instance hash value.
      */
     override fun hashCode(): Int {
         return if (versionParts == null) 0 else versionParts!!.hashCode()
     }
 
     /**
-     * @return True if this version instance is the same as the given object.
+     * @return {@code true} if this version instance is the same as the given object.
      */
     override fun equals(other: Any?): Boolean {
 
         /**
-         * @return True if this version instance is not the same as the given object.
+         * @return {@code true} if this version instance is not the same as the given object.
          */
         fun isNotSame(): Boolean {
             return other == null || javaClass != other.javaClass
@@ -113,7 +113,7 @@ class MigrationVersion : Comparable<MigrationVersion?> {
     }
 
     /**
-     * @return True if this version instance is comparable to the given object.
+     * @return {@code true} if this version instance is comparable to the given object.
      */
     override fun compareTo(other: MigrationVersion?): Int {
 
@@ -215,7 +215,7 @@ class MigrationVersion : Comparable<MigrationVersion?> {
         fun fromVersion(version: String?): MigrationVersion {
 
             /**
-             * @return True if version is "CURRENT".
+             * @return {@code true} if version is "CURRENT".
              */
             fun isCurrent(): Boolean {
                 return "current".equals(version, ignoreCase = true)

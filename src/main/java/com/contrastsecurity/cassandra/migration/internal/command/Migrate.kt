@@ -57,7 +57,7 @@ class Migrate(
      * Runs the actual migration.
      *
      * @return The number of successfully applied migrations.
-     * @throws CassandraMigrationException Cassandra migration exception.
+     * @throws CassandraMigrationException when migration execution failed for any reason.
      */
     @Throws(CassandraMigrationException::class)
     fun run(): Int {
@@ -145,7 +145,7 @@ class Migrate(
      * @param migration The migration to apply.
      * @param isOutOfOrder If this migration is being applied out of order.
      * @return The result of the migration.
-     * @throws CassandraMigrationException Cassandra migration exception.
+     * @throws CassandraMigrationException when migration cannot be applied.
      */
     @Throws(CassandraMigrationException::class)
     private fun applyMigration(migration: MigrationInfo, isOutOfOrder: Boolean): MigrationVersion? {

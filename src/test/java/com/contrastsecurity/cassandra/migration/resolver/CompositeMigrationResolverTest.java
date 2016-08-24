@@ -68,7 +68,7 @@ public class CompositeMigrationResolverTest {
         Collection<MigrationResolver> migrationResolvers = new ArrayList<MigrationResolver>();
         migrationResolvers.add(migrationResolver);
 
-        Collection<ResolvedMigration> migrations = CompositeMigrationResolver.collectMigrations(migrationResolvers);
+        Collection<ResolvedMigration> migrations = CompositeMigrationResolver.Companion.collectMigrations(migrationResolvers);
         assertEquals(2, migrations.size());
     }
 
@@ -85,7 +85,7 @@ public class CompositeMigrationResolverTest {
         migrations.add(migration2);
 
         try {
-            CompositeMigrationResolver.checkForIncompatibilities(migrations);
+            CompositeMigrationResolver.Companion.checkForIncompatibilities(migrations);
         } catch (CassandraMigrationException e) {
             assertTrue(e.getMessage().contains("target/test-classes/migration/validate/V1__First.cql"));
             assertTrue(e.getMessage().contains("Migration1"));
@@ -101,7 +101,7 @@ public class CompositeMigrationResolverTest {
         migrations.add(createTestMigration(MigrationType.JAVA_DRIVER, "1", "Description", "Migration1", 123));
         migrations.add(createTestMigration(MigrationType.CQL, "2", "Description2", "Migration2", 1234));
 
-        CompositeMigrationResolver.checkForIncompatibilities(migrations);
+        CompositeMigrationResolver.Companion.checkForIncompatibilities(migrations);
     }
 
     /**

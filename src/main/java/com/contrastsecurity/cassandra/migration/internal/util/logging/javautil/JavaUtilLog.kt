@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.logging.javautil
+package com.contrastsecurity.cassandra.migration.internal.util.logging.javautil
 
 import com.contrastsecurity.cassandra.migration.internal.util.logging.Log
 

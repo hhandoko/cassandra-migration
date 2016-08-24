@@ -92,7 +92,7 @@ public class CqlMigrationResolver implements MigrationResolver {
         ResolvedMigration migration = new ResolvedMigration();
 
         Pair<MigrationVersion, String> info =
-                MigrationInfoHelper.extractVersionAndDescription(resource.getFilename(),
+                MigrationInfoHelper.INSTANCE.extractVersionAndDescription(resource.getFilename(),
                         CQL_MIGRATION_PREFIX, CQL_MIGRATION_SEPARATOR, CQL_MIGRATION_SUFFIX);
         migration.setVersion(info.getLeft());
         migration.setDescription(info.getRight());

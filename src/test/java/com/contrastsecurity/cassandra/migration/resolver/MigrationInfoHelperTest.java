@@ -31,12 +31,12 @@ public class MigrationInfoHelperTest {
      */
     @Test(expected = CassandraMigrationException.class)
     public void extractSchemaVersionNoDescription() {
-        MigrationInfoHelper.extractVersionAndDescription("9_4", "", "__", "");
+        MigrationInfoHelper.INSTANCE.extractVersionAndDescription("9_4", "", "__", "");
     }
 
     @Test
     public void extractSchemaVersionDefaults() {
-        Pair<MigrationVersion, String> info = MigrationInfoHelper.extractVersionAndDescription("V9_4__EmailAxel.cql", "V", "__", ".cql");
+        Pair<MigrationVersion, String> info = MigrationInfoHelper.INSTANCE.extractVersionAndDescription("V9_4__EmailAxel.cql", "V", "__", ".cql");
         MigrationVersion version = info.getLeft();
         String description = info.getRight();
         assertEquals("9.4", version.toString());
@@ -45,7 +45,7 @@ public class MigrationInfoHelperTest {
 
     @Test
     public void extractSchemaVersionCustomSeparator() {
-        Pair<MigrationVersion, String> info = MigrationInfoHelper.extractVersionAndDescription("V9_4-EmailAxel.cql", "V", "-", ".cql");
+        Pair<MigrationVersion, String> info = MigrationInfoHelper.INSTANCE.extractVersionAndDescription("V9_4-EmailAxel.cql", "V", "-", ".cql");
         MigrationVersion version = info.getLeft();
         String description = info.getRight();
         assertEquals("9.4", version.toString());
@@ -57,7 +57,7 @@ public class MigrationInfoHelperTest {
      */
     @Test
     public void extractSchemaVersionWithDescription() {
-        Pair<MigrationVersion, String> info = MigrationInfoHelper.extractVersionAndDescription("9_4__EmailAxel", "", "__", "");
+        Pair<MigrationVersion, String> info = MigrationInfoHelper.INSTANCE.extractVersionAndDescription("9_4__EmailAxel", "", "__", "");
         MigrationVersion version = info.getLeft();
         String description = info.getRight();
         assertEquals("9.4", version.toString());
@@ -69,7 +69,7 @@ public class MigrationInfoHelperTest {
      */
     @Test
     public void extractSchemaVersionWithDescriptionWithSpaces() {
-        Pair<MigrationVersion, String> info = MigrationInfoHelper.extractVersionAndDescription("9_4__Big_jump", "", "__", "");
+        Pair<MigrationVersion, String> info = MigrationInfoHelper.INSTANCE.extractVersionAndDescription("9_4__Big_jump", "", "__", "");
         MigrationVersion version = info.getLeft();
         String description = info.getRight();
         assertEquals("9.4", version.toString());
@@ -81,7 +81,7 @@ public class MigrationInfoHelperTest {
      */
     @Test
     public void extractSchemaVersionWithLeadingZeroes() {
-        Pair<MigrationVersion, String> info = MigrationInfoHelper.extractVersionAndDescription("009_4__EmailAxel", "", "__", "");
+        Pair<MigrationVersion, String> info = MigrationInfoHelper.INSTANCE.extractVersionAndDescription("009_4__EmailAxel", "", "__", "");
         MigrationVersion version = info.getLeft();
         String description = info.getRight();
         assertEquals("009.4", version.toString());
@@ -90,17 +90,17 @@ public class MigrationInfoHelperTest {
 
     @Test(expected = CassandraMigrationException.class)
     public void extractSchemaVersionWithLeadingUnderscore() {
-        MigrationInfoHelper.extractVersionAndDescription("_8_0__Description", "", "__", "");
+        MigrationInfoHelper.INSTANCE.extractVersionAndDescription("_8_0__Description", "", "__", "");
     }
 
     @Test(expected = CassandraMigrationException.class)
     public void extractSchemaVersionWithLeadingUnderscoreAndPrefix() {
-        MigrationInfoHelper.extractVersionAndDescription("V_8_0__Description.cql", "V", "__", ".cql");
+        MigrationInfoHelper.INSTANCE.extractVersionAndDescription("V_8_0__Description.cql", "V", "__", ".cql");
     }
 
     @Test
     public void extractSchemaVersionWithVUnderscorePrefix() {
-        Pair<MigrationVersion, String> info = MigrationInfoHelper.extractVersionAndDescription("V_8_0__Description.cql", "V_", "__", ".cql");
+        Pair<MigrationVersion, String> info = MigrationInfoHelper.INSTANCE.extractVersionAndDescription("V_8_0__Description.cql", "V_", "__", ".cql");
         MigrationVersion version = info.getLeft();
         String description = info.getRight();
         assertEquals("8.0", version.toString());

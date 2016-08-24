@@ -1,5 +1,5 @@
 /**
- * File     : CompositeMigrationResolver.kt
+ * File     : ResolvedMigrationComparator.kt
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd

@@ -111,7 +111,7 @@ public class JavaMigrationResolver implements MigrationResolver {
             }
         } else {
             Pair<MigrationVersion, String> info =
-                    MigrationInfoHelper.extractVersionAndDescription(
+                    MigrationInfoHelper.INSTANCE.extractVersionAndDescription(
                             ClassUtils.getShortName(javaMigration.getClass()), "V", "__", "");
             version = info.getLeft();
             description = info.getRight();

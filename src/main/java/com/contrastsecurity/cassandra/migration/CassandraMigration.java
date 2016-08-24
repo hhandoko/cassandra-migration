@@ -49,7 +49,7 @@ import java.util.List;
  */
 public class CassandraMigration implements CassandraMigrationConfiguration {
 
-    private static final Log LOG = LogFactory.getLog(CassandraMigration.class);
+    private static final Log LOG = LogFactory.INSTANCE.getLog(CassandraMigration.class);
 
     /**
      * The ClassLoader to use for resolving migrations on the classpath.

@@ -30,7 +30,7 @@ import java.net.URLDecoder;
 import java.util.*;
 
 public class ClassPathScanner {
-    private static final Log LOG = LogFactory.getLog(ClassPathScanner.class);
+    private static final Log LOG = LogFactory.INSTANCE.getLog(ClassPathScanner.class);
 
     /**
      * The ClassLoader for loading migrations on the classpath.

@@ -65,8 +65,8 @@ public class CommandLine {
 	}
 
 	static void initLogging(ConsoleLog.Level level) {
-		LogFactory.setLogCreator(new ConsoleLogCreator(level));
-		LOG = LogFactory.getLog(CommandLine.class);
+		LogFactory.INSTANCE.setLogCreator(new ConsoleLogCreator(level));
+		LOG = LogFactory.INSTANCE.getLog(CommandLine.class);
 	}
 
 	private static ConsoleLog.Level getLogLevel(String[] args) {

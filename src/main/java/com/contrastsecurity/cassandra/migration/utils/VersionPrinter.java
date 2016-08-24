@@ -23,7 +23,7 @@ import com.contrastsecurity.cassandra.migration.utils.scanner.classpath.ClassPat
  * Prints the Cassandra Migration version.
  */
 public class VersionPrinter {
-    private static final Log LOG = LogFactory.getLog(VersionPrinter.class);
+    private static final Log LOG = LogFactory.INSTANCE.getLog(VersionPrinter.class);
     private static boolean printed;
 
     private VersionPrinter() {

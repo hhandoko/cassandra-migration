@@ -21,7 +21,7 @@ import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 
 public class SchemaVersionDAO {
 
-    private static final Log LOG = LogFactory.getLog(SchemaVersionDAO.class);
+    private static final Log LOG = LogFactory.INSTANCE.getLog(SchemaVersionDAO.class);
     private static final String COUNTS_TABLE_NAME_SUFFIX = "_counts";
 
     private Session session;

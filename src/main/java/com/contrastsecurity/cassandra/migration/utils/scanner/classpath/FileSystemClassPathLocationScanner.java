@@ -29,7 +29,7 @@ import java.util.TreeSet;
  * ClassPathLocationScanner for the file system.
  */
 public class FileSystemClassPathLocationScanner implements ClassPathLocationScanner {
-    private static final Log LOG = LogFactory.getLog(FileSystemClassPathLocationScanner.class);
+    private static final Log LOG = LogFactory.INSTANCE.getLog(FileSystemClassPathLocationScanner.class);
 
     public Set<String> findResourceNames(String location, URL locationUrl) throws IOException {
         String filePath = UrlUtils.toFilePath(locationUrl);

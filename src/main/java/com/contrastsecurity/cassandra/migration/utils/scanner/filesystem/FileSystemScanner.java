@@ -29,7 +29,7 @@ import java.util.TreeSet;
  * FileSystem scanner.
  */
 public class FileSystemScanner {
-    private static final Log LOG = LogFactory.getLog(FileSystemScanner.class);
+    private static final Log LOG = LogFactory.INSTANCE.getLog(FileSystemScanner.class);
 
     /**
      * Scans the FileSystem for resources under the specified location, starting with the specified prefix and ending with

@@ -34,7 +34,7 @@ import java.util.List;
  * Single-line (--) and multi-line (/* * /) comments are stripped and ignored.
  */
 public class CqlScript {
-    private static final Log LOG = LogFactory.getLog(CqlScript.class);
+    private static final Log LOG = LogFactory.INSTANCE.getLog(CqlScript.class);
 
     /**
      * The cql statements contained in this script.

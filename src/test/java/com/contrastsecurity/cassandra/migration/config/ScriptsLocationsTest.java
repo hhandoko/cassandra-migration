@@ -15,6 +15,8 @@
  */
 package com.contrastsecurity.cassandra.migration.config;
 
+import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation;
+import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocations;
 import org.junit.Test;
 
 import java.util.Iterator;

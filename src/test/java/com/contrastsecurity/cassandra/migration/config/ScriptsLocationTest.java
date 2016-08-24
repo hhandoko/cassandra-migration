@@ -15,6 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.config;
 
+import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

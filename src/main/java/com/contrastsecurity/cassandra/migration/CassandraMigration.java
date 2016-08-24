@@ -24,7 +24,7 @@ import com.contrastsecurity.cassandra.migration.api.configuration.CassandraMigra
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;
 import com.contrastsecurity.cassandra.migration.config.Keyspace;
 import com.contrastsecurity.cassandra.migration.config.MigrationConfigs;
-import com.contrastsecurity.cassandra.migration.config.ScriptsLocations;
+import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocations;
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO;
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoService;
 import com.contrastsecurity.cassandra.migration.internal.command.Initialize;

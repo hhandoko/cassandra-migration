@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.config
+package com.contrastsecurity.cassandra.migration.internal.util
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 
@@ -61,7 +61,7 @@ class ScriptsLocation(descriptor: String) : Comparable<ScriptsLocation> {
                 path = path!!.substring(1)
             }
         } else if (!isFileSystem) {
-            val unknownPrefixLogMsg = "Unknown prefix for location. Must be $CLASSPATH_PREFIX or ${FILESYSTEM_PREFIX}.$normalizedDescriptor"
+            val unknownPrefixLogMsg = "Unknown prefix for location. Must be ${CLASSPATH_PREFIX} or ${FILESYSTEM_PREFIX}.$normalizedDescriptor"
             throw CassandraMigrationException(unknownPrefixLogMsg)
         }
 

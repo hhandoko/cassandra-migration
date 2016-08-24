@@ -32,7 +32,7 @@ import com.contrastsecurity.cassandra.migration.internal.command.Migrate;
 import com.contrastsecurity.cassandra.migration.internal.command.Validate;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory;
-import com.contrastsecurity.cassandra.migration.resolver.CompositeMigrationResolver;
+import com.contrastsecurity.cassandra.migration.internal.resolver.CompositeMigrationResolver;
 import com.contrastsecurity.cassandra.migration.utils.VersionPrinter;
 import com.datastax.driver.core.Host;
 import com.datastax.driver.core.KeyspaceMetadata;

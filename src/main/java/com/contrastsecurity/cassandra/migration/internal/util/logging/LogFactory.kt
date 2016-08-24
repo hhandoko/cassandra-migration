@@ -20,7 +20,7 @@ package com.contrastsecurity.cassandra.migration.internal.util.logging
 
 import com.contrastsecurity.cassandra.migration.internal.util.logging.apachecommons.ApacheCommonsLogCreator
 import com.contrastsecurity.cassandra.migration.internal.util.logging.javautil.JavaUtilLogCreator
-import com.contrastsecurity.cassandra.migration.logging.slf4j.Slf4jLogCreator
+import com.contrastsecurity.cassandra.migration.internal.util.logging.slf4j.Slf4jLogCreator
 import com.contrastsecurity.cassandra.migration.utils.FeatureDetector
 
 object LogFactory {

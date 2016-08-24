@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.action
+package com.contrastsecurity.cassandra.migration.internal.command
 
 import com.contrastsecurity.cassandra.migration.config.Keyspace
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO

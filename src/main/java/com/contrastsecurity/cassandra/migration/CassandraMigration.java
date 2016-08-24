@@ -18,21 +18,21 @@
  */
 package com.contrastsecurity.cassandra.migration;
 
-import com.contrastsecurity.cassandra.migration.action.Initialize;
-import com.contrastsecurity.cassandra.migration.action.Migrate;
-import com.contrastsecurity.cassandra.migration.action.Validate;
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.api.configuration.CassandraMigrationConfiguration;
+import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;
 import com.contrastsecurity.cassandra.migration.config.Keyspace;
 import com.contrastsecurity.cassandra.migration.config.MigrationConfigs;
 import com.contrastsecurity.cassandra.migration.config.ScriptsLocations;
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO;
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoService;
-import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
+import com.contrastsecurity.cassandra.migration.internal.command.Initialize;
+import com.contrastsecurity.cassandra.migration.internal.command.Migrate;
+import com.contrastsecurity.cassandra.migration.internal.command.Validate;
 import com.contrastsecurity.cassandra.migration.logging.Log;
 import com.contrastsecurity.cassandra.migration.logging.LogFactory;
 import com.contrastsecurity.cassandra.migration.resolver.CompositeMigrationResolver;
-import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;
 import com.contrastsecurity.cassandra.migration.utils.VersionPrinter;
 import com.datastax.driver.core.Host;
 import com.datastax.driver.core.KeyspaceMetadata;

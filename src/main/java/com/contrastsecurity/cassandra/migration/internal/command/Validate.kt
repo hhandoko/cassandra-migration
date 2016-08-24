@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.action
+package com.contrastsecurity.cassandra.migration.internal.command
 
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
@@ -60,9 +60,19 @@ class Validate(
 
         stopWatch.stop()
 
-        LOG.info(String.format("Validated %d migrations (execution time %s)", count, TimeFormat.format(stopWatch.totalTimeMillis)))
+        logSummary(count, stopWatch.totalTimeMillis)
 
         return validationError
+    }
+
+    /**
+     * Logs the summary of this migration run.
+     *
+     * @param count The number of successfully applied migrations.
+     * @param executionTime The total time taken to perform this migration run (in ms).
+     */
+    private fun logSummary(count: Int, executionTime: Long) {
+        LOG.info("Validated %d migrations (execution time %s)".format(count, TimeFormat.format(executionTime)))
     }
 
     /**

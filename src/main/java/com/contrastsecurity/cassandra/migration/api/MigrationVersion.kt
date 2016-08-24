@@ -57,7 +57,7 @@ class MigrationVersion : Comparable<MigrationVersion?> {
      * @param displayText The alternative text to display instead of the version number.
      */
     private constructor(version: BigInteger?, displayText: String) {
-        val versionParts = version?.let { v -> listOf(v) }.orEmpty()
+        val versionParts = version?.let { listOf(it) }.orEmpty()
         init(versionParts, displayText)
     }
 

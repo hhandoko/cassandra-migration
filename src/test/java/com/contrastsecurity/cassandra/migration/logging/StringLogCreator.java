@@ -15,6 +15,9 @@
  */
 package com.contrastsecurity.cassandra.migration.logging;
 
+import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.LogCreator;
+
 /**
  * Log creator for capturing the output as a string.
  */

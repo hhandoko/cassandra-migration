@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.logging.javautil;
 
-import com.contrastsecurity.cassandra.migration.logging.Log;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 
 import java.util.logging.Level;
 import java.util.logging.LogRecord;

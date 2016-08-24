@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.logging.console;
 
-import com.contrastsecurity.cassandra.migration.logging.Log;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 
 public class ConsoleLog implements Log {
     public static enum Level {

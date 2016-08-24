@@ -18,7 +18,7 @@
  */
 package com.contrastsecurity.cassandra.migration.internal.util
 
-import com.contrastsecurity.cassandra.migration.logging.LogFactory
+import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory
 import java.util.*
 
 /**

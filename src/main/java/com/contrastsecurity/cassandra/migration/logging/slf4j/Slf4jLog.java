@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.logging.slf4j;
 
-import com.contrastsecurity.cassandra.migration.logging.Log;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 import org.slf4j.Logger;
 
 /**

@@ -16,8 +16,8 @@
 package com.contrastsecurity.cassandra.migration.script;
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
-import com.contrastsecurity.cassandra.migration.logging.Log;
-import com.contrastsecurity.cassandra.migration.logging.LogFactory;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory;
 import com.contrastsecurity.cassandra.migration.utils.StringUtils;
 import com.contrastsecurity.cassandra.migration.utils.scanner.Resource;
 import com.datastax.driver.core.Session;

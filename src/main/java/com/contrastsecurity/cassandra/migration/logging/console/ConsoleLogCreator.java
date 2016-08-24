@@ -15,8 +15,8 @@
  */
 package com.contrastsecurity.cassandra.migration.logging.console;
 
-import com.contrastsecurity.cassandra.migration.logging.Log;
-import com.contrastsecurity.cassandra.migration.logging.LogCreator;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.LogCreator;
 import com.contrastsecurity.cassandra.migration.logging.console.ConsoleLog.Level;
 
 public class ConsoleLogCreator implements LogCreator {

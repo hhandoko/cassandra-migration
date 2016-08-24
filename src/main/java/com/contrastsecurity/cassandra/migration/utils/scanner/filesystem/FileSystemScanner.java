@@ -16,8 +16,8 @@
 package com.contrastsecurity.cassandra.migration.utils.scanner.filesystem;
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
-import com.contrastsecurity.cassandra.migration.logging.Log;
-import com.contrastsecurity.cassandra.migration.logging.LogFactory;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory;
 import com.contrastsecurity.cassandra.migration.utils.scanner.Resource;
 
 import java.io.File;

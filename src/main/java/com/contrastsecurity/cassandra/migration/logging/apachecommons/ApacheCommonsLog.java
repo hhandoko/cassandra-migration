@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.logging.apachecommons;
 
-import com.contrastsecurity.cassandra.migration.logging.Log;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 
 /**
  * Wrapper for an Apache Commons Logging logger.

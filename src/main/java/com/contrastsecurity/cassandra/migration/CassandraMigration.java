@@ -176,7 +176,7 @@ public class CassandraMigration implements CassandraMigrationConfiguration {
             public String execute(Session session) {
                 MigrationResolver migrationResolver = createMigrationResolver();
                 SchemaVersionDAO schemaVersionDao = new SchemaVersionDAO(session, keyspace, MigrationVersion.Companion.getCURRENT().getTable());
-                Validate validate = new Validate(migrationResolver, schemaVersionDao, configs.getTarget(), true, false);
+                Validate validate = new Validate(migrationResolver, configs.getTarget(), schemaVersionDao, true, false);
                 return validate.run();
             }
         });

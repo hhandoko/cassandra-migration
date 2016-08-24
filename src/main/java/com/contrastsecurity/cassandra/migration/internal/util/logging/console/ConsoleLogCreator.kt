@@ -16,11 +16,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.logging.console
+package com.contrastsecurity.cassandra.migration.internal.util.logging.console
 
 import com.contrastsecurity.cassandra.migration.internal.util.logging.Log
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogCreator
-import com.contrastsecurity.cassandra.migration.logging.console.ConsoleLog.Level
+import com.contrastsecurity.cassandra.migration.internal.util.logging.console.ConsoleLog.Level
 
 /**
  * Log Creator for the Command-Line console.

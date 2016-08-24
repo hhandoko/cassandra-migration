@@ -3,8 +3,8 @@ package com.contrastsecurity.cassandra.migration;
 import com.contrastsecurity.cassandra.migration.config.Keyspace;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory;
-import com.contrastsecurity.cassandra.migration.logging.console.ConsoleLog;
-import com.contrastsecurity.cassandra.migration.logging.console.ConsoleLogCreator;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.console.ConsoleLog;
+import com.contrastsecurity.cassandra.migration.internal.util.logging.console.ConsoleLogCreator;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,9 +1,28 @@
+/**
+ * File     : CassandraMigration.java
+ * License  :
+ *   Original   - Copyright (c) 2015 - 2016 Contrast Security
+ *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *           http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
 package com.contrastsecurity.cassandra.migration;
 
 import com.contrastsecurity.cassandra.migration.action.Initialize;
 import com.contrastsecurity.cassandra.migration.action.Migrate;
 import com.contrastsecurity.cassandra.migration.action.Validate;
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
+import com.contrastsecurity.cassandra.migration.api.configuration.CassandraMigrationConfiguration;
 import com.contrastsecurity.cassandra.migration.config.Keyspace;
 import com.contrastsecurity.cassandra.migration.config.MigrationConfigs;
 import com.contrastsecurity.cassandra.migration.config.ScriptsLocations;
@@ -23,19 +42,45 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.List;
 
-public class CassandraMigration {
+/**
+ * This is the centre point of Cassandra migration, and for most users, the only class they will ever have to deal with.
+ *
+ * It is THE public API from which all important Cassandra migration functions such as clean, validate and migrate can be called.
+ */
+public class CassandraMigration implements CassandraMigrationConfiguration {
 
     private static final Log LOG = LogFactory.getLog(CassandraMigration.class);
 
+    /**
+     * The ClassLoader to use for resolving migrations on the classpath.
+     * (default: Thread.currentThread().getContextClassLoader())
+     */
     private ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+
+    /**
+     * The Cassandra keyspace to connect to.
+     */
     private Keyspace keyspace;
+
+    /**
+     * The Cassandra migration configuration.
+     */
     private MigrationConfigs configs;
 
+    /**
+     * Creates a new Cassandra migration.
+     */
     public CassandraMigration() {
         this.keyspace = new Keyspace();
         this.configs = new MigrationConfigs();
     }
 
+    /**
+     * Gets the ClassLoader to use for resolving migrations on the classpath.
+     *
+     * @return The ClassLoader to use for resolving migrations on the classpath.
+     *         (default: Thread.currentThread().getContextClassLoader())
+     */
     public ClassLoader getClassLoader() {
         return classLoader;
     }
@@ -43,28 +88,45 @@ public class CassandraMigration {
     /**
      * Sets the ClassLoader to use for resolving migrations on the classpath.
      *
-     * @param classLoader The ClassLoader to use for resolving migrations on the classpath. (default: Thread.currentThread().getContextClassLoader() )
+     * @param classLoader The ClassLoader to use for resolving migrations on the classpath.
      */
     public void setClassLoader(ClassLoader classLoader) {
         this.classLoader = classLoader;
     }
 
+    /**
+     * Gets the Cassandra keyspace to connect to.
+     *
+     * @return The Cassandra keyspace to connect to.
+     */
     public Keyspace getKeyspace() {
         return keyspace;
     }
 
+    /**
+     * Sets the Cassandra keyspace to connect to.
+     *
+     * @param keyspace The Cassandra keyspace to connect to.
+     */
     public void setKeyspace(Keyspace keyspace) {
         this.keyspace = keyspace;
     }
 
+    /**
+     * Gets the Cassandra migration configuration.
+     *
+     * @return The Cassandra migration configuration.
+     */
     public MigrationConfigs getConfigs() {
         return configs;
     }
 
-    private MigrationResolver createMigrationResolver() {
-        return new CompositeMigrationResolver(classLoader, new ScriptsLocations(configs.getScriptsLocations()), configs.getEncoding());
-    }
-
+    /**
+     * Starts the database migration. All pending migrations will be applied in order.
+     * Calling migrate on an up-to-date database has no effect.
+     *
+     * @return The number of successfully applied migrations.
+     */
     public int migrate() {
         return execute(new Action<Integer>() {
             public Integer execute(Session session) {
@@ -80,13 +142,18 @@ public class CassandraMigration {
         });
     }
 
+    /**
+     * Retrieves the complete information about all the migrations including applied, pending and current migrations with
+     * details and status.
+     *
+     * @return All migrations sorted by version, oldest first.
+     */
     public MigrationInfoService info() {
         return execute(new Action<MigrationInfoService>() {
             public MigrationInfoService execute(Session session) {
                 MigrationResolver migrationResolver = createMigrationResolver();
                 SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(session, keyspace, MigrationVersion.Companion.getCURRENT().getTable());
-                MigrationInfoService migrationInfoService =
-                        new MigrationInfoService(migrationResolver, schemaVersionDAO, configs.getTarget(), false, true);
+                MigrationInfoService migrationInfoService = new MigrationInfoService(migrationResolver, schemaVersionDAO, configs.getTarget(), false, true);
                 migrationInfoService.refresh();
 
                 return migrationInfoService;
@@ -94,41 +161,46 @@ public class CassandraMigration {
         });
     }
 
+    /**
+     * Validate applied migrations against resolved ones (on the filesystem or classpath)
+     * to detect accidental changes that may prevent the schema(s) from being recreated exactly.
+     *
+     * Validation fails if:
+     *  * differences in migration names, types or checksums are found
+     *  * versions have been applied that aren't resolved locally anymore
+     *  * versions have been resolved that haven't been applied yet
+     */
     public void validate() {
-    	String validationError = execute(new Action<String>() {
-    		@Override
-    		public String execute(Session session) {
-    			MigrationResolver migrationResolver = createMigrationResolver();
-    			SchemaVersionDAO schemaVersionDao = new SchemaVersionDAO(session, keyspace, MigrationVersion.Companion.getCURRENT().getTable());
-    			Validate validate = new Validate(migrationResolver, schemaVersionDao, configs.getTarget(), true, false);
-    			return validate.run();
-    		}
-    	});
+        String validationError = execute(new Action<String>() {
+            @Override
+            public String execute(Session session) {
+                MigrationResolver migrationResolver = createMigrationResolver();
+                SchemaVersionDAO schemaVersionDao = new SchemaVersionDAO(session, keyspace, MigrationVersion.Companion.getCURRENT().getTable());
+                Validate validate = new Validate(migrationResolver, schemaVersionDao, configs.getTarget(), true, false);
+                return validate.run();
+            }
+        });
     
-    	if (validationError != null) {
-    		throw new CassandraMigrationException("Validation failed. " + validationError);
-    	}
+        if (validationError != null) {
+            throw new CassandraMigrationException("Validation failed. " + validationError);
+        }
     }
-    
+
+    /**
+     * Baselines an existing database, excluding all migrations up to and including baselineVersion.
+     */
     public void baseline() {
-        //TODO
+        // TODO: Create the Cassandra migration implementation, refer to existing PR: https://github.com/Contrast-Security-OSS/cassandra-migration/pull/17
         throw new NotImplementedException();
     }
 
-    private String getConnectionInfo(Metadata metadata) {
-        StringBuilder sb = new StringBuilder();
-        sb.append("Connected to cluster: ");
-        sb.append(metadata.getClusterName());
-        sb.append("\n");
-        for (Host host : metadata.getAllHosts()) {
-            sb.append("Data center: ");
-            sb.append(host.getDatacenter());
-            sb.append("; Host: ");
-            sb.append(host.getAddress());
-        }
-        return sb.toString();
-    }
-
+    /**
+     * Executes this command with proper resource handling and cleanup.
+     *
+     * @param action The action to execute.
+     * @param <T> The action result type.
+     * @return The action result.
+     */
     <T> T execute(Action<T> action) {
         T result;
 
@@ -190,7 +262,50 @@ public class CassandraMigration {
         return result;
     }
 
-    interface Action<T> {
-        T execute(Session session);
+    /**
+     * Get Cassandra connection information.
+     *
+     * @param metadata The connected cluster metadata.
+     * @return Cluster connection information.
+     */
+    private String getConnectionInfo(Metadata metadata) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Connected to cluster: ");
+        sb.append(metadata.getClusterName());
+        sb.append("\n");
+        for (Host host : metadata.getAllHosts()) {
+            sb.append("Data center: ");
+            sb.append(host.getDatacenter());
+            sb.append("; Host: ");
+            sb.append(host.getAddress());
+        }
+        return sb.toString();
     }
+
+    /**
+     * Creates the MigrationResolver.
+     *
+     * @return A new, fully configured, MigrationResolver instance.
+     */
+    private MigrationResolver createMigrationResolver() {
+        return new CompositeMigrationResolver(classLoader, new ScriptsLocations(configs.getScriptsLocations()), configs.getEncoding());
+    }
+
+    /**
+     * A Cassandra migration action that can be executed.
+     *
+     * @param <T> The action result type.
+     */
+    interface Action<T> {
+
+        /**
+         * Execute the operation.
+         *
+         * @param session The Cassandra session connection to use to execute the migration.
+         * @return The action result.
+         */
+        T execute(Session session);
+
+    }
+
 }

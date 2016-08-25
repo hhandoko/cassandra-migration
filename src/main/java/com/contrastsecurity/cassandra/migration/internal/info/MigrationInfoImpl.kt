@@ -46,7 +46,7 @@ class MigrationInfoImpl(
     override val type: MigrationType
         get() {
             if (appliedMigration != null) {
-                return appliedMigration.type
+                return appliedMigration.type!!
             }
             return resolvedMigration?.type!!
         }
@@ -68,7 +68,7 @@ class MigrationInfoImpl(
     override val version: MigrationVersion
         get() {
             if (appliedMigration != null) {
-                return appliedMigration.version
+                return appliedMigration.version!!
             }
             return resolvedMigration!!.version!!
         }
@@ -79,7 +79,7 @@ class MigrationInfoImpl(
     override val description: String
         get() {
             if (appliedMigration != null) {
-                return appliedMigration.description
+                return appliedMigration.description!!
             }
             return resolvedMigration!!.description!!
         }
@@ -90,7 +90,7 @@ class MigrationInfoImpl(
     override val script: String
         get() {
             if (appliedMigration != null) {
-                return appliedMigration.script
+                return appliedMigration.script!!
             }
             return resolvedMigration!!.script!!
         }
@@ -185,16 +185,16 @@ class MigrationInfoImpl(
         if (resolvedMigration != null && appliedMigration != null) {
             if (version.compareTo(context.baseline) > 0) {
                 if (resolvedMigration.type !== appliedMigration.type) {
-                    return createMismatchMessage("Type", appliedMigration.version,
-                            appliedMigration.type, resolvedMigration.type!!)
+                    return createMismatchMessage("Type", appliedMigration.version!!,
+                            appliedMigration.type!!, resolvedMigration.type!!)
                 }
                 if (!ObjectUtils.nullSafeEquals(resolvedMigration.checksum, appliedMigration.checksum)) {
-                    return createMismatchMessage("Checksum", appliedMigration.version,
-                            appliedMigration.checksum, resolvedMigration.checksum!!)
+                    return createMismatchMessage("Checksum", appliedMigration.version!!,
+                            appliedMigration.checksum!!, resolvedMigration.checksum!!)
                 }
                 if (resolvedMigration.description != appliedMigration.description) {
-                    return createMismatchMessage("Description", appliedMigration.version,
-                            appliedMigration.description, resolvedMigration.description!!)
+                    return createMismatchMessage("Description", appliedMigration.version!!,
+                            appliedMigration.description!!, resolvedMigration.description!!)
                 }
             }
         }

@@ -81,7 +81,7 @@ class MigrationInfoContext {
     override fun equals(other: Any?): Boolean {
 
         /**
-         * @return {@code true} if this version instance is not the same as the given object.
+         * @return {@code true} if this context instance is not the same as the given object.
          */
         fun isNotSame(): Boolean {
             return other == null || javaClass != other.javaClass

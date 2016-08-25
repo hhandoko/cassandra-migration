@@ -18,19 +18,18 @@
  */
 package com.contrastsecurity.cassandra.migration.internal.resolver.cql
 
+import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 import com.contrastsecurity.cassandra.migration.api.MigrationType
-import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
 import com.contrastsecurity.cassandra.migration.info.ResolvedMigration
-import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation
 import com.contrastsecurity.cassandra.migration.internal.resolver.MigrationInfoHelper
 import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrationComparator
-import com.contrastsecurity.cassandra.migration.utils.Pair
+import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation
 import com.contrastsecurity.cassandra.migration.utils.scanner.Resource
 import com.contrastsecurity.cassandra.migration.utils.scanner.Scanner
-
-import java.util.ArrayList
-import java.util.Collections
+import java.io.BufferedReader
+import java.io.IOException
+import java.io.StringReader
 import java.util.zip.CRC32
 
 /**
@@ -91,7 +90,7 @@ class CqlMigrationResolver(
         migration.version = info.left
         migration.description = info.right
         migration.script = extractScriptName(resource)
-        migration.checksum = calculateChecksum(resource.loadAsBytes())
+        migration.checksum = calculateChecksum(resource, resource.loadAsString("UTF-8"))
         migration.type = MigrationType.CQL
         return migration
     }
@@ -130,9 +129,32 @@ class CqlMigrationResolver(
          * @param bytes The bytes to calculate the checksum for.
          * @return The crc-32 checksum of the bytes.
          */
+        @Deprecated("Replaced with `calculateChecksum(resource: Resource, str: String)` as per Flyway 4.x")
         private fun calculateChecksum(bytes: ByteArray): Int {
             val crc32 = CRC32()
             crc32.update(bytes)
+            return crc32.value.toInt()
+        }
+
+        /**
+         * Calculates the checksum of this string.
+         *
+         * @param resource The resource to process.
+         * @param str The string to calculate the checksum for.
+         * @return The crc-32 checksum of the bytes.
+         */
+        private fun calculateChecksum(resource: Resource, str: String): Int {
+            val crc32 = CRC32()
+
+            try {
+                BufferedReader(StringReader(str)).forEachLine { line ->
+                    crc32.update(line.toByteArray(charset("UTF-8")))
+                }
+            } catch (e: IOException) {
+                val message = "Unable to calculate checksum for ${resource.location} (${resource.locationOnDisk})"
+                throw CassandraMigrationException(message, e)
+            }
+
             return crc32.value.toInt()
         }
 

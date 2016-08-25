@@ -18,6 +18,7 @@ package com.contrastsecurity.cassandra.migration.resolver;
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;
 import com.contrastsecurity.cassandra.migration.api.MigrationType;
+import com.contrastsecurity.cassandra.migration.info.ResolvedMigrationImpl;
 import com.contrastsecurity.cassandra.migration.internal.resolver.CompositeMigrationResolver;
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocations;
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
@@ -116,7 +117,7 @@ public class CompositeMigrationResolverTest {
      * @return The new test migration.
      */
     private ResolvedMigration createTestMigration(final MigrationType aMigrationType, final String aVersion, final String aDescription, final String aScript, final Integer aChecksum) {
-        ResolvedMigration migration = new ResolvedMigration();
+        ResolvedMigration migration = new ResolvedMigrationImpl();
         migration.setVersion(MigrationVersion.Companion.fromVersion(aVersion));
         migration.setDescription(aDescription);
         migration.setScript(aScript);

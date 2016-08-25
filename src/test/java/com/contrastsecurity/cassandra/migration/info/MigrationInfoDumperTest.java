@@ -69,7 +69,7 @@ public class MigrationInfoDumperTest {
      * @return The available migration.
      */
     private ResolvedMigration createAvailableMigration(String version) {
-        ResolvedMigration migration = new ResolvedMigration();
+        ResolvedMigration migration = new ResolvedMigrationImpl();
         migration.setVersion(MigrationVersion.Companion.fromVersion(version));
         migration.setDescription("abc very very very very very very very very very very long");
         migration.setScript("x");

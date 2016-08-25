@@ -22,6 +22,7 @@ import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 import com.contrastsecurity.cassandra.migration.api.MigrationType
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
 import com.contrastsecurity.cassandra.migration.info.ResolvedMigration
+import com.contrastsecurity.cassandra.migration.info.ResolvedMigrationImpl
 import com.contrastsecurity.cassandra.migration.internal.resolver.MigrationInfoHelper
 import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrationComparator
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation
@@ -86,7 +87,7 @@ class CqlMigrationResolver(
             CQL_MIGRATION_SUFFIX
         )
 
-        val migration = ResolvedMigration()
+        val migration = ResolvedMigrationImpl()
         migration.version = info.left
         migration.description = info.right
         migration.script = extractScriptName(resource)

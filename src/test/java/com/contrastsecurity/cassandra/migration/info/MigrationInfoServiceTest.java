@@ -175,7 +175,7 @@ public class MigrationInfoServiceTest {
      * @return The available migration.
      */
     private ResolvedMigration createAvailableMigration(int version) {
-        ResolvedMigration migration = new ResolvedMigration();
+        ResolvedMigration migration = new ResolvedMigrationImpl();
         migration.setVersion(MigrationVersion.Companion.fromVersion(Integer.toString(version)));
         migration.setDescription("abc");
         migration.setScript("x");

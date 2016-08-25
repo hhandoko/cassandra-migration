@@ -23,90 +23,49 @@ import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationExecutor
 
 /**
- * A migration available on the classpath.
+ * Migration resolved through a MigrationResolver. Can be applied against a database.
  */
-class ResolvedMigration {
+interface ResolvedMigration {
 
     /**
      * The target version of this migration.
      */
-    var version: MigrationVersion? = null
+    var version: MigrationVersion? get
 
     /**
      * The description of the migration.
      */
-    var description: String? = null
+    var description: String?
+        get
 
     /**
      * The name of the script to execute for this migration, relative to its classpath location.
      */
-    var script: String? = null
+    var script: String?
+        get
 
     /**
      * The checksum of the migration.
      */
-    var checksum: Int? = null
+    var checksum: Int?
+        get
 
     /**
      * The type of migration (CQL, JAVA_DRIVER)
      */
-    var type: MigrationType? = null
+    var type: MigrationType?
+        get
 
     /**
      * The physical location of the migration on disk.
      */
-    var physicalLocation: String? = null
+    var physicalLocation: String?
+        get
 
     /**
      * The executor to run this migration.
      */
-    var executor: MigrationExecutor? = null
-
-    /**
-     * @return The computed migration instance hash value.
-     */
-    override fun hashCode(): Int {
-        var result = version?.hashCode() ?: 0
-        result = 31 * result + (description?.hashCode() ?: 0)
-        result = 31 * result + (script?.hashCode() ?: 0)
-        result = 31 * result + (checksum?.hashCode() ?: 0)
-        result = 31 * result + (type?.hashCode() ?: 0)
-        result = 31 * result + (physicalLocation?.hashCode() ?: 0)
-        return result
-    }
-
-    /**
-     * @return {@code true} if this migration instance is the same as the given object.
-     */
-    @SuppressWarnings("SimplifiableIfStatement")
-    override fun equals(other: Any?): Boolean {
-
-        /**
-         * @return {@code true} if this version instance is not the same as the given object.
-         */
-        fun isNotSame(): Boolean {
-            return other == null || javaClass != other.javaClass
-        }
-
-        if (this === other) return true
-        if (isNotSame()) return false
-
-        val migration = other as ResolvedMigration?
-
-        if (if (checksum != null) checksum != migration!!.checksum else migration!!.checksum != null) return false
-        if (if (description != null) description != migration.description else migration.description != null) return false
-        if (if (physicalLocation != null) physicalLocation != migration.physicalLocation else migration.physicalLocation != null) return false
-        if (if (script != null) script != migration.script else migration.script != null) return false
-        if (type !== migration.type) return false
-        return version == migration.version
-    }
-
-    /**
-     * @return {@code true} if this migration instance is comparable to the given object.
-     */
-    @SuppressWarnings("NullableProblems")
-    operator fun compareTo(other: ResolvedMigration): Int {
-        return version!!.compareTo(other.version)
-    }
+    var executor: MigrationExecutor?
+        get
 
 }

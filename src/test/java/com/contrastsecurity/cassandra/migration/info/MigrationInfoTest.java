@@ -29,7 +29,7 @@ public class MigrationInfoTest {
         String user = "testUser";
         MigrationType type = MigrationType.CQL;
 
-        ResolvedMigration resolvedMigration = new ResolvedMigration();
+        ResolvedMigration resolvedMigration = new ResolvedMigrationImpl();
         resolvedMigration.setVersion(version);
         resolvedMigration.setDescription(description);
         resolvedMigration.setType(type);

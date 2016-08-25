@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.resolver.java
+package com.contrastsecurity.cassandra.migration.internal.resolver.java
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 import com.contrastsecurity.cassandra.migration.api.MigrationType
@@ -55,7 +55,7 @@ class JavaMigrationResolver(
     @Throws(CassandraMigrationException::class)
     override fun resolveMigrations(): List<ResolvedMigration> {
         // Guard: If location  is not defined and not a classpath,
-        //        then return an empty JavaMigrations
+        //        then return an empty JavaMigration resolvers
         if (location != null && !location.isClassPath) {
             return ArrayList()
         }

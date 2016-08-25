@@ -65,13 +65,11 @@ class JavaMigrationResolver(
 
             return classes.map { clazz ->
                 val javaMigration = ClassUtils.instantiate<JavaMigration>(clazz.name, classLoader)
-                val physicalLocation = ClassUtils.getLocationOnDisk(clazz)
-                val executor = JavaMigrationExecutor(javaMigration)
 
-                val migrationInfo = extractMigrationInfo(javaMigration)
-                migrationInfo.physicalLocation = physicalLocation
-                migrationInfo.executor = executor
-                migrationInfo
+                val resolvedMigration = extractMigrationInfo(javaMigration)
+                resolvedMigration.physicalLocation = ClassUtils.getLocationOnDisk(clazz)
+                resolvedMigration.executor = JavaMigrationExecutor(javaMigration)
+                resolvedMigration
             }.sortedWith(ResolvedMigrationComparator())
         } catch (e: Exception) {
             throw CassandraMigrationException("Unable to resolve Java migrations in location: " + location, e)

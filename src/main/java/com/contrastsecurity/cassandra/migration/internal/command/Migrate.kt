@@ -183,7 +183,7 @@ class Migrate(
         stopWatch.start()
 
         var isMigrationSuccess = false
-        val migrationExecutor = migration.resolvedMigration.executor
+        val migrationExecutor = migration.resolvedMigration?.executor
         try {
             migrationExecutor!!.execute(session)
             isMigrationSuccess = true

@@ -99,14 +99,14 @@ class ResolvedMigrationImpl : ResolvedMigration {
         if (this === other) return true
         if (isNotSame()) return false
 
-        val migration = other as ResolvedMigrationImpl?
+        val that = other as ResolvedMigrationImpl?
 
-        if (if (checksum != null) checksum != migration!!.checksum else migration!!.checksum != null) return false
-        if (if (description != null) description != migration.description else migration.description != null) return false
-        if (if (physicalLocation != null) physicalLocation != migration.physicalLocation else migration.physicalLocation != null) return false
-        if (if (script != null) script != migration.script else migration.script != null) return false
-        if (type !== migration.type) return false
-        return version == migration.version
+        if (if (checksum != null) checksum != that!!.checksum else that!!.checksum != null) return false
+        if (if (description != null) description != that.description else that.description != null) return false
+        if (if (physicalLocation != null) physicalLocation != that.physicalLocation else that.physicalLocation != null) return false
+        if (if (script != null) script != that.script else that.script != null) return false
+        if (type !== that.type) return false
+        return version == that.version
     }
 
     /**

@@ -19,7 +19,7 @@
 package com.contrastsecurity.cassandra.migration.internal.resolver.cql
 
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationExecutor
-import com.contrastsecurity.cassandra.migration.script.CqlScript
+import com.contrastsecurity.cassandra.migration.internal.dbsupport.CqlScript
 import com.contrastsecurity.cassandra.migration.utils.scanner.Resource
 import com.datastax.driver.core.Session
 

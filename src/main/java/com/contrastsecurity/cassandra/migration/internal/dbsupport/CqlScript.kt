@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.script
+package com.contrastsecurity.cassandra.migration.internal.dbsupport
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory

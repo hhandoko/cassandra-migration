@@ -23,7 +23,7 @@ import com.contrastsecurity.cassandra.migration.api.MigrationState
 import com.contrastsecurity.cassandra.migration.api.MigrationType
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
-import com.contrastsecurity.cassandra.migration.info.AppliedMigration
+import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration
 import com.contrastsecurity.cassandra.migration.utils.ObjectUtils
 import java.util.*
 
@@ -35,9 +35,9 @@ import java.util.*
  * @param context The current context.
  */
 class MigrationInfoImpl(
-    val resolvedMigration: ResolvedMigration?,
-    val appliedMigration: AppliedMigration?,
-    private val context: MigrationInfoContext
+        val resolvedMigration: ResolvedMigration?,
+        val appliedMigration: AppliedMigration?,
+        private val context: MigrationInfoContext
 ) : MigrationInfo {
 
     /**

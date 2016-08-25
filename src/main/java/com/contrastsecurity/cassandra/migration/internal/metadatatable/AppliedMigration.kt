@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.info
+package com.contrastsecurity.cassandra.migration.internal.metadatatable
 
 import com.contrastsecurity.cassandra.migration.api.MigrationType
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
@@ -110,17 +110,17 @@ class AppliedMigration : Comparable<AppliedMigration> {
      * @param success Flag indicating whether the migration was successful or not.
      */
     constructor(
-        versionRank: Int,
-        installedRank: Int,
-        version: MigrationVersion,
-        description: String,
-        type: MigrationType,
-        script: String,
-        checksum: Int?,
-        installedOn: Date,
-        installedBy: String,
-        executionTime: Int,
-        success: Boolean
+            versionRank: Int,
+            installedRank: Int,
+            version: MigrationVersion,
+            description: String,
+            type: MigrationType,
+            script: String,
+            checksum: Int?,
+            installedOn: Date,
+            installedBy: String,
+            executionTime: Int,
+            success: Boolean
     ) {
         this.versionRank = versionRank
         this.installedRank = installedRank
@@ -148,14 +148,14 @@ class AppliedMigration : Comparable<AppliedMigration> {
      * @param success Flag indicating whether the migration was successful or not.
      */
     constructor(
-        version: MigrationVersion,
-        description: String,
-        type: MigrationType,
-        script: String?,
-        checksum: Int?,
-        installedBy: String,
-        executionTime: Int,
-        success: Boolean
+            version: MigrationVersion,
+            description: String,
+            type: MigrationType,
+            script: String?,
+            checksum: Int?,
+            installedBy: String,
+            executionTime: Int,
+            success: Boolean
     ) {
         this.version = version
         this.description = abbreviateDescription(description)

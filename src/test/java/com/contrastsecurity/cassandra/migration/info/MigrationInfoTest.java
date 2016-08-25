@@ -20,6 +20,7 @@ import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration;
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoContext;
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoImpl;
+import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration;
 import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrationImpl;
 import org.junit.Test;
 

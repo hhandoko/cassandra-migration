@@ -23,7 +23,7 @@ import com.contrastsecurity.cassandra.migration.api.MigrationState
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO
-import com.contrastsecurity.cassandra.migration.info.AppliedMigration
+import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration
 import com.contrastsecurity.cassandra.migration.api.MigrationInfo
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoImpl
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoService

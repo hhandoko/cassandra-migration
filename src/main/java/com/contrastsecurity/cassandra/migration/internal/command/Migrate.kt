@@ -185,7 +185,7 @@ class Migrate(
         var isMigrationSuccess = false
         val migrationExecutor = migration.resolvedMigration.executor
         try {
-            migrationExecutor.execute(session)
+            migrationExecutor!!.execute(session)
             isMigrationSuccess = true
             LOG.debug("$logMsg success!")
         } catch (e: Exception) {

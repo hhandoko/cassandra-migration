@@ -135,7 +135,7 @@ class CompositeMigrationResolver(
             for (i in 0..migrations.size - 1 - 1) {
                 val current = migrations[i]
                 val next = migrations[i + 1]
-                if (current.version.compareTo(next.version) == 0) {
+                if (current.version!!.compareTo(next.version) == 0) {
                     throw CassandraMigrationException(incompatibleErrorMsg(current, next))
                 }
             }

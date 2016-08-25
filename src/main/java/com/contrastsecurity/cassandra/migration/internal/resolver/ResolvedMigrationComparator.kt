@@ -31,10 +31,10 @@ class ResolvedMigrationComparator : Comparator<ResolvedMigration> {
         val isO2Defined = o2.version != null
 
         return when {
-            isO1Defined && isO2Defined -> o1.version.compareTo(o2.version)
+            isO1Defined && isO2Defined -> o1.version!!.compareTo(o2.version)
             isO1Defined                -> Int.MIN_VALUE
             isO2Defined                -> Int.MAX_VALUE
-            else                       -> o1.description.compareTo(o2.description)
+            else                       -> o1.description!!.compareTo(o2.description!!)
         }
     }
 }

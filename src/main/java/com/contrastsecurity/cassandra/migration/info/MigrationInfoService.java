@@ -87,15 +87,15 @@ public class MigrationInfoService {
     /* private -> testing */
     List<MigrationInfoImpl> mergeAvailableAndAppliedMigrations(Collection<ResolvedMigration> resolvedMigrations, List<AppliedMigration> appliedMigrations) {
         MigrationInfoContext context = new MigrationInfoContext();
-        context.outOfOrder = outOfOrder;
-        context.pendingOrFuture = pendingOrFuture;
-        context.target = target;
+        context.setOutOfOrder(outOfOrder);
+        context.setPendingOrFuture(pendingOrFuture);
+        context.setTarget(target);
 
         Map<MigrationVersion, ResolvedMigration> resolvedMigrationsMap = new TreeMap<MigrationVersion, ResolvedMigration>();
         for (ResolvedMigration resolvedMigration : resolvedMigrations) {
             MigrationVersion version = resolvedMigration.getVersion();
-            if (version.compareTo(context.lastResolved) > 0) {
-                context.lastResolved = version;
+            if (version.compareTo(context.getLastResolved()) > 0) {
+                context.setLastResolved(version);
             }
             resolvedMigrationsMap.put(version, resolvedMigration);
         }
@@ -103,14 +103,14 @@ public class MigrationInfoService {
         Map<MigrationVersion, AppliedMigration> appliedMigrationsMap = new TreeMap<MigrationVersion, AppliedMigration>();
         for (AppliedMigration appliedMigration : appliedMigrations) {
             MigrationVersion version = appliedMigration.getVersion();
-            if (version.compareTo(context.lastApplied) > 0) {
-                context.lastApplied = version;
+            if (version.compareTo(context.getLastApplied()) > 0) {
+                context.setLastApplied(version);
             }
             if (appliedMigration.getType() == MigrationType.SCHEMA) {
-                context.schema = version;
+                context.setSchema(version);
             }
             if (appliedMigration.getType() == MigrationType.BASELINE) {
-                context.baseline = version;
+                context.setBaseline(version);
             }
             appliedMigrationsMap.put(version, appliedMigration);
         }

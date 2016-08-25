@@ -15,6 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.info;
 
+import com.contrastsecurity.cassandra.migration.api.MigrationInfo;
 import com.contrastsecurity.cassandra.migration.api.MigrationType;
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration;

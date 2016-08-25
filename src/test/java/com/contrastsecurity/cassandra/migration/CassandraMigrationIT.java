@@ -2,7 +2,7 @@ package com.contrastsecurity.cassandra.migration;
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.api.MigrationType;
-import com.contrastsecurity.cassandra.migration.info.MigrationInfo;
+import com.contrastsecurity.cassandra.migration.api.MigrationInfo;
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoDumper;
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoService;
 import com.datastax.driver.core.ResultSet;

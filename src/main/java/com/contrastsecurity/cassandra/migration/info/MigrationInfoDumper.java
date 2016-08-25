@@ -15,6 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.info;
 
+import com.contrastsecurity.cassandra.migration.api.MigrationInfo;
 import com.contrastsecurity.cassandra.migration.utils.DateUtils;
 import com.contrastsecurity.cassandra.migration.utils.StringUtils;
 

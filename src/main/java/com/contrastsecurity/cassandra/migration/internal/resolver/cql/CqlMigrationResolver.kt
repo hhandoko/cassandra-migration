@@ -21,8 +21,8 @@ package com.contrastsecurity.cassandra.migration.internal.resolver.cql
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 import com.contrastsecurity.cassandra.migration.api.MigrationType
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
-import com.contrastsecurity.cassandra.migration.info.ResolvedMigration
-import com.contrastsecurity.cassandra.migration.info.ResolvedMigrationImpl
+import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
+import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrationImpl
 import com.contrastsecurity.cassandra.migration.internal.resolver.MigrationInfoHelper
 import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrationComparator
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation

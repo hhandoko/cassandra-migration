@@ -18,7 +18,7 @@
  */
 package com.contrastsecurity.cassandra.migration.internal.resolver
 
-import com.contrastsecurity.cassandra.migration.info.ResolvedMigration
+import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
 
 import java.util.Comparator
 

@@ -17,6 +17,8 @@ package com.contrastsecurity.cassandra.migration.info;
 
 import com.contrastsecurity.cassandra.migration.api.MigrationType;
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
+import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration;
+import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrationImpl;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;

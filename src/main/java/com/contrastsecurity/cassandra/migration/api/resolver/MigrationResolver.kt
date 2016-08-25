@@ -18,7 +18,7 @@
  */
 package com.contrastsecurity.cassandra.migration.api.resolver
 
-import com.contrastsecurity.cassandra.migration.info.ResolvedMigration
+import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
 
 /**
  * Resolves available migrations. This interface can be implemented to create custom resolvers. A custom resolver

@@ -20,7 +20,7 @@ package com.contrastsecurity.cassandra.migration.internal.resolver
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
-import com.contrastsecurity.cassandra.migration.info.ResolvedMigration
+import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
 import com.contrastsecurity.cassandra.migration.internal.resolver.java.JavaMigrationResolver
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocations
 import com.contrastsecurity.cassandra.migration.internal.resolver.cql.CqlMigrationResolver

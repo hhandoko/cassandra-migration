@@ -39,7 +39,7 @@ import static org.mockito.Mockito.when;
 public class MigrationInfoDumperTest {
     @Test
     public void dumpEmpty() {
-        String table = MigrationInfoDumper.dumpToAsciiTable(new MigrationInfo[0]);
+        String table = MigrationInfoDumper.INSTANCE.dumpToAsciiTable(new MigrationInfo[0]);
         String[] lines = StringUtils.tokenizeToStringArray(table, "\n");
 
         assertEquals(5, lines.length);
@@ -56,7 +56,7 @@ public class MigrationInfoDumperTest {
                         createSchemaVersionDAO(), MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
 
-        String table = MigrationInfoDumper.dumpToAsciiTable(migrationInfoService.all());
+        String table = MigrationInfoDumper.INSTANCE.dumpToAsciiTable(migrationInfoService.all());
         String[] lines = StringUtils.tokenizeToStringArray(table, "\n");
 
         assertEquals(6, lines.length);

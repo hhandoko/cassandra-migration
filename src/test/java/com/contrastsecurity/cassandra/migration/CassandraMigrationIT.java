@@ -32,7 +32,7 @@ public class CassandraMigrationIT extends BaseIT {
 
 		MigrationInfoService infoService = cm.info();
 		System.out.println("Initial migration");
-		System.out.println(MigrationInfoDumper.dumpToAsciiTable(infoService.all()));
+		System.out.println(MigrationInfoDumper.INSTANCE.dumpToAsciiTable(infoService.all()));
 		assertThat(infoService.all().length, is(4));
 		for (MigrationInfo info : infoService.all()) {
 			assertThat(info.getVersion().getVersion(), anyOf(is("1.0.0"), is("2.0.0"), is("3.0"), is("3.0.1")));
@@ -88,7 +88,7 @@ public class CassandraMigrationIT extends BaseIT {
 
 		infoService = cm.info();
 		System.out.println("Out of order migration with out-of-order ignored");
-		System.out.println(MigrationInfoDumper.dumpToAsciiTable(infoService.all()));
+		System.out.println(MigrationInfoDumper.INSTANCE.dumpToAsciiTable(infoService.all()));
 		assertThat(infoService.all().length, is(5));
 		for (MigrationInfo info : infoService.all()) {
 			assertThat(info.getVersion().getVersion(),
@@ -112,7 +112,7 @@ public class CassandraMigrationIT extends BaseIT {
 
 		infoService = cm.info();
 		System.out.println("Out of order migration with out-of-order allowed");
-		System.out.println(MigrationInfoDumper.dumpToAsciiTable(infoService.all()));
+		System.out.println(MigrationInfoDumper.INSTANCE.dumpToAsciiTable(infoService.all()));
 		assertThat(infoService.all().length, is(6));
 		for (MigrationInfo info : infoService.all()) {
 			assertThat(info.getVersion().getVersion(),
@@ -136,7 +136,7 @@ public class CassandraMigrationIT extends BaseIT {
 
 		infoService = cm.info();
 		System.out.println("Out of order migration with out-of-order allowed");
-		System.out.println(MigrationInfoDumper.dumpToAsciiTable(infoService.all()));
+		System.out.println(MigrationInfoDumper.INSTANCE.dumpToAsciiTable(infoService.all()));
 		assertThat(infoService.all().length, is(7));
 		for (MigrationInfo info : infoService.all()) {
 			assertThat(info.getVersion().getVersion(),

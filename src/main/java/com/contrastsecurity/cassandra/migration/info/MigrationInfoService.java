@@ -51,7 +51,7 @@ public class MigrationInfoService {
     /**
      * The migrations infos calculated at the last refresh.
      */
-    private List<MigrationInfo> migrationInfos;
+    private List<MigrationInfoImpl> migrationInfos;
 
     public MigrationInfoService(MigrationResolver migrationResolver, SchemaVersionDAO schemaVersionDAO, MigrationVersion target, boolean outOfOrder, boolean pendingOrFuture) {
         this.migrationResolver = migrationResolver;
@@ -83,7 +83,7 @@ public class MigrationInfoService {
      * @return The complete list of migrations.
      */
     /* private -> testing */
-    List<MigrationInfo> mergeAvailableAndAppliedMigrations(Collection<ResolvedMigration> resolvedMigrations, List<AppliedMigration> appliedMigrations) {
+    List<MigrationInfoImpl> mergeAvailableAndAppliedMigrations(Collection<ResolvedMigration> resolvedMigrations, List<AppliedMigration> appliedMigrations) {
         MigrationInfoContext context = new MigrationInfoContext();
         context.outOfOrder = outOfOrder;
         context.pendingOrFuture = pendingOrFuture;
@@ -117,11 +117,11 @@ public class MigrationInfoService {
         allVersions.addAll(resolvedMigrationsMap.keySet());
         allVersions.addAll(appliedMigrationsMap.keySet());
 
-        List<MigrationInfo> migrationInfos = new ArrayList<>();
+        List<MigrationInfoImpl> migrationInfos = new ArrayList<>();
         for (MigrationVersion version : allVersions) {
             ResolvedMigration resolvedMigration = resolvedMigrationsMap.get(version);
             AppliedMigration appliedMigration = appliedMigrationsMap.get(version);
-            migrationInfos.add(new MigrationInfo(resolvedMigration, appliedMigration, context));
+            migrationInfos.add(new MigrationInfoImpl(resolvedMigration, appliedMigration, context));
         }
 
         Collections.sort(migrationInfos);
@@ -237,7 +237,7 @@ public class MigrationInfoService {
      * @return The error message, or {@code null} if everything is fine.
      */
     public String validate() {
-        for (MigrationInfo migrationInfo : migrationInfos) {
+        for (MigrationInfoImpl migrationInfo : migrationInfos) {
             String message = migrationInfo.validate();
             if (message != null) {
                 return message;

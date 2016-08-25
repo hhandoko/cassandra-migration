@@ -25,6 +25,7 @@ import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO
 import com.contrastsecurity.cassandra.migration.info.AppliedMigration
 import com.contrastsecurity.cassandra.migration.info.MigrationInfo
+import com.contrastsecurity.cassandra.migration.info.MigrationInfoImpl
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoService
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory
 import com.contrastsecurity.cassandra.migration.utils.StopWatch
@@ -123,7 +124,7 @@ class Migrate(
             // ~~~~~
             // Early return if there are no pending migrations, otherwise
             // apply pending migrations and exit when error is thrown
-            val pendingMigrations = infoService.pending()
+            val pendingMigrations = infoService.pending() as Array<MigrationInfoImpl>
             if (pendingMigrations.size == 0) {
                 break
             }
@@ -148,7 +149,7 @@ class Migrate(
      * @throws CassandraMigrationException when migration cannot be applied.
      */
     @Throws(CassandraMigrationException::class)
-    private fun applyMigration(migration: MigrationInfo, isOutOfOrder: Boolean): MigrationVersion? {
+    private fun applyMigration(migration: MigrationInfoImpl, isOutOfOrder: Boolean): MigrationVersion? {
 
         /**
          * Add applied migration into the Cassandra migration versioning table.

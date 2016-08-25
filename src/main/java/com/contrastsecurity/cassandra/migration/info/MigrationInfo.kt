@@ -21,238 +21,73 @@ package com.contrastsecurity.cassandra.migration.info
 import com.contrastsecurity.cassandra.migration.api.MigrationState
 import com.contrastsecurity.cassandra.migration.api.MigrationType
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
-import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
-import com.contrastsecurity.cassandra.migration.utils.ObjectUtils
-
-import java.util.Date
+import java.util.*
 
 /**
  * Info about a migration.
- *
- * @param resolvedMigration The resolved migration to aggregate the info from.
- * @param appliedMigration The applied migration to aggregate the info from.
- * @param context The current context.
  */
-class MigrationInfo(
-    val resolvedMigration: ResolvedMigration?,
-    val appliedMigration: AppliedMigration?,
-    private val context: MigrationInfoContext
-) : Comparable<MigrationInfo> {
+// TODO: Implement additional properties from Flyway 4.x
+interface MigrationInfo : Comparable<MigrationInfo> {
 
     /**
      * The type of migration (CQL, Java, ...)
      */
     val type: MigrationType
-        get() {
-            if (appliedMigration != null) {
-                return appliedMigration.type
-            }
-            return resolvedMigration?.type!!
-        }
+        get
 
     /**
      * The target version of this migration.
      */
     val checksum: Int?
-        get() {
-            if (appliedMigration != null) {
-                return appliedMigration.checksum
-            }
-            return resolvedMigration!!.checksum
-        }
+        get
 
     /**
      * The schema version after the migration is complete.
      */
     val version: MigrationVersion
-        get() {
-            if (appliedMigration != null) {
-                return appliedMigration.version
-            }
-            return resolvedMigration!!.version!!
-        }
+        get
 
     /**
      * The description of the migration.
      */
     val description: String
-        get() {
-            if (appliedMigration != null) {
-                return appliedMigration.description
-            }
-            return resolvedMigration!!.description!!
-        }
+        get
 
     /**
      * The name of the script to execute for this migration, relative to its classpath or filesystem location.
      */
     val script: String
-        get() {
-            if (appliedMigration != null) {
-                return appliedMigration.script
-            }
-            return resolvedMigration!!.script!!
-        }
+        get
 
     /**
      * The state of the migration (PENDING, SUCCESS, ...)
      */
     val state: MigrationState
-        get() {
-            if (appliedMigration == null) {
-                if (resolvedMigration!!.version!!.compareTo(context.baseline) < 0) {
-                    return MigrationState.BELOW_BASELINE
-                }
-                if (resolvedMigration.version!!.compareTo(context.target) > 0) {
-                    return MigrationState.ABOVE_TARGET
-                }
-                if (resolvedMigration.version!!.compareTo(context.lastApplied) < 0 && !context.outOfOrder) {
-                    return MigrationState.IGNORED
-                }
-                return MigrationState.PENDING
-            }
-
-            if (resolvedMigration == null) {
-                if (MigrationType.SCHEMA === appliedMigration.type) {
-                    return MigrationState.SUCCESS
-                }
-                if (MigrationType.BASELINE === appliedMigration.type) {
-                    return MigrationState.BASELINE
-                }
-                if (version.compareTo(context.lastResolved) < 0) {
-                    if (appliedMigration.isSuccess) {
-                        return MigrationState.MISSING_SUCCESS
-                    }
-                    return MigrationState.MISSING_FAILED
-                }
-                if (version.compareTo(context.lastResolved) > 0) {
-                    if (appliedMigration.isSuccess) {
-                        return MigrationState.FUTURE_SUCCESS
-                    }
-                    return MigrationState.FUTURE_FAILED
-                }
-            }
-
-            if (appliedMigration.isSuccess) {
-                if (appliedMigration.versionRank == appliedMigration.installedRank) {
-                    return MigrationState.SUCCESS
-                }
-                return MigrationState.OUT_OF_ORDER
-            }
-            return MigrationState.FAILED
-        }
+        get
 
     /**
      * The timestamp when this migration was installed. (Only for applied migrations)
      */
     val installedOn: Date?
-        get() {
-            if (appliedMigration != null) {
-                return appliedMigration.installedOn
-            }
-            return null
-        }
+        get
+
+//    /**
+//     * The user that installed this migration. (Only for applied migrations)
+//     */
+//    val installedBy: String?
+//        get
+//
+//    /**
+//     * The rank of this installed migration. This is the most precise way to sort applied migrations by installation order.
+//     * Migrations that were applied later have a higher rank. (Only for applied migrations)
+//     */
+//    val installedRank: Int?
+//        get
 
     /**
      * The execution time (in millis) of this migration. (Only for applied migrations)
      */
     val executionTime: Int?
-        get() {
-            if (appliedMigration != null) {
-                return appliedMigration.executionTime
-            }
-            return null
-        }
-
-    /**
-     * Validates this migrationInfo for consistency.
-     *
-     * @return The error message, or {@code null} if everything is fine.
-     */
-    fun validate(): String? {
-        if (!context.pendingOrFuture
-            && resolvedMigration == null
-            && appliedMigration!!.type !== MigrationType.SCHEMA
-            && appliedMigration!!.type !== MigrationType.BASELINE) {
-            return "Detected applied migration not resolved locally: " + version
-        }
-
-        if (!context.pendingOrFuture && MigrationState.PENDING === state || MigrationState.IGNORED === state) {
-            return "Detected resolved migration not applied to database: " + version
-        }
-
-        if (resolvedMigration != null && appliedMigration != null) {
-            if (version.compareTo(context.baseline) > 0) {
-                if (resolvedMigration.type !== appliedMigration.type) {
-                    return createMismatchMessage("Type", appliedMigration.version,
-                            appliedMigration.type, resolvedMigration.type!!)
-                }
-                if (!ObjectUtils.nullSafeEquals(resolvedMigration.checksum, appliedMigration.checksum)) {
-                    return createMismatchMessage("Checksum", appliedMigration.version,
-                            appliedMigration.checksum, resolvedMigration.checksum!!)
-                }
-                if (resolvedMigration.description != appliedMigration.description) {
-                    return createMismatchMessage("Description", appliedMigration.version,
-                            appliedMigration.description, resolvedMigration.description!!)
-                }
-            }
-        }
-        return null
-    }
-
-    /**
-     * Creates a message for a mismatch.
-     *
-     * @param mismatch The type of mismatch.
-     * @param version The offending version.
-     * @param applied The applied value.
-     * @param resolved The resolved value.
-     * @return The message.
-     */
-    private fun createMismatchMessage(mismatch: String, version: MigrationVersion, applied: Any, resolved: Any): String {
-        val message = "Migration $mismatch mismatch for migration $version\n-> Applied to database : $applied\n-> Resolved locally    : $resolved"
-        return String.format(message)
-    }
-
-    /**
-     * @return The computed info instance hash value.
-     */
-    override fun hashCode(): Int {
-        var result = resolvedMigration?.hashCode() ?: 0
-        result = 31 * result + (appliedMigration?.hashCode() ?: 0)
-        result = 31 * result + context.hashCode()
-        return result
-    }
-
-    /**
-     * @return {@code true} if this info instance is the same as the given object.
-     */
-    @SuppressWarnings("SimplifiableIfStatement")
-    override fun equals(other: Any?): Boolean {
-
-        /**
-         * @return {@code true} if this version instance is not the same as the given object.
-         */
-        fun isNotSame(): Boolean {
-            return other == null || javaClass != other.javaClass
-        }
-
-        if (this === other) return true
-        if (isNotSame()) return false
-
-        val that = other as MigrationInfo?
-
-        if (if (appliedMigration != null) appliedMigration != that!!.appliedMigration else that!!.appliedMigration != null) return false
-        if (context != that.context) return false
-        return !if (resolvedMigration != null) resolvedMigration != that.resolvedMigration else that.resolvedMigration != null
-    }
-
-    /**
-     * @return {@code true} if this info instance is comparable to the given object.
-     */
-    @SuppressWarnings("NullableProblems")
-    override fun compareTo(other: MigrationInfo): Int {
-        return version.compareTo(other.version)
-    }
+        get
 
 }

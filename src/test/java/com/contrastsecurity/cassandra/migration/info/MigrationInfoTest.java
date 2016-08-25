@@ -39,8 +39,8 @@ public class MigrationInfoTest {
 
         AppliedMigration appliedMigration = new AppliedMigration(version, description, type, null, 123, user, 0, true);
 
-        MigrationInfo migrationInfo =
-                new MigrationInfo(resolvedMigration, appliedMigration, new MigrationInfoContext());
+        MigrationInfoImpl migrationInfo =
+                new MigrationInfoImpl(resolvedMigration, appliedMigration, new MigrationInfoContext());
         String message = migrationInfo.validate();
 
         assertTrue(message.contains("123"));

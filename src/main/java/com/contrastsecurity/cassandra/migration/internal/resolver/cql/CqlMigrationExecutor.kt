@@ -20,7 +20,7 @@ package com.contrastsecurity.cassandra.migration.internal.resolver.cql
 
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationExecutor
 import com.contrastsecurity.cassandra.migration.internal.dbsupport.CqlScript
-import com.contrastsecurity.cassandra.migration.utils.scanner.Resource
+import com.contrastsecurity.cassandra.migration.internal.util.scanner.Resource
 import com.datastax.driver.core.Session
 
 /**
@@ -32,8 +32,8 @@ import com.datastax.driver.core.Session
  * @param encoding The encoding of this CQL migration.
 */
 class CqlMigrationExecutor(
-    private val cqlScriptResource: Resource,
-    private val encoding: String
+        private val cqlScriptResource: Resource,
+        private val encoding: String
 ) : MigrationExecutor {
 
     /**

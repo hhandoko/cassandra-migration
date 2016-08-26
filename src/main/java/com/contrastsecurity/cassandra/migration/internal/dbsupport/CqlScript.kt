@@ -21,7 +21,7 @@ package com.contrastsecurity.cassandra.migration.internal.dbsupport
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory
 import com.contrastsecurity.cassandra.migration.utils.StringUtils
-import com.contrastsecurity.cassandra.migration.utils.scanner.Resource
+import com.contrastsecurity.cassandra.migration.internal.util.scanner.Resource
 import com.datastax.driver.core.Session
 import java.io.BufferedReader
 import java.io.IOException

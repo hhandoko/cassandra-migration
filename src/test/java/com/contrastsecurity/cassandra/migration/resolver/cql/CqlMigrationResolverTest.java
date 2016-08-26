@@ -4,8 +4,8 @@ import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration;
 import com.contrastsecurity.cassandra.migration.internal.resolver.cql.CqlMigrationResolver;
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation;
-import com.contrastsecurity.cassandra.migration.utils.scanner.classpath.ClassPathResource;
-import com.contrastsecurity.cassandra.migration.utils.scanner.filesystem.FileSystemResource;
+import com.contrastsecurity.cassandra.migration.internal.util.scanner.classpath.ClassPathResource;
+import com.contrastsecurity.cassandra.migration.internal.util.scanner.filesystem.FileSystemResource;
 import org.junit.Test;
 
 import java.util.ArrayList;

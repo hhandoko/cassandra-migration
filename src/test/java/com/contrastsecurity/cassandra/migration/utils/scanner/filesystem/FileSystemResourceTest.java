@@ -15,6 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.utils.scanner.filesystem;
 
+import com.contrastsecurity.cassandra.migration.internal.util.scanner.filesystem.FileSystemResource;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

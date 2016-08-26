@@ -32,7 +32,7 @@ import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrat
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation
 import com.contrastsecurity.cassandra.migration.utils.ClassUtils
 import com.contrastsecurity.cassandra.migration.utils.StringUtils
-import com.contrastsecurity.cassandra.migration.utils.scanner.Scanner
+import com.contrastsecurity.cassandra.migration.internal.util.scanner.Scanner
 import java.util.*
 
 /**

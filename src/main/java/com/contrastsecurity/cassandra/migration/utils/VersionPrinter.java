@@ -17,7 +17,7 @@ package com.contrastsecurity.cassandra.migration.utils;
 
 import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory;
-import com.contrastsecurity.cassandra.migration.utils.scanner.classpath.ClassPathResource;
+import com.contrastsecurity.cassandra.migration.internal.util.scanner.classpath.ClassPathResource;
 
 /**
  * Prints the Cassandra Migration version.

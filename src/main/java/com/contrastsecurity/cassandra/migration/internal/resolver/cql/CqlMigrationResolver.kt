@@ -26,8 +26,8 @@ import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrat
 import com.contrastsecurity.cassandra.migration.internal.resolver.MigrationInfoHelper
 import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrationComparator
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation
-import com.contrastsecurity.cassandra.migration.utils.scanner.Resource
-import com.contrastsecurity.cassandra.migration.utils.scanner.Scanner
+import com.contrastsecurity.cassandra.migration.internal.util.scanner.Resource
+import com.contrastsecurity.cassandra.migration.internal.util.scanner.Scanner
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.StringReader

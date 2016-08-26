@@ -49,7 +49,7 @@ class Validate(
      *
      * @return The validation error, if any.
      */
-    fun run(): String {
+    fun run(): String? {
         val stopWatch = StopWatch()
         stopWatch.start()
 

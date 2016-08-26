@@ -74,7 +74,7 @@ class Migrate(
             val firstRun = migrationSuccessCount == 0
             var currentSchemaVersion = MigrationVersion.EMPTY
             if (infoService.current() != null) {
-                currentSchemaVersion = infoService.current().version
+                currentSchemaVersion = infoService.current()!!.version
             }
 
             // First run only

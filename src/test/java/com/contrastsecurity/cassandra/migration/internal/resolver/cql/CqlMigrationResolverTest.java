@@ -1,8 +1,24 @@
-package com.contrastsecurity.cassandra.migration.resolver.cql;
+/**
+ * File     : CqlMigrationResolverTest.java
+ * License  :
+ *   Copyright (c) 2015 - 2016 Contrast Security
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *           http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
+package com.contrastsecurity.cassandra.migration.internal.resolver.cql;
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration;
-import com.contrastsecurity.cassandra.migration.internal.resolver.cql.CqlMigrationResolver;
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation;
 import com.contrastsecurity.cassandra.migration.internal.util.scanner.classpath.ClassPathResource;
 import com.contrastsecurity.cassandra.migration.internal.util.scanner.filesystem.FileSystemResource;

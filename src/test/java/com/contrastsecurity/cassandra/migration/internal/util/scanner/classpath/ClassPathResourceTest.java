@@ -32,12 +32,12 @@ public class ClassPathResourceTest {
     @Test
     public void loadAsStringUtf8WithoutBOM() {
         assertEquals("SELECT * FROM contents;",
-                new ClassPathResource("com/contrastsecurity/cassandra/migration/utils/scanner/classpath/utf8.nofilter", Thread.currentThread().getContextClassLoader()).loadAsString("UTF-8"));
+                new ClassPathResource("com/contrastsecurity/cassandra/migration/internal/util/scanner/classpath/utf8.nofilter", Thread.currentThread().getContextClassLoader()).loadAsString("UTF-8"));
     }
 
     @Test
     public void loadAsStringUtf8WithBOM() {
         assertEquals("SELECT * FROM contents;",
-                new ClassPathResource("com/contrastsecurity/cassandra/migration/utils/scanner/classpath/utf8bom.nofilter", Thread.currentThread().getContextClassLoader()).loadAsString("UTF-8"));
+                new ClassPathResource("com/contrastsecurity/cassandra/migration/internal/util/scanner/classpath/utf8bom.nofilter", Thread.currentThread().getContextClassLoader()).loadAsString("UTF-8"));
     }
 }

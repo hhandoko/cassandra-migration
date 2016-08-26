@@ -16,10 +16,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.config
+package com.contrastsecurity.cassandra.migration.api.configuration
 
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.utils.StringUtils
+import java.lang.Boolean
 
 /**
  * Main Cassandra migration configuration.
@@ -78,7 +79,7 @@ class MigrationConfigs {
      * @param allowOutOfOrder Allow out of order as String.
      */
     fun setIsAllowOutOfOrderFromString(allowOutOfOrder: String) {
-        this.isAllowOutOfOrder = java.lang.Boolean.parseBoolean(allowOutOfOrder)
+        this.isAllowOutOfOrder = Boolean.parseBoolean(allowOutOfOrder)
     }
 
     /**

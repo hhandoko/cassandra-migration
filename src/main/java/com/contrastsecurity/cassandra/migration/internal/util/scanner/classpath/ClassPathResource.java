@@ -17,7 +17,7 @@ package com.contrastsecurity.cassandra.migration.internal.util.scanner.classpath
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.internal.util.scanner.Resource;
-import com.contrastsecurity.cassandra.migration.utils.FileCopyUtils;
+import com.contrastsecurity.cassandra.migration.internal.util.FileCopyUtils;
 
 import java.io.*;
 import java.net.URL;

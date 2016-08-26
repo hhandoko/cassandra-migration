@@ -19,9 +19,9 @@ import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory;
 import com.contrastsecurity.cassandra.migration.internal.util.scanner.Resource;
-import com.contrastsecurity.cassandra.migration.utils.ClassUtils;
-import com.contrastsecurity.cassandra.migration.utils.FeatureDetector;
-import com.contrastsecurity.cassandra.migration.utils.UrlUtils;
+import com.contrastsecurity.cassandra.migration.internal.util.ClassUtils;
+import com.contrastsecurity.cassandra.migration.internal.util.FeatureDetector;
+import com.contrastsecurity.cassandra.migration.internal.util.UrlUtils;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;

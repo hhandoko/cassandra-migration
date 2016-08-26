@@ -19,7 +19,7 @@
 package com.contrastsecurity.cassandra.migration.api.configuration
 
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
-import com.contrastsecurity.cassandra.migration.utils.StringUtils
+import com.contrastsecurity.cassandra.migration.internal.util.StringUtils
 import java.lang.Boolean
 
 /**

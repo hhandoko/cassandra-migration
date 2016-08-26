@@ -13,21 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.utils;
+package com.contrastsecurity.cassandra.migration.internal.util;
 
-import org.junit.Test;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-
-public class FeatureDetectorTest {
-    @Test
-    public void shouldDetectSlf4j() {
-        assertThat(new FeatureDetector(Thread.currentThread().getContextClassLoader()).isSlf4jAvailable(), is(true));
+/**
+ * Formats execution times.
+ */
+public class TimeFormat {
+    /**
+     * Prevent instantiation.
+     */
+    private TimeFormat() {
+        // Do nothing
     }
 
-    @Test
-    public void shouldDetectCommonsLogging() {
-        assertThat(new FeatureDetector(Thread.currentThread().getContextClassLoader()).isApacheCommonsLoggingAvailable(), is(true));
+    /**
+     * Formats this execution time.
+     *
+     * @param millis The number of millis.
+     * @return The execution in a human-readable format.
+     */
+    public static String format(long millis) {
+        return String.format("%02d:%02d.%03ds", millis / 60000, (millis % 60000) / 1000, (millis % 1000));
     }
 }

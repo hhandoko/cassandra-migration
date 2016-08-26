@@ -19,8 +19,8 @@
 package com.contrastsecurity.cassandra.migration.internal.info
 
 import com.contrastsecurity.cassandra.migration.api.MigrationInfo
-import com.contrastsecurity.cassandra.migration.utils.DateUtils
-import com.contrastsecurity.cassandra.migration.utils.StringUtils
+import com.contrastsecurity.cassandra.migration.internal.util.DateUtils
+import com.contrastsecurity.cassandra.migration.internal.util.StringUtils
 
 /**
  * Dumps migrations in an ASCII-art table in the logs and the console.

@@ -1,4 +1,4 @@
-package com.contrastsecurity.cassandra.migration.utils;
+package com.contrastsecurity.cassandra.migration.internal.util;
 
 import java.util.concurrent.ConcurrentHashMap;
 

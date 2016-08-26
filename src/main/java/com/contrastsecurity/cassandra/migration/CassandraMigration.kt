@@ -33,7 +33,7 @@ import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoServi
 import com.contrastsecurity.cassandra.migration.internal.resolver.CompositeMigrationResolver
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocations
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory
-import com.contrastsecurity.cassandra.migration.utils.VersionPrinter
+import com.contrastsecurity.cassandra.migration.internal.util.VersionPrinter
 import com.datastax.driver.core.Metadata
 import com.datastax.driver.core.Session
 import sun.reflect.generics.reflectiveObjects.NotImplementedException

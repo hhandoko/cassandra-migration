@@ -18,7 +18,7 @@
  */
 package com.contrastsecurity.cassandra.migration.internal.dbsupport
 
-import com.contrastsecurity.cassandra.migration.utils.StringUtils
+import com.contrastsecurity.cassandra.migration.internal.util.StringUtils
 
 import java.util.ArrayList
 

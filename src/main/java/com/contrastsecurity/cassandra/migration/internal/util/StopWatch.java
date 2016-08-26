@@ -13,19 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.utils;
+package com.contrastsecurity.cassandra.migration.internal.util;
 
-import org.junit.Test;
+public class StopWatch {
 
-import java.io.File;
-import java.net.MalformedURLException;
+    private long start;
+    private long stop;
 
-import static org.junit.Assert.assertEquals;
+    public void start() {
+        start = System.currentTimeMillis();
+    }
 
-public class UrlUtilsTest {
-    @Test
-    public void toFilePath() throws MalformedURLException {
-        File file = new File("/test dir/a+b");
-        assertEquals(file.getAbsolutePath(), UrlUtils.toFilePath(file.toURI().toURL()));
+    public void stop() {
+        stop = System.currentTimeMillis();
+    }
+
+    public long getTotalTimeMillis() {
+        return stop - start;
     }
 }

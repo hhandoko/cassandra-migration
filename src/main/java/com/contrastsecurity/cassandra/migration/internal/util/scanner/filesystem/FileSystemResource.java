@@ -17,8 +17,8 @@ package com.contrastsecurity.cassandra.migration.internal.util.scanner.filesyste
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.internal.util.scanner.Resource;
-import com.contrastsecurity.cassandra.migration.utils.FileCopyUtils;
-import com.contrastsecurity.cassandra.migration.utils.StringUtils;
+import com.contrastsecurity.cassandra.migration.internal.util.FileCopyUtils;
+import com.contrastsecurity.cassandra.migration.internal.util.StringUtils;
 
 import java.io.*;
 import java.nio.charset.Charset;

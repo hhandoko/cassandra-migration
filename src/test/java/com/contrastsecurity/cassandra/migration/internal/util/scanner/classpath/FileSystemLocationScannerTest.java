@@ -15,7 +15,7 @@
  */
 package com.contrastsecurity.cassandra.migration.internal.util.scanner.classpath;
 
-import com.contrastsecurity.cassandra.migration.utils.UrlUtils;
+import com.contrastsecurity.cassandra.migration.internal.util.UrlUtils;
 import org.junit.Test;
 
 import java.io.File;

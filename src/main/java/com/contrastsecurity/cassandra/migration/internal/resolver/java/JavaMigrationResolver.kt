@@ -30,8 +30,8 @@ import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrat
 import com.contrastsecurity.cassandra.migration.internal.resolver.MigrationInfoHelper
 import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrationComparator
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocation
-import com.contrastsecurity.cassandra.migration.utils.ClassUtils
-import com.contrastsecurity.cassandra.migration.utils.StringUtils
+import com.contrastsecurity.cassandra.migration.internal.util.ClassUtils
+import com.contrastsecurity.cassandra.migration.internal.util.StringUtils
 import com.contrastsecurity.cassandra.migration.internal.util.scanner.Scanner
 import java.util.*
 

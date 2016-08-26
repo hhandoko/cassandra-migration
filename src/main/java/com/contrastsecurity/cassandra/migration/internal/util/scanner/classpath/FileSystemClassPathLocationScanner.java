@@ -17,7 +17,7 @@ package com.contrastsecurity.cassandra.migration.internal.util.scanner.classpath
 
 import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory;
-import com.contrastsecurity.cassandra.migration.utils.UrlUtils;
+import com.contrastsecurity.cassandra.migration.internal.util.UrlUtils;
 
 import java.io.File;
 import java.io.IOException;

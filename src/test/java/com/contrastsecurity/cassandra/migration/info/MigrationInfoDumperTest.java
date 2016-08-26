@@ -26,7 +26,7 @@ import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoDumpe
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoServiceImpl;
 import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration;
 import com.contrastsecurity.cassandra.migration.internal.resolver.ResolvedMigrationImpl;
-import com.contrastsecurity.cassandra.migration.utils.StringUtils;
+import com.contrastsecurity.cassandra.migration.internal.util.StringUtils;
 import org.junit.Test;
 
 import java.util.ArrayList;

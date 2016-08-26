@@ -24,7 +24,7 @@ import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMi
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.Log;
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory;
-import com.contrastsecurity.cassandra.migration.utils.CachePrepareStatement;
+import com.contrastsecurity.cassandra.migration.internal.util.CachePrepareStatement;
 import com.datastax.driver.core.*;
 import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.datastax.driver.core.querybuilder.QueryBuilder;

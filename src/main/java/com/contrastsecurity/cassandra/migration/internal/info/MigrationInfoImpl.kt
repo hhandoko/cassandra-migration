@@ -24,7 +24,7 @@ import com.contrastsecurity.cassandra.migration.api.MigrationType
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
 import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration
-import com.contrastsecurity.cassandra.migration.utils.ObjectUtils
+import com.contrastsecurity.cassandra.migration.internal.util.ObjectUtils
 import java.util.*
 
 /**

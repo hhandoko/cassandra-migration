@@ -20,7 +20,7 @@ package com.contrastsecurity.cassandra.migration.internal.resolver
 
 import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
-import com.contrastsecurity.cassandra.migration.utils.Pair
+import com.contrastsecurity.cassandra.migration.internal.util.Pair
 
 /**
  * Parsing support for migrations that use the standard Cassandra migration version + description embedding in their name.

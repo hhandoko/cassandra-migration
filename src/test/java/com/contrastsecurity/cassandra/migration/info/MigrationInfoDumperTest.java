@@ -53,7 +53,7 @@ public class MigrationInfoDumperTest {
     @Test
     public void dump2pending() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration("1"), createAvailableMigration("2.2014.09.11.55.45613")),
                         createSchemaVersionDAO(), MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();

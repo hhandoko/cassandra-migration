@@ -19,188 +19,73 @@
 package com.contrastsecurity.cassandra.migration.info
 
 import com.contrastsecurity.cassandra.migration.api.MigrationInfo
-import com.contrastsecurity.cassandra.migration.api.MigrationState
-import com.contrastsecurity.cassandra.migration.api.MigrationType
-import com.contrastsecurity.cassandra.migration.api.MigrationVersion
-import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
-import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO
-import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
-import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoContext
-import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoImpl
-import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration
 
-import java.util.*
-
-/**
- * Default implementation of MigrationInfoService.
- *
- * @param migrationResolver The migration resolver for available migrations.
- * @param schemaVersionDAO The schema version table DAO implementation.
- * @param target The target version up to which to retrieve the info.
- * @param outOfOrder Allows migrations to be run "out of order".
- *                   If you already have versions 1 and 3 applied, and now a version 2 is found,
- *                   it will be applied too instead of being ignored.
- *                   (default: `false`)
- * @param pendingOrFuture Allows pending or future migrations to be run.
- */
-class MigrationInfoService(
-    private val migrationResolver: MigrationResolver,
-    private val schemaVersionDAO: SchemaVersionDAO,
-    private var target: MigrationVersion?,
-    private val outOfOrder: Boolean,
-    private val pendingOrFuture: Boolean
-) {
-
-    /**
-     * The migrations infos calculated at the last refresh.
-     */
-    private var migrationInfos: List<MigrationInfoImpl>? = null
+interface MigrationInfoService {
 
     /**
      * Refreshes the info about all known migrations from both the classpath and the DB.
      */
-    fun refresh() {
-        val availableMigrations = migrationResolver.resolveMigrations()
-        val appliedMigrations = schemaVersionDAO.findAppliedMigrations()
-
-        migrationInfos = mergeAvailableAndAppliedMigrations(availableMigrations, appliedMigrations)
-
-        if (MigrationVersion.CURRENT === target) {
-            target = current()!!.version
-        }
-    }
-
-    /**
-     * Merges the available and the applied migrations to produce one fully aggregated and consolidated list.
-     *
-     * @param resolvedMigrations The available migrations.
-     * @param appliedMigrations The applied migrations.
-     * @return The complete list of migrations.
-     */
-    fun mergeAvailableAndAppliedMigrations(resolvedMigrations: Collection<ResolvedMigration>, appliedMigrations: List<AppliedMigration>): List<MigrationInfoImpl> {
-        val context = MigrationInfoContext()
-        context.outOfOrder = outOfOrder
-        context.pendingOrFuture = pendingOrFuture
-        context.target = target
-
-        val resolvedMigrationsMap = TreeMap<MigrationVersion, ResolvedMigration>()
-        for (resolvedMigration in resolvedMigrations) {
-            val version = resolvedMigration.version
-            if (version!!.compareTo(context.lastResolved) > 0) {
-                context.lastResolved = version
-            }
-            resolvedMigrationsMap.put(version, resolvedMigration)
-        }
-
-        val appliedMigrationsMap = TreeMap<MigrationVersion, AppliedMigration>()
-        for (appliedMigration in appliedMigrations) {
-            val version = appliedMigration.version
-            if (version!!.compareTo(context.lastApplied) > 0) {
-                context.lastApplied = version
-            }
-            if (appliedMigration.type === MigrationType.SCHEMA) {
-                context.schema = version
-            }
-            if (appliedMigration.type === MigrationType.BASELINE) {
-                context.baseline = version
-            }
-            appliedMigrationsMap.put(version, appliedMigration)
-        }
-
-        val allVersions = HashSet<MigrationVersion>()
-        allVersions.addAll(resolvedMigrationsMap.keys)
-        allVersions.addAll(appliedMigrationsMap.keys)
-
-        val migrationInfos = ArrayList<MigrationInfoImpl>()
-        for (version in allVersions) {
-            val resolvedMigration = resolvedMigrationsMap[version]
-            val appliedMigration = appliedMigrationsMap[version]
-            migrationInfos.add(MigrationInfoImpl(resolvedMigration, appliedMigration, context))
-        }
-
-        Collections.sort(migrationInfos)
-
-        return migrationInfos
-    }
-
-    /**
-     * Retrieves the full set of infos about the migrations.
-     *
-     * @return The migrations.
-     */
-    fun all(): Array<MigrationInfo> {
-        return migrationInfos?.toTypedArray<MigrationInfo>() ?: emptyArray()
-    }
-
-    /**
-     * @return Current migration to be run.
-     */
-    fun current(): MigrationInfo? {
-        return migrationInfos?.lastOrNull { it.state.isApplied }
-    }
-
-    /**
-     * Retrieves the full set of infos about the pending migrations.
-     *
-     * @return The pending migrations. An empty array if none.
-     */
-    fun pending(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state === MigrationState.PENDING }.orEmpty<MigrationInfo>().toTypedArray()
-    }
-
-    /**
-     * Retrieves the full set of infos about the migrations applied on the DB.
-     *
-     * @return The applied migrations. An empty array if none.
-     */
-    fun applied(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state.isApplied }.orEmpty<MigrationInfo>().toTypedArray()
-    }
-
-    /**
-     * Retrieves the full set of infos about the migrations resolved on the classpath.
-     *
-     * @return The resolved migrations. An empty array if none.
-     */
-    fun resolved(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state.isResolved }.orEmpty<MigrationInfo>().toTypedArray()
-    }
-
-    /**
-     * Retrieves the full set of infos about the migrations that failed.
-     *
-     * @return The failed migrations. An empty array if none.
-     */
-    fun failed(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state.isFailed }.orEmpty<MigrationInfo>().toTypedArray()
-    }
-
-    /**
-     * Retrieves the full set of infos about future migrations applied to the DB.
-     *
-     * @return The future migrations. An empty array if none.
-     */
-    fun future(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state === MigrationState.FUTURE_SUCCESS }.orEmpty<MigrationInfo>().toTypedArray()
-    }
-
-    /**
-     * Retrieves the full set of infos about out of order migrations applied to the DB.
-     *
-     * @return The out of order migrations. An empty array if none.
-     */
-    fun outOfOrder(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state === MigrationState.OUT_OF_ORDER }.orEmpty<MigrationInfo>().toTypedArray()
-    }
+    fun refresh()
 
     /**
      * Validate all migrations for consistency.
      *
      * @return The error message, or `null` if everything is fine.
      */
-    fun validate(): String? {
-        migrationInfos?.forEach { it.validate()?.let { return it } }
-        return null
-    }
+    fun validate(): String?
+
+    /**
+     * Retrieves the full set of infos about the migrations.
+     *
+     * @return The migrations.
+     */
+    fun all(): Array<MigrationInfo>
+
+    /**
+     * @return Current migration to be run.
+     */
+    fun current(): MigrationInfo?
+
+    /**
+     * Retrieves the full set of infos about the pending migrations.
+     *
+     * @return The pending migrations. An empty array if none.
+     */
+    fun pending(): Array<MigrationInfo>
+
+    /**
+     * Retrieves the full set of infos about the migrations applied on the DB.
+     *
+     * @return The applied migrations. An empty array if none.
+     */
+    fun applied(): Array<MigrationInfo>
+
+    /**
+     * Retrieves the full set of infos about the migrations resolved on the classpath.
+     *
+     * @return The resolved migrations. An empty array if none.
+     */
+    fun resolved(): Array<MigrationInfo>
+
+    /**
+     * Retrieves the full set of infos about the migrations that failed.
+     *
+     * @return The failed migrations. An empty array if none.
+     */
+    fun failed(): Array<MigrationInfo>
+
+    /**
+     * Retrieves the full set of infos about future migrations applied to the DB.
+     *
+     * @return The future migrations. An empty array if none.
+     */
+    fun future(): Array<MigrationInfo>
+
+    /**
+     * Retrieves the full set of infos about out of order migrations applied to the DB.
+     *
+     * @return The out of order migrations. An empty array if none.
+     */
+    fun outOfOrder(): Array<MigrationInfo>
 
 }

@@ -24,6 +24,7 @@ import com.contrastsecurity.cassandra.migration.api.configuration.CassandraMigra
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;
 import com.contrastsecurity.cassandra.migration.config.Keyspace;
 import com.contrastsecurity.cassandra.migration.config.MigrationConfigs;
+import com.contrastsecurity.cassandra.migration.info.MigrationInfoServiceImpl;
 import com.contrastsecurity.cassandra.migration.internal.util.ScriptsLocations;
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO;
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoService;
@@ -153,7 +154,7 @@ public class CassandraMigration implements CassandraMigrationConfiguration {
             public MigrationInfoService execute(Session session) {
                 MigrationResolver migrationResolver = createMigrationResolver();
                 SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(session, keyspace, MigrationVersion.Companion.getCURRENT().getTable());
-                MigrationInfoService migrationInfoService = new MigrationInfoService(migrationResolver, schemaVersionDAO, configs.getTarget(), false, true);
+                MigrationInfoService migrationInfoService = new MigrationInfoServiceImpl(migrationResolver, schemaVersionDAO, configs.getTarget(), false, true);
                 migrationInfoService.refresh();
 
                 return migrationInfoService;

@@ -27,6 +27,7 @@ import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMi
 import com.contrastsecurity.cassandra.migration.api.MigrationInfo
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoImpl
 import com.contrastsecurity.cassandra.migration.info.MigrationInfoService
+import com.contrastsecurity.cassandra.migration.info.MigrationInfoServiceImpl
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory
 import com.contrastsecurity.cassandra.migration.utils.StopWatch
 import com.contrastsecurity.cassandra.migration.utils.TimeFormat
@@ -67,7 +68,7 @@ class Migrate(
 
         var migrationSuccessCount = 0
         while (true) {
-            val infoService = MigrationInfoService(migrationResolver, schemaVersionDAO, migrationTarget, allowOutOfOrder, true)
+            val infoService = MigrationInfoServiceImpl(migrationResolver, schemaVersionDAO, migrationTarget, allowOutOfOrder, true)
             infoService.refresh()
 
             // Initialise `firstRun` and `currentSchemaVersion` variables

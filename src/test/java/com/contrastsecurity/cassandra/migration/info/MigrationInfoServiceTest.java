@@ -41,7 +41,7 @@ public class MigrationInfoServiceTest {
     @Test
     public void onlyPending() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration(1), createAvailableMigration(2)),
                         createSchemaVersionDAO(), MigrationVersion.Companion.getLATEST(), false, true);
         migrationInfoService.refresh();
@@ -54,7 +54,7 @@ public class MigrationInfoServiceTest {
     @Test
     public void allApplied() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration(1), createAvailableMigration(2)),
                         createSchemaVersionDAO(createAppliedMigration(1), createAppliedMigration(2)),
                         MigrationVersion.Companion.getLATEST(), false, true);
@@ -68,7 +68,7 @@ public class MigrationInfoServiceTest {
     @Test
     public void appliedOverridesAvailable() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration(1)),
                         createSchemaVersionDAO(createAppliedMigration(1, "xyz")),
                         MigrationVersion.Companion.getLATEST(), false, true);
@@ -83,7 +83,7 @@ public class MigrationInfoServiceTest {
     @Test
     public void onePendingOneApplied() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration(1), createAvailableMigration(2)),
                         createSchemaVersionDAO(createAppliedMigration(1)),
                         MigrationVersion.Companion.getLATEST(), false, true);
@@ -97,7 +97,7 @@ public class MigrationInfoServiceTest {
     @Test
     public void oneAppliedOneSkipped() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration(1), createAvailableMigration(2)),
                         createSchemaVersionDAO(createAppliedMigration(2)),
                         MigrationVersion.Companion.getLATEST(), false, true);
@@ -112,7 +112,7 @@ public class MigrationInfoServiceTest {
     @Test
     public void twoAppliedOneFuture() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration(1)),
                         createSchemaVersionDAO(createAppliedMigration(1), createAppliedMigration(2)),
                         MigrationVersion.Companion.getLATEST(), false, true);
@@ -128,7 +128,7 @@ public class MigrationInfoServiceTest {
     @Test
     public void belowBaseline() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration(1)),
                         createSchemaVersionDAO(createAppliedInitMigration(2)),
                         MigrationVersion.Companion.getLATEST(), false, true);
@@ -143,7 +143,7 @@ public class MigrationInfoServiceTest {
     @Test
     public void missing() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration(2)),
                         createSchemaVersionDAO(createAppliedMigration(1), createAppliedMigration(2)),
                         MigrationVersion.Companion.getLATEST(), false, true);
@@ -158,7 +158,7 @@ public class MigrationInfoServiceTest {
     @Test
     public void schemaCreation() {
         MigrationInfoService migrationInfoService =
-                new MigrationInfoService(
+                new MigrationInfoServiceImpl(
                         createMigrationResolver(createAvailableMigration(1)),
                         createSchemaVersionDAO(createAppliedSchemaMigration(), createAppliedMigration(1)),
                         MigrationVersion.Companion.getLATEST(), false, true);

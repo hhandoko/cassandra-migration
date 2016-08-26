@@ -21,7 +21,7 @@ package com.contrastsecurity.cassandra.migration.internal.info
 import com.contrastsecurity.cassandra.migration.api.*
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
 import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
-import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO
+import com.contrastsecurity.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoContext
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoImpl
 import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration
@@ -40,11 +40,11 @@ import java.util.*
  * @param pendingOrFuture Allows pending or future migrations to be run.
  */
 class MigrationInfoServiceImpl(
-    private val migrationResolver: MigrationResolver,
-    private val schemaVersionDAO: SchemaVersionDAO,
-    private var target: MigrationVersion?,
-    private val outOfOrder: Boolean,
-    private val pendingOrFuture: Boolean
+        private val migrationResolver: MigrationResolver,
+        private val schemaVersionDAO: SchemaVersionDAO,
+        private var target: MigrationVersion?,
+        private val outOfOrder: Boolean,
+        private val pendingOrFuture: Boolean
 ) : MigrationInfoService {
 
     /**

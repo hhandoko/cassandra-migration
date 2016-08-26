@@ -20,7 +20,7 @@ package com.contrastsecurity.cassandra.migration.internal.command
 
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
-import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO
+import com.contrastsecurity.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.contrastsecurity.cassandra.migration.api.MigrationInfoService
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoServiceImpl
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory
@@ -38,11 +38,11 @@ import com.contrastsecurity.cassandra.migration.utils.TimeFormat
  * @param pendingOrFuture True to allow pending or Future<T> migration to be run.
  */
 class Validate(
-    private val migrationResolver: MigrationResolver,
-    private val migrationTarget: MigrationVersion,
-    private val schemaVersionDAO: SchemaVersionDAO,
-    private val outOfOrder: Boolean,
-    private val pendingOrFuture: Boolean
+        private val migrationResolver: MigrationResolver,
+        private val migrationTarget: MigrationVersion,
+        private val schemaVersionDAO: SchemaVersionDAO,
+        private val outOfOrder: Boolean,
+        private val pendingOrFuture: Boolean
 ) {
 
     /**

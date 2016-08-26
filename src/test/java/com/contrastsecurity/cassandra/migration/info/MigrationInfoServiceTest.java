@@ -20,7 +20,7 @@ import com.contrastsecurity.cassandra.migration.api.MigrationState;
 import com.contrastsecurity.cassandra.migration.api.MigrationType;
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion;
 import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration;
-import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO;
+import com.contrastsecurity.cassandra.migration.internal.dbsupport.SchemaVersionDAO;
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver;
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoServiceImpl;
 import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration;

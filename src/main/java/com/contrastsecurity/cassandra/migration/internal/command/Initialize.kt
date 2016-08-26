@@ -19,7 +19,7 @@
 package com.contrastsecurity.cassandra.migration.internal.command
 
 import com.contrastsecurity.cassandra.migration.config.Keyspace
-import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO
+import com.contrastsecurity.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.datastax.driver.core.Session
 
 /**

@@ -22,7 +22,7 @@ import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException
 import com.contrastsecurity.cassandra.migration.api.MigrationState
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
-import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO
+import com.contrastsecurity.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration
 import com.contrastsecurity.cassandra.migration.api.MigrationInfo
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoImpl
@@ -44,12 +44,12 @@ import com.datastax.driver.core.Session
  * @param allowOutOfOrder True to allow migration to be run "out of order".
  */
 class Migrate(
-    private val migrationResolver: MigrationResolver,
-    private val migrationTarget: MigrationVersion,
-    private val schemaVersionDAO: SchemaVersionDAO,
-    private val session: Session,
-    private val user: String,
-    private val allowOutOfOrder: Boolean
+        private val migrationResolver: MigrationResolver,
+        private val migrationTarget: MigrationVersion,
+        private val schemaVersionDAO: SchemaVersionDAO,
+        private val session: Session,
+        private val user: String,
+        private val allowOutOfOrder: Boolean
 ) {
 
     /** Keyspace name lensing */

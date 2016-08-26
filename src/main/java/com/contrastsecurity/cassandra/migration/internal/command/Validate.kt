@@ -21,8 +21,8 @@ package com.contrastsecurity.cassandra.migration.internal.command
 import com.contrastsecurity.cassandra.migration.api.MigrationVersion
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO
-import com.contrastsecurity.cassandra.migration.info.MigrationInfoService
-import com.contrastsecurity.cassandra.migration.info.MigrationInfoServiceImpl
+import com.contrastsecurity.cassandra.migration.api.MigrationInfoService
+import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoServiceImpl
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory
 import com.contrastsecurity.cassandra.migration.utils.StopWatch
 import com.contrastsecurity.cassandra.migration.utils.TimeFormat

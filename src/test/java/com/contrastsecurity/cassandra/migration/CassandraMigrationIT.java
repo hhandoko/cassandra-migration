@@ -4,7 +4,7 @@ import com.contrastsecurity.cassandra.migration.api.CassandraMigrationException;
 import com.contrastsecurity.cassandra.migration.api.MigrationType;
 import com.contrastsecurity.cassandra.migration.api.MigrationInfo;
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoDumper;
-import com.contrastsecurity.cassandra.migration.info.MigrationInfoService;
+import com.contrastsecurity.cassandra.migration.api.MigrationInfoService;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.QueryBuilder;

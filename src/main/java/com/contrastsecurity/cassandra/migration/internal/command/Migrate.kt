@@ -26,8 +26,8 @@ import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO
 import com.contrastsecurity.cassandra.migration.internal.metadatatable.AppliedMigration
 import com.contrastsecurity.cassandra.migration.api.MigrationInfo
 import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoImpl
-import com.contrastsecurity.cassandra.migration.info.MigrationInfoService
-import com.contrastsecurity.cassandra.migration.info.MigrationInfoServiceImpl
+import com.contrastsecurity.cassandra.migration.api.MigrationInfoService
+import com.contrastsecurity.cassandra.migration.internal.info.MigrationInfoServiceImpl
 import com.contrastsecurity.cassandra.migration.internal.util.logging.LogFactory
 import com.contrastsecurity.cassandra.migration.utils.StopWatch
 import com.contrastsecurity.cassandra.migration.utils.TimeFormat

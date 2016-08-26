@@ -16,12 +16,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.contrastsecurity.cassandra.migration.info
+package com.contrastsecurity.cassandra.migration.internal.info
 
-import com.contrastsecurity.cassandra.migration.api.MigrationInfo
-import com.contrastsecurity.cassandra.migration.api.MigrationState
-import com.contrastsecurity.cassandra.migration.api.MigrationType
-import com.contrastsecurity.cassandra.migration.api.MigrationVersion
+import com.contrastsecurity.cassandra.migration.api.*
 import com.contrastsecurity.cassandra.migration.api.resolver.MigrationResolver
 import com.contrastsecurity.cassandra.migration.api.resolver.ResolvedMigration
 import com.contrastsecurity.cassandra.migration.dao.SchemaVersionDAO

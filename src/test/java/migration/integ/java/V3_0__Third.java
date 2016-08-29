@@ -1,6 +1,6 @@
 package migration.integ.java;
 
-import com.contrastsecurity.cassandra.migration.api.migration.java.JavaMigration;
+import com.builtamont.cassandra.migration.api.migration.java.JavaMigration;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;

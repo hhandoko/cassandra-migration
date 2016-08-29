@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd http://www.w3.org/2001/XMLSchema-instance ">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.contrastsecurity</groupId>
+    <groupId>com.builtamont</groupId>
     <artifactId>cassandra-migration</artifactId>
     <name>Cassandra Migration</name>
     <version>0.9-SNAPSHOT</version>
     <description>
         Database migration tool for Cassandra
     </description>
-    <url>https://github.com/Contrast-Security-OSS/cassandra-migration</url>
+    <url>https://github.com/builtamont/cassandra-migration</url>
 
     <licenses>
         <license>
@@ -19,8 +19,8 @@
     <packaging>jar</packaging>
 
     <organization>
-        <name>Contrast Security</name>
-        <url>contrastsecurity.com</url>
+        <name>Builtamont Tech</name>
+        <url>builtamonttech.com</url>
     </organization>
 
     <distributionManagement>
@@ -35,16 +35,16 @@
     </distributionManagement>
 
     <scm>
-        <url>https://github.com/Contrast-Security-OSS/cassandra-migration</url>
-        <connection>scm:git:https://github.com/Contrast-Security-OSS/cassandra-migration.git</connection>
-        <developerConnection>scm:git:https://github.com/Contrast-Security-OSS/cassandra-migration.git</developerConnection>
+        <url>https://github.com/builtamont/cassandra-migration</url>
+        <connection>scm:git:https://github.com/builtamont/cassandra-migration.git</connection>
+        <developerConnection>scm:git:https://github.com/builtamont/cassandra-migration.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 
     <developers>
         <developer>
-            <id>ntatsumi</id>
-            <name>Noriaki Tatsumi</name>
+            <id>hhandoko</id>
+            <name>Herdy Handoko</name>
         </developer>
     </developers>
 
@@ -170,7 +170,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.contrastsecurity.cassandra.migration.CommandLine</mainClass>
+                            <mainClass>com.builtamont.cassandra.migration.CommandLine</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

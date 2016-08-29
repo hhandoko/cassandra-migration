@@ -1,36 +1,33 @@
-Cassandra Migration
-========
+# Cassandra Migration
 
-A simple and lightweight migration tool for Apache Cassandra database that's based on [Axel Fontaine's Flyway project](https://github.com/flyway/flyway).
-Cassandra Migration works just like Flyway. Plain CQL and Java based migrations are supported.
-The Java migration interface provides [DataStax's Java Driver](http://datastax.github.io/java-driver/) session.
+`cassandra-migration` is a simple and lightweight Apache Cassandra database schema migration tool.
 
-## Why not create an extension to an existing popular database migration project (i.e. Flyway)?
-Popular database migration tools, such as Flyway and Liquibase are tailored for relational databases with JDBC. This project exists because...
-* Cassandra is not a relational database
-* Cassandra does not have transactions
-* Cassandra currently does not have production-ready JDBC implementation
-* It does not make sense to attempt implementing parity with relational database functions like global sequence IDs for Cassandra
-* Cassandra's keyspace should be managed outside the migration tool for sysadmins to configure replication factor, etc
-* CQL != SQL
-* The tool should be tailored to Cassandra, especially from the perspective of its distributed architecture
-* I already use Flyway and I do not want to maintain my own version of Flyway with Cassandra hacks
+It is a Kotlin fork of [Contrast Security's Cassandra Migration] project, which has been manually re-based to closely follow [Axel Fontaine / BoxFuse Flyway] project.
+ 
+It is designed to work similar to Flyway, supporting plain CQL and Java-based migrations. Both CQL execution and Java migration interface uses [DataStax's Cassandra Java driver].
 
-## Requirements
-* Java (Tested with JDK 7+)
-* Apache Cassandra (Tested with 2.1.5+)
-* Pre-populated keyspace
-* Cassandra Migration library
-```
+## Getting Started
+
+Ensure the following prerequisites are met: 
+
+ * Java SDK 1.7+ (tested with Azul Zulu JDK 1.7.0_111 and 1.8.0_102)
+ * Apache Cassandra 3.0.x (tested with DataStax Enterprise Community 3.0.x)
+ * Pre-existing Keyspace
+ 
+Import this library as a dependency (Maven example):
+``` xml
 <dependency>
-    <groupId>com.contrastsecurity</groupId>
+    <groupId>com.builtamont</groupId>
     <artifactId>cassandra-migration</artifactId>
-    <version>0.6</version>
+    <version>0.9-SNAPSHOT</version>
 </dependency>
 ```
 
-## Migration version table
-```
+*NOTE: Cassandra's Keyspace should be managed outside the migration tool by sysadmins (e.g. tune replication factor, etc)*
+
+### Migration version table
+
+``` shell
 cassandra@cqlsh:cassandra_migration_test> select * from cassandra_migration_version;
  type        | version | checksum    | description    | execution_time | installed_by | installed_on             | installed_rank | script                                 | success | version_rank
 -------------+---------+-------------+----------------+----------------+--------------+--------------------------+----------------+----------------------------------------+---------+--------------
@@ -42,10 +39,12 @@ cassandra@cqlsh:cassandra_migration_test> select * from cassandra_migration_vers
  JAVA_DRIVER |   3.0.1 |        null | Three zero one |              2 |    cassandra | 2015-09-12 15:10:22-0400 |              4 | migration.integ.V3_0_1__Three_zero_one |    True |            6
 ```
 
-## Supported Migration Script Types
-### .cql files
+### Supported Migration Script Types
+
+#### .cql files
+
 Example:
-```
+``` sql
 CREATE TABLE test1 (
   space text,
   key text,
@@ -58,9 +57,10 @@ INSERT INTO test1 (space, key, value) VALUES ('foo', 'blah', 'meh');
 UPDATE test1 SET value = 'profit!' WHERE space = 'foo' AND key = 'blah';
 ```
 
-### Java classes
+#### Java classes
+
 Example:
-```
+``` java
 public class V3_0__Third implements JavaMigration {
 
     @Override
@@ -75,10 +75,12 @@ public class V3_0__Third implements JavaMigration {
 }
 ```
 
-## Interface
-### Java API
+### Interface
+
+#### Java API
+
 Example:
-```
+``` java
 String[] scriptsLocations = {"migration/cassandra"};
 
 Keyspace keyspace = new Keyspace();
@@ -94,8 +96,9 @@ cm.setKeyspace(keyspace);
 cm.migrate();
 ```
 
-### Command line
-```
+#### Command line
+
+``` shell
 java -jar \
 -Dcassandra.migration.scripts.locations=file:target/test-classes/migration/integ \
 -Dcassandra.migration.cluster.contactpoints=localhost \
@@ -107,32 +110,89 @@ target/*-jar-with-dependencies.jar migrate
 ```
 
 Logging level can be set by passing the following arguments:
-* INFO: This is the default
-* DEBUG: '-X'
-* WARNING: '-q'
+ * INFO: This is the default
+ * DEBUG: '-X'
+ * WARNING: '-q'
 
-## VM Options
-Options can be set either programmatically with API or via VM options.
+### VM Options
 
-Migration
-* cassandra.migration.scripts.locations: Locations of the migration scripts in CSV format. Scripts are scanned in the specified folder recursively. (default=db/migration)
-* cassandra.migration.scripts.encoding: The encoding of CQL scripts (default=UTF-8)
-* cassandra.migration.scripts.allowoutoforder: Allow out of order migration (default=false)
-* cassandra.migration.version.target: The target version. Migrations with a higher version number will be ignored. (default=latest)
+Options can be set either programmatically with API or via Java VM options.
 
-Cluster
-* cassandra.migration.cluster.contactpoints: Comma separated values of node IP addresses (default=localhost)
-* cassandra.migration.cluster.port: CQL native transport port (default=9042)
-* cassandra.migration.cluster.username: Username for password authenticator (optional)
-* cassandra.migration.cluster.password: Password for password authenticator (optional)
+Migration:
+ * `cassandra.migration.scripts.locations`: Locations of the migration scripts in CSV format. Scripts are scanned in the specified folder recursively. (default=db/migration)
+ * `cassandra.migration.scripts.encoding`: The encoding of CQL scripts (default=UTF-8)
+ * `cassandra.migration.scripts.allowoutoforder`: Allow out of order migration (default=false)
+ * `cassandra.migration.version.target`: The target version. Migrations with a higher version number will be ignored. (default=latest)
 
-Keyspace
-* cassandra.migration.keyspace.name: Name of Cassandra keyspace (required)
+Cluster:
+ * `cassandra.migration.cluster.contactpoints`: Comma separated values of node IP addresses (default=localhost)
+ * `cassandra.migration.cluster.port`: CQL native transport port (default=9042)
+ * `cassandra.migration.cluster.username`: Username for password authenticator (optional)
+ * `cassandra.migration.cluster.password`: Password for password authenticator (optional)
 
-## Cluster Coordination
-* Schema version tracking statements use ConsistencyLevel.ALL
-* Users should manage their own consistency level in the migration scripts
+Keyspace:
+ * `cassandra.migration.keyspace.name`: Name of Cassandra keyspace (required)
 
-## Limitations
-* Baselining not supported yet
-* The tool does not roll back the database upon migration failure. You're expected to manually restore backup.
+### Cluster Coordination
+
+ * Schema version tracking statements use `ConsistencyLevel.ALL`
+ * Users should manage their own consistency level in the migration scripts
+
+### Limitations
+
+ * Baselining not supported yet
+ * The tool does not roll back the database upon migration failure. You're expected to manually restore backup.
+
+## Project Rationale
+
+**Why not create an extension to an existing popular database migration project (i.e. Flyway)?**
+Popular database migration tools (e.g. Flyway, Liquibase) are tailored for relational databases with JDBC. This project exists due to the need for Cassandra-specific tooling:
+ * CQL != SQL,
+ * Cassandra is distributed and does not have ACID transactions,
+ * Cassandra do not have native JDBC driver(s),
+ * etc.
+
+**Why not extend the existing Cassandra Migration project?**
+The existing project does not seem to be actively maintained. Several important PRs have been left open for months and there was an immediate need to support Cassandra driver v3.x. 
+
+**Why Kotlin?**
+There are various reasons why Kotlin was chosen, but three main reasons are:
+ * code brevity and reduced noise,
+ * stronger `null` checks (enforced at the compiler level), and
+ * better Java collection support (e.g. additional functional features)
+
+## Contributing
+
+We follow the "[fork-and-pull]" Git workflow.
+
+  1. Fork the repo on GitHub
+  1. Commit changes to a branch in your fork (use `snake_case` convention):
+     - For technical chores, use `chore/` prefix followed by the short description, e.g. `chore/do_this_chore`
+     - For new features, use `feature/` prefix followed by the feature name, e.g. `feature/feature_name`
+     - For bug fixes, use `bug/` prefix followed by the short description, e.g. `bug/fix_this_bug`
+  1. Rebase or merge from "upstream"
+  1. Submit a PR "upstream" with your changes
+
+Please read [CONTRIBUTING] for more details.
+
+## License
+
+`cassandra-migration` is released under the Apache 2 license. See the [LICENSE] file for further details.
+ 
+[Contrast Security's Cassandra Migration] project is released under the Apache 2 license. See [Contrast Security Cassandra Migration project license page] for further details.
+
+[Flyway] project is released under the Apache 2 license. See [Flyway's project license page] for further details.
+
+## Releases
+
+https://github.com/builtamont/cassandra-migration/releases
+
+[Axel Fontaine / BoxFuse Flyway]: https://github.com/flyway/flyway
+[Contrast Security's Cassandra Migration]: https://github.com/Contrast-Security-OSS/cassandra-migration
+[Contrast Security Cassandra Migration project license page]: https://github.com/Contrast-Security-OSS/cassandra-migration/blob/master/LICENSE
+[CONTRIBUTING]: CONTRIBUTING.md
+[DataStax's Cassandra Java driver]: http://datastax.github.io/java-driver/
+[Flyway]: https://flywaydb.org/
+[Flyway's project license page]: https://github.com/flyway/flyway/blob/master/LICENSE
+[fork-and-pull]: https://help.github.com/articles/using-pull-requests
+[LICENSE]: LICENSE

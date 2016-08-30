@@ -109,17 +109,17 @@ class AppliedMigration : Comparable<AppliedMigration> {
      * @param success Flag indicating whether the migration was successful or not.
      */
     constructor(
-            versionRank: Int,
-            installedRank: Int,
-            version: MigrationVersion,
-            description: String,
-            type: MigrationType,
-            script: String,
-            checksum: Int?,
-            installedOn: Date,
-            installedBy: String,
-            executionTime: Int,
-            success: Boolean
+        versionRank: Int,
+        installedRank: Int,
+        version: MigrationVersion,
+        description: String,
+        type: MigrationType,
+        script: String,
+        checksum: Int?,
+        installedOn: Date,
+        installedBy: String,
+        executionTime: Int,
+        success: Boolean
     ) {
         this.versionRank = versionRank
         this.installedRank = installedRank
@@ -147,14 +147,14 @@ class AppliedMigration : Comparable<AppliedMigration> {
      * @param success Flag indicating whether the migration was successful or not.
      */
     constructor(
-            version: MigrationVersion,
-            description: String,
-            type: MigrationType,
-            script: String?,
-            checksum: Int?,
-            installedBy: String,
-            executionTime: Int,
-            success: Boolean
+        version: MigrationVersion,
+        description: String,
+        type: MigrationType,
+        script: String?,
+        checksum: Int?,
+        installedBy: String,
+        executionTime: Int,
+        success: Boolean
     ) {
         this.version = version
         this.description = abbreviateDescription(description)
@@ -225,22 +225,44 @@ class AppliedMigration : Comparable<AppliedMigration> {
             return other == null || javaClass != other.javaClass
         }
 
-        if (this === other) return true
-        if (isNotSame()) return false
+        /**
+         * @return {@code true} if this context instance checksum property is not the same as the given object checksum property.
+         */
+        fun isNotSameChecksum(that: AppliedMigration): Boolean {
+            return if (checksum != null) checksum != that.checksum else that.checksum != null
+        }
 
-        val that = other as AppliedMigration?
+        /**
+         * @return {@code true} if this context instance installed by property is not the same as the given object installed by property.
+         */
+        fun isNotSameInstalledBy(that: AppliedMigration): Boolean {
+            return if (installedBy != null) installedBy != that.installedBy else that.installedBy != null
+        }
 
-        if (executionTime != that!!.executionTime) return false
-        if (installedRank != that.installedRank) return false
-        if (isSuccess != that.isSuccess) return false
-        if (versionRank != that.versionRank) return false
-        if (if (checksum != null) checksum != that.checksum else that.checksum != null) return false
-        if (description != that.description) return false
-        if (if (installedBy != null) installedBy != that.installedBy else that.installedBy != null) return false
-        if (if (installedOn != null) installedOn != that.installedOn else that.installedOn != null) return false
-        if (script != that.script) return false
-        if (type !== that.type) return false
-        return version == that.version
+        /**
+         * @return {@code true} if this context instance installed on property is not the same as the given object resolved installed on property.
+         */
+        fun isNotSameInstalledOn(that: AppliedMigration): Boolean {
+            return if (installedOn != null) installedOn != that.installedOn else that.installedOn != null
+        }
+
+        val that = other as AppliedMigration? ?: return false
+
+        return when {
+            this === other                      -> true
+            isNotSame()                         -> false
+            executionTime != that.executionTime -> false
+            installedRank != that.installedRank -> false
+            versionRank != that.versionRank     -> false
+            isSuccess != that.isSuccess         -> false
+            isNotSameChecksum(that)             -> false
+            description != that.description     -> false
+            isNotSameInstalledBy(that)          -> false
+            isNotSameInstalledOn(that)          -> false
+            script != that.script               -> false
+            type !== that.type                  -> false
+            else                                -> version == that.version
+        }
     }
 
 

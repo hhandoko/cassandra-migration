@@ -20,7 +20,10 @@ package com.builtamont.cassandra.migration.internal.command
 
 import com.builtamont.cassandra.migration.api.MigrationVersion
 import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
+import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.builtamont.cassandra.migration.internal.info.MigrationInfoServiceImpl
+import com.builtamont.cassandra.migration.internal.util.StopWatch
+import com.builtamont.cassandra.migration.internal.util.TimeFormat
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 
 /**
@@ -34,11 +37,11 @@ import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
  * @param pendingOrFuture True to allow pending or Future<T> migration to be run.
  */
 class Validate(
-        private val migrationResolver: MigrationResolver,
-        private val migrationTarget: MigrationVersion,
-        private val schemaVersionDAO: com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO,
-        private val outOfOrder: Boolean,
-        private val pendingOrFuture: Boolean
+    private val migrationResolver: MigrationResolver,
+    private val migrationTarget: MigrationVersion,
+    private val schemaVersionDAO: SchemaVersionDAO,
+    private val outOfOrder: Boolean,
+    private val pendingOrFuture: Boolean
 ) {
 
     /**
@@ -47,7 +50,7 @@ class Validate(
      * @return The validation error, if any.
      */
     fun run(): String? {
-        val stopWatch = com.builtamont.cassandra.migration.internal.util.StopWatch()
+        val stopWatch = StopWatch()
         stopWatch.start()
 
         val infoService = MigrationInfoServiceImpl(migrationResolver, schemaVersionDAO, migrationTarget, outOfOrder, pendingOrFuture)
@@ -69,7 +72,7 @@ class Validate(
      * @param executionTime The total time taken to perform this migration run (in ms).
      */
     private fun logSummary(count: Int, executionTime: Long) {
-        LOG.info("Validated %d migrations (execution time %s)".format(count, com.builtamont.cassandra.migration.internal.util.TimeFormat.format(executionTime)))
+        LOG.info("Validated %d migrations (execution time %s)".format(count, TimeFormat.format(executionTime)))
     }
 
     /**

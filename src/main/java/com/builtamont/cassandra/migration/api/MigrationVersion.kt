@@ -31,12 +31,12 @@ class MigrationVersion : Comparable<MigrationVersion?> {
      * The version in one of the following formats: 6, 6.0, 005, 1.2.3.4, 201004200021.
      * {@code null} means that this version refers to an empty schema.
      */
-    private var versionParts: List<BigInteger>? = null
+    lateinit private var versionParts: List<BigInteger>
 
     /**
      * The alternative text to display instead of the version number.
      */
-    private var displayText: String? = null
+    lateinit private var displayText: String
 
     /**
      * Creates a Version using this version string.
@@ -83,14 +83,14 @@ class MigrationVersion : Comparable<MigrationVersion?> {
      * @return The textual representation of the version instance.
      */
     override fun toString(): String {
-        return displayText!!
+        return displayText
     }
 
     /**
      * @return The computed version instance hash value.
      */
     override fun hashCode(): Int {
-        return if (versionParts == null) 0 else versionParts!!.hashCode()
+        return versionParts.hashCode()
     }
 
     /**
@@ -137,7 +137,7 @@ class MigrationVersion : Comparable<MigrationVersion?> {
 
         val elements1 = versionParts
         val elements2 = other?.versionParts
-        val largestNumberOfElements = Math.max(elements1!!.size, elements2!!.size)
+        val largestNumberOfElements = Math.max(elements1.size, elements2!!.size)
 
         // Iterate through the version parts to compare version numbers
         for (i in 0..largestNumberOfElements - 1) {

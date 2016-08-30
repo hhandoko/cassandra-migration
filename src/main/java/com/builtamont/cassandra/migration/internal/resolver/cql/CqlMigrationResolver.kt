@@ -26,6 +26,8 @@ import com.builtamont.cassandra.migration.internal.resolver.MigrationInfoHelper
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationComparator
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
 import com.builtamont.cassandra.migration.internal.util.ScriptsLocation
+import com.builtamont.cassandra.migration.internal.util.scanner.Resource
+import com.builtamont.cassandra.migration.internal.util.scanner.Scanner
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.StringReader
@@ -46,13 +48,13 @@ class CqlMigrationResolver(
 ) : MigrationResolver {
 
     /** The scanner to use. */
-    private val scanner: com.builtamont.cassandra.migration.internal.util.scanner.Scanner
+    private val scanner: Scanner
 
     /**
      * CqlMigrationResolver initialization.
      */
     init {
-        this.scanner = com.builtamont.cassandra.migration.internal.util.scanner.Scanner(classLoader)
+        this.scanner = Scanner(classLoader)
     }
 
     /**
@@ -77,7 +79,7 @@ class CqlMigrationResolver(
      * @param resource The resource to analyse.
      * @return The migration info.
      */
-    private fun extractMigrationInfo(resource: com.builtamont.cassandra.migration.internal.util.scanner.Resource): ResolvedMigration {
+    private fun extractMigrationInfo(resource: Resource): ResolvedMigration {
         val info = MigrationInfoHelper.extractVersionAndDescription(
             resource.filename,
             CQL_MIGRATION_PREFIX,
@@ -100,7 +102,7 @@ class CqlMigrationResolver(
      * @param resource The resource to process.
      * @return The script name.
      */
-    fun extractScriptName(resource: com.builtamont.cassandra.migration.internal.util.scanner.Resource): String {
+    fun extractScriptName(resource: Resource): String {
         return if (location.path!!.isEmpty()) {
             resource.location
         } else {
@@ -142,7 +144,7 @@ class CqlMigrationResolver(
          * @param str The string to calculate the checksum for.
          * @return The crc-32 checksum of the bytes.
          */
-        private fun calculateChecksum(resource: com.builtamont.cassandra.migration.internal.util.scanner.Resource, str: String): Int {
+        private fun calculateChecksum(resource: Resource, str: String): Int {
             val crc32 = CRC32()
 
             try {

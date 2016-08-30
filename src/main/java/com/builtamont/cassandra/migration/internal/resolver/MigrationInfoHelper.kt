@@ -20,6 +20,7 @@ package com.builtamont.cassandra.migration.internal.resolver
 
 import com.builtamont.cassandra.migration.api.CassandraMigrationException
 import com.builtamont.cassandra.migration.api.MigrationVersion
+import com.builtamont.cassandra.migration.internal.util.Pair
 
 /**
  * Parsing support for migrations that use the standard Cassandra migration version + description embedding in their name.
@@ -42,7 +43,7 @@ object MigrationInfoHelper {
         prefix: String,
         separator: String,
         suffix: String
-    ): com.builtamont.cassandra.migration.internal.util.Pair<MigrationVersion, String> {
+    ): Pair<MigrationVersion, String> {
         val cleanMigrationName = migrationName.substring(prefix.length, migrationName.length - suffix.length)
 
         // Handle the description
@@ -55,7 +56,7 @@ object MigrationInfoHelper {
 
         val version = cleanMigrationName.substring(0, descriptionPos)
         val description = cleanMigrationName.substring(descriptionPos + separator.length).replace("_".toRegex(), " ")
-        return com.builtamont.cassandra.migration.internal.util.Pair.of(MigrationVersion.fromVersion(version), description)
+        return Pair.of(MigrationVersion.fromVersion(version), description)
     }
 
 }

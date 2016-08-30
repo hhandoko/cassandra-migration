@@ -19,6 +19,8 @@
 package com.builtamont.cassandra.migration.internal.info
 
 import com.builtamont.cassandra.migration.api.MigrationInfo
+import com.builtamont.cassandra.migration.internal.util.DateUtils
+import com.builtamont.cassandra.migration.internal.util.StringUtils
 
 /**
  * Dumps migrations in an ASCII-art table in the logs and the console.
@@ -43,22 +45,22 @@ object MigrationInfoDumper {
             descriptionWidth = Math.max(descriptionWidth, migrationInfo.description.length)
         }
 
-        val ruler = "+-" + com.builtamont.cassandra.migration.internal.util.StringUtils.trimOrPad("", versionWidth, '-') +
-            "-+-" + com.builtamont.cassandra.migration.internal.util.StringUtils.trimOrPad("", descriptionWidth, '-') + "-+---------------------+---------+\n"
+        val ruler = "+-" + StringUtils.trimOrPad("", versionWidth, '-') +
+            "-+-" + StringUtils.trimOrPad("", descriptionWidth, '-') + "-+---------------------+---------+\n"
 
         val table = StringBuilder()
         table.append(ruler)
-        table.append("| ").append(com.builtamont.cassandra.migration.internal.util.StringUtils.trimOrPad(VERSION_TITLE, versionWidth, ' ')).append(" | ").append(com.builtamont.cassandra.migration.internal.util.StringUtils.trimOrPad(DESCRIPTION_TITLE, descriptionWidth)).append(" | Installed on        | State   |\n")
+        table.append("| ").append(StringUtils.trimOrPad(VERSION_TITLE, versionWidth, ' ')).append(" | ").append(StringUtils.trimOrPad(DESCRIPTION_TITLE, descriptionWidth)).append(" | Installed on        | State   |\n")
         table.append(ruler)
 
         if (migrationInfos.size == 0) {
-            table.append(com.builtamont.cassandra.migration.internal.util.StringUtils.trimOrPad("| No migrations found", ruler.length - 2, ' ')).append("|\n")
+            table.append(StringUtils.trimOrPad("| No migrations found", ruler.length - 2, ' ')).append("|\n")
         } else {
             for (migrationInfo in migrationInfos) {
-                table.append("| ").append(com.builtamont.cassandra.migration.internal.util.StringUtils.trimOrPad(migrationInfo.version.toString(), versionWidth))
-                table.append(" | ").append(com.builtamont.cassandra.migration.internal.util.StringUtils.trimOrPad(migrationInfo.description, descriptionWidth))
-                table.append(" | ").append(com.builtamont.cassandra.migration.internal.util.StringUtils.trimOrPad(com.builtamont.cassandra.migration.internal.util.DateUtils.formatDateAsIsoString(migrationInfo.installedOn), 19))
-                table.append(" | ").append(com.builtamont.cassandra.migration.internal.util.StringUtils.trimOrPad(migrationInfo.state.displayName, 7))
+                table.append("| ").append(StringUtils.trimOrPad(migrationInfo.version.toString(), versionWidth))
+                table.append(" | ").append(StringUtils.trimOrPad(migrationInfo.description, descriptionWidth))
+                table.append(" | ").append(StringUtils.trimOrPad(DateUtils.formatDateAsIsoString(migrationInfo.installedOn), 19))
+                table.append(" | ").append(StringUtils.trimOrPad(migrationInfo.state.displayName, 7))
                 table.append(" |\n")
             }
         }

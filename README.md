@@ -1,3 +1,5 @@
+[![License](https://img.shields.io/badge/license-Apache%202-brightgreen.svg)](LICENSE) [![Master Build Status](https://travis-ci.org/builtamont-oss/cassandra-migration.svg?branch=master)](https://travis-ci.org/builtamont-oss/cassandra-migration)
+
 # Cassandra Migration
 
 `cassandra-migration` is a simple and lightweight Apache Cassandra database schema migration tool.
@@ -10,10 +12,10 @@ It is designed to work similar to Flyway, supporting plain CQL and Java-based mi
 
 Ensure the following prerequisites are met: 
 
- * Java SDK 1.7+ (tested with Azul Zulu JDK 1.7.0_111 and 1.8.0_102)
- * Apache Cassandra 3.0.x (tested with DataStax Enterprise Community 3.0.x)
- * Pre-existing Keyspace
- 
+ * **Java SDK 1.7+:**<br />The library is developed using Azul Zulu 1.8, and release-tested (Travis CI) with OpenJDK 1.7, Oracle JDK 1.7, and Oracle JDK 1.8
+ * **Apache Cassandra 3.0.x:**<br />The library is currently tested using embedded Cassandra, testing with standalone Cassandra (DataStax Community Edition) is in the roadmap
+ * **Pre-existing Keyspace:**<br />Cassandra's Keyspace should be managed outside the migration tool by sysadmins (e.g. tune replication factor, etc)
+
 Import this library as a dependency (Maven example):
 ``` xml
 <dependency>
@@ -22,8 +24,6 @@ Import this library as a dependency (Maven example):
     <version>0.9-SNAPSHOT</version>
 </dependency>
 ```
-
-*NOTE: Cassandra's Keyspace should be managed outside the migration tool by sysadmins (e.g. tune replication factor, etc)*
 
 ### Migration version table
 
@@ -186,6 +186,18 @@ Please read [CONTRIBUTING] for more details.
 ## Releases
 
 https://github.com/builtamont/cassandra-migration/releases
+
+## Version 0.9 Release Pending Actions
+
+ * Replace `config.Cluster.java` and `config.Keyspace.java` to the one provided by DataStax Cassandra driver
+ * Add additional features from upstream open PRs
+ * Add standalone Cassandra (DataStax Community Edition) integration test
+ 
+## Non-Critical Pending Actions
+
+ * Refactor build system to use Gradle
+ * Refactor constructor and method signatures to avoid passing `null`s (via Kotlin `lateinit`, and / or use of `Option` values)
+ * Refactor methods body to idiomatic Kotlin
 
 [Axel Fontaine / BoxFuse Flyway]: https://github.com/flyway/flyway
 [Contrast Security's Cassandra Migration]: https://github.com/Contrast-Security-OSS/cassandra-migration

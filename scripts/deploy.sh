@@ -1,10 +1,9 @@
 #!/bin/bash
 
 ###
-# File     : maven-central-deploy.sh
+# File     : deploy.sh
 # License  :
-#   Original   - Copyright (c) 2015 - 2016 Contrast Security
-#   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+#   Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -19,13 +18,4 @@
 #   limitations under the License.
 ###
 
-# Deploy maven artifact in current directory into Maven central repository
-# using maven-release-plugin goals
-
-read -p "Really deploy to maven cetral repository  (yes/no)? "
-
-if ( [ "$REPLY" == "yes" ] ) then
-  mvn -P release release:clean release:prepare release:perform -B -e | tee maven-central-deploy.log
-else
-  echo 'Exit without deploy'
-fi
+mvn deploy --settings settings.xml -DskipTests=true -B

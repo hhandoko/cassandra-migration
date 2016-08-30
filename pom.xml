@@ -41,7 +41,6 @@
         <url>https://github.com/builtamont-oss/cassandra-migration</url>
         <connection>scm:git:https://github.com/builtamont-oss/cassandra-migration.git</connection>
         <developerConnection>scm:git:https://github.com/builtamont-oss/cassandra-migration.git</developerConnection>
-        <tag>HEAD</tag>
     </scm>
 
     <developers>

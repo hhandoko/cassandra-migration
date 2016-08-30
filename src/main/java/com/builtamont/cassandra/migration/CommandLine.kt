@@ -18,6 +18,7 @@
  */
 package com.builtamont.cassandra.migration
 
+import com.builtamont.cassandra.migration.config.Keyspace
 import com.builtamont.cassandra.migration.internal.util.logging.Log
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.builtamont.cassandra.migration.internal.util.logging.console.ConsoleLog
@@ -42,7 +43,7 @@ object CommandLine {
     /**
      * Logging support.
      */
-    private var LOG: Log? = null
+    lateinit private var LOG: Log
 
     /**
      * Main method body.
@@ -62,7 +63,7 @@ object CommandLine {
         val operation = operations[0]
 
         val cm = CassandraMigration()
-        val ks = com.builtamont.cassandra.migration.config.Keyspace()
+        val ks = Keyspace()
         cm.keyspace = ks
         if (MIGRATE.equals(operation, ignoreCase = true)) {
             cm.migrate()
@@ -113,20 +114,20 @@ object CommandLine {
      * Print command line runner info.
      */
     private fun printUsage() {
-        LOG!!.info("********")
-        LOG!!.info("* Usage")
-        LOG!!.info("********")
-        LOG!!.info("")
-        LOG!!.info("cassandra-migration [options] command")
-        LOG!!.info("")
-        LOG!!.info("Commands")
-        LOG!!.info("========")
-        LOG!!.info("migrate  : Migrates the database")
-        LOG!!.info("validate : Validates the applied migrations against the available ones")
-        LOG!!.info("")
-        LOG!!.info("Add -X to print debug output")
-        LOG!!.info("Add -q to suppress all output, except for errors and warnings")
-        LOG!!.info("")
+        LOG.info("********")
+        LOG.info("* Usage")
+        LOG.info("********")
+        LOG.info("")
+        LOG.info("cassandra-migration [options] command")
+        LOG.info("")
+        LOG.info("Commands")
+        LOG.info("========")
+        LOG.info("migrate  : Migrates the database")
+        LOG.info("validate : Validates the applied migrations against the available ones")
+        LOG.info("")
+        LOG.info("Add -X to print debug output")
+        LOG.info("Add -q to suppress all output, except for errors and warnings")
+        LOG.info("")
     }
 
 }

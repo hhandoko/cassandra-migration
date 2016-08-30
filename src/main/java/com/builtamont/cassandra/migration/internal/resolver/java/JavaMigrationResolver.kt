@@ -29,7 +29,10 @@ import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
 import com.builtamont.cassandra.migration.internal.resolver.MigrationInfoHelper
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationComparator
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
+import com.builtamont.cassandra.migration.internal.util.ClassUtils
 import com.builtamont.cassandra.migration.internal.util.ScriptsLocation
+import com.builtamont.cassandra.migration.internal.util.StringUtils
+import com.builtamont.cassandra.migration.internal.util.scanner.Scanner
 import java.util.*
 
 /**
@@ -59,13 +62,13 @@ class JavaMigrationResolver(
         }
 
         try {
-            val classes = com.builtamont.cassandra.migration.internal.util.scanner.Scanner(classLoader).scanForClasses(location, JavaMigration::class.java)
+            val classes = Scanner(classLoader).scanForClasses(location, JavaMigration::class.java)
 
             return classes.map { clazz ->
-                val javaMigration = com.builtamont.cassandra.migration.internal.util.ClassUtils.instantiate<JavaMigration>(clazz.name, classLoader)
+                val javaMigration = ClassUtils.instantiate<JavaMigration>(clazz.name, classLoader)
 
                 val resolvedMigration = extractMigrationInfo(javaMigration)
-                resolvedMigration.physicalLocation = com.builtamont.cassandra.migration.internal.util.ClassUtils.getLocationOnDisk(clazz)
+                resolvedMigration.physicalLocation = ClassUtils.getLocationOnDisk(clazz)
                 resolvedMigration.executor = JavaMigrationExecutor(javaMigration)
                 resolvedMigration
             }.sortedWith(ResolvedMigrationComparator())
@@ -93,11 +96,11 @@ class JavaMigrationResolver(
         if (javaMigration is MigrationInfoProvider) {
             version = javaMigration.version
             description = javaMigration.description
-            if (!com.builtamont.cassandra.migration.internal.util.StringUtils.hasText(description)) {
+            if (!StringUtils.hasText(description)) {
                 throw CassandraMigrationException("Missing description for migration " + version)
             }
         } else {
-            val className = com.builtamont.cassandra.migration.internal.util.ClassUtils.getShortName(javaMigration.javaClass)
+            val className = ClassUtils.getShortName(javaMigration.javaClass)
             val info = MigrationInfoHelper.extractVersionAndDescription(className, "V", "__", "")
             version = info.left
             description = info.right

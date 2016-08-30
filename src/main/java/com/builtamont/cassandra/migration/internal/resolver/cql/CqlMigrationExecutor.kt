@@ -20,6 +20,7 @@ package com.builtamont.cassandra.migration.internal.resolver.cql
 
 import com.builtamont.cassandra.migration.api.resolver.MigrationExecutor
 import com.builtamont.cassandra.migration.internal.dbsupport.CqlScript
+import com.builtamont.cassandra.migration.internal.util.scanner.Resource
 import com.datastax.driver.core.Session
 
 /**
@@ -31,8 +32,8 @@ import com.datastax.driver.core.Session
  * @param encoding The encoding of this CQL migration.
 */
 class CqlMigrationExecutor(
-        private val cqlScriptResource: com.builtamont.cassandra.migration.internal.util.scanner.Resource,
-        private val encoding: String
+    private val cqlScriptResource: Resource,
+    private val encoding: String
 ) : MigrationExecutor {
 
     /**

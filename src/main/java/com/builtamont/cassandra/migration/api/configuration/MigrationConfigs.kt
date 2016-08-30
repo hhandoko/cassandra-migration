@@ -19,6 +19,7 @@
 package com.builtamont.cassandra.migration.api.configuration
 
 import com.builtamont.cassandra.migration.api.MigrationVersion
+import com.builtamont.cassandra.migration.internal.util.StringUtils
 
 /**
  * Main Cassandra migration configuration.
@@ -94,7 +95,7 @@ class MigrationConfigs {
 
         val locationsProp = System.getProperty(MigrationProperty.SCRIPTS_LOCATIONS.prefix)
         if (locationsProp != null && locationsProp.trim { it <= ' ' }.length != 0) {
-            scriptsLocations = com.builtamont.cassandra.migration.internal.util.StringUtils.tokenizeToStringArray(locationsProp, ",")
+            scriptsLocations = StringUtils.tokenizeToStringArray(locationsProp, ",")
         }
 
         val allowOutOfOrderProp = System.getProperty(MigrationProperty.ALLOW_OUTOFORDER.prefix)

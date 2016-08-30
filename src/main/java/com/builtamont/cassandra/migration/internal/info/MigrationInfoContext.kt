@@ -66,7 +66,7 @@ class MigrationInfoContext {
     override fun hashCode(): Int {
         var result = if (outOfOrder) 1 else 0
         result = 31 * result + if (pendingOrFuture) 1 else 0
-        result = 31 * result + target!!.hashCode()
+        result = 31 * result + (target?.hashCode() ?: 0)
         result = 31 * result + (schema?.hashCode() ?: 0)
         result = 31 * result + (baseline?.hashCode() ?: 0)
         result = 31 * result + lastResolved.hashCode()
@@ -87,18 +87,33 @@ class MigrationInfoContext {
             return other == null || javaClass != other.javaClass
         }
 
-        if (this === other) return true
-        if (isNotSame()) return false
+        /**
+         * @return {@code true} if this context instance schema property is not the same as the given object schema property.
+         */
+        fun isNotSameSchema(that: MigrationInfoContext): Boolean {
+            return if (schema != null) schema != that.schema else that.schema != null
+        }
 
-        val that = other as MigrationInfoContext?
+        /**
+         * @return {@code true} if this context instance baseline property is not the same as the given object baseline property.
+         */
+        fun isNotSameBaseline(that: MigrationInfoContext): Boolean {
+            return if (baseline != null) baseline != that.baseline else that.baseline != null
+        }
 
-        if (outOfOrder != that!!.outOfOrder) return false
-        if (pendingOrFuture != that.pendingOrFuture) return false
-        if (if (schema != null) schema != that.schema else that.schema != null) return false
-        if (if (baseline != null) baseline != that.baseline else that.baseline != null) return false
-        if (lastApplied != that.lastApplied) return false
-        if (lastResolved != that.lastResolved) return false
-        return target == that.target
+        val that = other as MigrationInfoContext? ?: return false
+
+        return when {
+            this === other                          -> true
+            isNotSame()                             -> false
+            outOfOrder != that.outOfOrder           -> false
+            pendingOrFuture != that.pendingOrFuture -> false
+            isNotSameSchema(that)                   -> false
+            isNotSameBaseline(that)                 -> false
+            lastApplied != that.lastApplied         -> false
+            lastResolved != that.lastResolved       -> false
+            else                                    -> target == that.target
+        }
     }
 
 }

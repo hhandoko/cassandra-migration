@@ -21,6 +21,7 @@ package com.builtamont.cassandra.migration.internal.info
 import com.builtamont.cassandra.migration.api.*
 import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
 import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
+import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
 import java.util.*
 
@@ -37,11 +38,11 @@ import java.util.*
  * @param pendingOrFuture Allows pending or future migrations to be run.
  */
 class MigrationInfoServiceImpl(
-        private val migrationResolver: MigrationResolver,
-        private val schemaVersionDAO: com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO,
-        private var target: MigrationVersion?,
-        private val outOfOrder: Boolean,
-        private val pendingOrFuture: Boolean
+    private val migrationResolver: MigrationResolver,
+    private val schemaVersionDAO: SchemaVersionDAO,
+    private var target: MigrationVersion?,
+    private val outOfOrder: Boolean,
+    private val pendingOrFuture: Boolean
 ) : MigrationInfoService {
 
     /**

@@ -23,9 +23,12 @@ import com.builtamont.cassandra.migration.api.MigrationInfo
 import com.builtamont.cassandra.migration.api.MigrationState
 import com.builtamont.cassandra.migration.api.MigrationVersion
 import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
+import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.builtamont.cassandra.migration.internal.info.MigrationInfoImpl
 import com.builtamont.cassandra.migration.internal.info.MigrationInfoServiceImpl
 import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
+import com.builtamont.cassandra.migration.internal.util.StopWatch
+import com.builtamont.cassandra.migration.internal.util.TimeFormat
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.datastax.driver.core.Session
 
@@ -40,12 +43,12 @@ import com.datastax.driver.core.Session
  * @param allowOutOfOrder True to allow migration to be run "out of order".
  */
 class Migrate(
-        private val migrationResolver: MigrationResolver,
-        private val migrationTarget: MigrationVersion,
-        private val schemaVersionDAO: com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO,
-        private val session: Session,
-        private val user: String,
-        private val allowOutOfOrder: Boolean
+    private val migrationResolver: MigrationResolver,
+    private val migrationTarget: MigrationVersion,
+    private val schemaVersionDAO: SchemaVersionDAO,
+    private val session: Session,
+    private val user: String,
+    private val allowOutOfOrder: Boolean
 ) {
 
     /** Keyspace name lensing */
@@ -59,7 +62,7 @@ class Migrate(
      */
     @Throws(CassandraMigrationException::class)
     fun run(): Int {
-        val stopWatch = com.builtamont.cassandra.migration.internal.util.StopWatch()
+        val stopWatch = StopWatch()
         stopWatch.start()
 
         var migrationSuccessCount = 0
@@ -177,7 +180,7 @@ class Migrate(
         val oooLogMsg = if (isOutOfOrder) " (out of order)" else ""
         LOG.info("$logMsg  - ${migration.description}$oooLogMsg")
 
-        val stopWatch = com.builtamont.cassandra.migration.internal.util.StopWatch()
+        val stopWatch = StopWatch()
         stopWatch.start()
 
         var isMigrationSuccess = false
@@ -216,7 +219,7 @@ class Migrate(
          * @return The migration success log message.
          */
         fun successLogMsg(): String {
-            return "Successfully applied $count migration to keyspace $keyspaceName (execution time ${com.builtamont.cassandra.migration.internal.util.TimeFormat.format(executionTime)})"
+            return "Successfully applied $count migration to keyspace $keyspaceName (execution time ${TimeFormat.format(executionTime)})"
         }
 
         when (count) {

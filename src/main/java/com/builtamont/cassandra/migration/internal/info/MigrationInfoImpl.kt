@@ -237,14 +237,29 @@ class MigrationInfoImpl(
             return other == null || javaClass != other.javaClass
         }
 
-        if (this === other) return true
-        if (isNotSame()) return false
+        /**
+         * @return {@code true} if this context instance applied migration property is not the same as the given object applied migration property.
+         */
+        fun isNotSameAppliedMigration(that: MigrationInfoImpl): Boolean {
+            return if (appliedMigration != null) appliedMigration != that.appliedMigration else that.appliedMigration != null
+        }
 
-        val that = other as MigrationInfoImpl?
+        /**
+         * @return {@code true} if this context instance resolved migration property is not the same as the given object resolved migration property.
+         */
+        fun isNotSameResolvedMigration(that: MigrationInfoImpl): Boolean {
+            return if (resolvedMigration != null) resolvedMigration != that.resolvedMigration else that.resolvedMigration != null
+        }
 
-        if (if (appliedMigration != null) appliedMigration != that!!.appliedMigration else that!!.appliedMigration != null) return false
-        if (context != that.context) return false
-        return !if (resolvedMigration != null) resolvedMigration != that.resolvedMigration else that.resolvedMigration != null
+        val that = other as MigrationInfoImpl? ?: return false
+
+        return when {
+            this === other                  -> true
+            isNotSame()                     -> false
+            isNotSameAppliedMigration(that) -> false
+            context != that.context         -> false
+            else                            -> !isNotSameResolvedMigration(that) // Note the double negative
+        }
     }
 
     /**

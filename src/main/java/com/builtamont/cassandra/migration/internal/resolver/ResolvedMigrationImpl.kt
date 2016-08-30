@@ -96,17 +96,46 @@ class ResolvedMigrationImpl : ResolvedMigration {
             return other == null || javaClass != other.javaClass
         }
 
-        if (this === other) return true
-        if (isNotSame()) return false
+        /**
+         * @return {@code true} if this context instance checksum property is not the same as the given object checksum property.
+         */
+        fun isNotSameChecksum(that: ResolvedMigrationImpl): Boolean {
+            return if (checksum != null) checksum != that.checksum else that.checksum != null
+        }
 
-        val that = other as ResolvedMigrationImpl?
+        /**
+         * @return {@code true} if this context instance description property is not the same as the given object description property.
+         */
+        fun isNotSameDescription(that: ResolvedMigrationImpl): Boolean {
+            return if (description != null) description != that.description else that.description != null
+        }
 
-        if (if (checksum != null) checksum != that!!.checksum else that!!.checksum != null) return false
-        if (if (description != null) description != that.description else that.description != null) return false
-        if (if (physicalLocation != null) physicalLocation != that.physicalLocation else that.physicalLocation != null) return false
-        if (if (script != null) script != that.script else that.script != null) return false
-        if (type !== that.type) return false
-        return version == that.version
+        /**
+         * @return {@code true} if this context instance physical location property is not the same as the given object physical location property.
+         */
+        fun isNotSamePhysicalLocation(that: ResolvedMigrationImpl): Boolean {
+            return if (physicalLocation != null) physicalLocation != that.physicalLocation else that.physicalLocation != null
+        }
+
+        /**
+         * @return {@code true} if this context instance script property is not the same as the given object script property.
+         */
+        fun isNotSameScript(that: ResolvedMigrationImpl): Boolean {
+            return if (script != null) script != that.script else that.script != null
+        }
+
+        val that = other as ResolvedMigrationImpl? ?: return false
+
+        return when {
+            this === other                  -> true
+            isNotSame()                     -> false
+            isNotSameChecksum(that)         -> false
+            isNotSameDescription(that)      -> false
+            isNotSamePhysicalLocation(that) -> false
+            isNotSameScript(that)           -> false
+            type !== that.type              -> false
+            else                            -> version == that.version
+        }
     }
 
     /**

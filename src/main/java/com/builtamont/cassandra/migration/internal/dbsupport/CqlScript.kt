@@ -19,7 +19,9 @@
 package com.builtamont.cassandra.migration.internal.dbsupport
 
 import com.builtamont.cassandra.migration.api.CassandraMigrationException
+import com.builtamont.cassandra.migration.internal.util.StringUtils
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
+import com.builtamont.cassandra.migration.internal.util.scanner.Resource
 import com.datastax.driver.core.Session
 import java.io.BufferedReader
 import java.io.IOException
@@ -41,7 +43,7 @@ class CqlScript {
     /**
      * The resource containing the statements.
      */
-    val resource: com.builtamont.cassandra.migration.internal.util.scanner.Resource?
+    val resource: Resource?
 
     /**
      * Creates a new CQL script from this source.
@@ -59,7 +61,7 @@ class CqlScript {
      * @param cqlScriptResource The resource containing the statements.
      * @param encoding The encoding to use.
      */
-    constructor(cqlScriptResource: com.builtamont.cassandra.migration.internal.util.scanner.Resource, encoding: String) {
+    constructor(cqlScriptResource: Resource, encoding: String) {
         val cqlScriptSource = cqlScriptResource.loadAsString(encoding)
         this.cqlStatements = parse(cqlScriptSource)
         this.resource = cqlScriptResource
@@ -103,7 +105,7 @@ class CqlScript {
             val line = lines[lineNumber - 1]
 
             if (cqlStatementBuilder.isEmpty) {
-                if (!com.builtamont.cassandra.migration.internal.util.StringUtils.hasText(line)) {
+                if (!StringUtils.hasText(line)) {
                     // Skip empty line between statements.
                     continue
                 }

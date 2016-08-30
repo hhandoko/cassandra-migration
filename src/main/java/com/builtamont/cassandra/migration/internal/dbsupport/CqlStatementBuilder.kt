@@ -18,6 +18,7 @@
  */
 package com.builtamont.cassandra.migration.internal.dbsupport
 
+import com.builtamont.cassandra.migration.internal.util.StringUtils
 import java.util.*
 
 /**
@@ -261,7 +262,7 @@ class CqlStatementBuilder {
      */
     protected fun applyStateChanges(line: String) {
         // Ignore all special characters that naturally occur in CQL, but are not opening or closing string literals
-        val tokens = com.builtamont.cassandra.migration.internal.util.StringUtils.tokenizeToStringArray(line, " @<>;:=|(),+{}")
+        val tokens = StringUtils.tokenizeToStringArray(line, " @<>;:=|(),+{}")
 
         val delimitingTokens = extractStringLiteralDelimitingTokens(tokens)
 
@@ -375,7 +376,7 @@ class CqlStatementBuilder {
      * @return The cleaned token.
      */
     protected fun removeEscapedQuotes(token: String): String {
-        return com.builtamont.cassandra.migration.internal.util.StringUtils.replaceAll(token, "''", "")
+        return StringUtils.replaceAll(token, "''", "")
     }
 
     /**

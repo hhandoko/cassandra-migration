@@ -12,5 +12,5 @@ deploy:
   script: ./scripts/deploy.sh
   skip_cleanup: true
   on:
-    all_branches: true
+    branch: master
     jdk: oraclejdk8

@@ -100,7 +100,7 @@ cm.migrate();
 
 ``` shell
 java -jar \
--Dcassandra.migration.scripts.locations=file:target/test-classes/migration/integ \
+-Dcassandra.migration.scripts.locations=filesystem:target/test-classes/migration/integ \
 -Dcassandra.migration.cluster.contactpoints=localhost \
 -Dcassandra.migration.cluster.port=9147 \
 -Dcassandra.migration.cluster.username=cassandra \
@@ -145,17 +145,17 @@ Keyspace:
 
 ## Project Rationale
 
-**Why not create an extension to an existing popular database migration project (i.e. Flyway)?**
+**Why not create an extension to an existing popular database migration project (i.e. Flyway)?**<br />
 Popular database migration tools (e.g. Flyway, Liquibase) are tailored for relational databases with JDBC. This project exists due to the need for Cassandra-specific tooling:
  * CQL != SQL,
  * Cassandra is distributed and does not have ACID transactions,
  * Cassandra do not have native JDBC driver(s),
  * etc.
 
-**Why not extend the existing Cassandra Migration project?**
+**Why not extend the existing Cassandra Migration project?**<br />
 The existing project does not seem to be actively maintained. Several important PRs have been left open for months and there was an immediate need to support Cassandra driver v3.x. 
 
-**Why Kotlin?**
+**Why Kotlin?**<br />
 There are various reasons why Kotlin was chosen, but three main reasons are:
  * code brevity and reduced noise,
  * stronger `null` checks (enforced at the compiler level), and

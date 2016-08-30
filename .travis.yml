@@ -9,7 +9,7 @@ env:
     - secure: "04af3/9b67O5xd1U8GDhCqRQedHM3RP5HokdsOwAe8vN3EyyyKWXQafBkKsPvmDh5Uu/CYQppOYS4pQxB9ikweTfj34DbyyxpqJmjYE4KFvdQuFd0msyXhLCg6xfvS4KO6zjUQ8/c3rNQap4hx/icQ50/NES4rkUkxIZ/VKQ4jPXcBzPegEC6Le50Vw2tR8FT4erdNuABnGf1WnWGUUa3i6xdQQPyw8kdTIun08HxE6M9F+JJRH8jH3b7KizQhGdACAk4fnCOmFSgu7pm6ACXRJYqAfg055i5mr77yZXfeUIcIY3l45uY1uR8sxEbLUE/KwwlLGLVZWDI4xU6JIGisbrmMce+vz6YKUT9gHF3iAEJ5e4N18nJcRyHVrqcuRzv5Py0rFPZ70dr7aW/tk0JrTz6+FZ4FNIOdvIQe4qWy2TVns0EkERdtYGTdsigWfa/sKF/P5+/2foUOlnR06p55NHpIjaHRKy/XFVV1gyURUlRUGExVoIMX21bAMxGYMFMH7LfddRsly028lXwibRMkQGBeyVRYKQmqJvN3mTPbuAWmZZdaVpqn1jkgETlT6/qz43zv9y8jAOzZ22SeHEXe3NiexChqkAJWIH3cBYshMhy8H1fmYAIVYHvI+BPsbi+qDYSnAlAUDqoLWXPAvWUX89dAIXYRNcKplzpFsjWvM="
 deploy:
   provider: script
-  script: scripts/deploy.sh
+  script: ./scripts/deploy.sh
   skip_cleanup: true
   on:
     all_branches: true

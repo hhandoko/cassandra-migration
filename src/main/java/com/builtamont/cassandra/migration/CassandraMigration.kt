@@ -59,7 +59,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
     /**
      * The Cassandra migration configuration.
      */
-    val configs: MigrationConfigs
+    lateinit var configs: MigrationConfigs
 
     /**
      * CassandraMigration initialization.

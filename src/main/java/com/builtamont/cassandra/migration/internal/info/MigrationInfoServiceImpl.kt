@@ -48,7 +48,7 @@ class MigrationInfoServiceImpl(
     /**
      * The migrations infos calculated at the last refresh.
      */
-    private var migrationInfos: List<MigrationInfoImpl>? = null
+    private var migrationInfos: List<MigrationInfoImpl> = emptyList()
 
     /**
      * Refreshes the info about all known migrations from both the classpath and the DB.
@@ -60,7 +60,7 @@ class MigrationInfoServiceImpl(
         migrationInfos = mergeAvailableAndAppliedMigrations(availableMigrations, appliedMigrations)
 
         if (MigrationVersion.CURRENT === target) {
-            target = current()!!.version
+            target = current()?.version
         }
     }
 
@@ -70,7 +70,7 @@ class MigrationInfoServiceImpl(
      * @return The error message, or `null` if everything is fine.
      */
     override fun validate(): String? {
-        migrationInfos?.forEach { it.validate()?.let { return it } }
+        migrationInfos.forEach { it.validate()?.let { return it } }
         return null
     }
 
@@ -80,14 +80,14 @@ class MigrationInfoServiceImpl(
      * @return The migrations.
      */
     override fun all(): Array<MigrationInfo> {
-        return migrationInfos?.toTypedArray<MigrationInfo>() ?: emptyArray()
+        return migrationInfos.toTypedArray()
     }
 
     /**
      * @return Current migration to be run.
      */
     override fun current(): MigrationInfo? {
-        return migrationInfos?.lastOrNull { it.state.isApplied }
+        return migrationInfos.lastOrNull { it.state.isApplied }
     }
 
     /**
@@ -96,7 +96,7 @@ class MigrationInfoServiceImpl(
      * @return The pending migrations. An empty array if none.
      */
     override fun pending(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state === MigrationState.PENDING }.orEmpty<MigrationInfo>().toTypedArray()
+        return migrationInfos.filter { it.state === MigrationState.PENDING }.orEmpty().toTypedArray()
     }
 
     /**
@@ -105,7 +105,7 @@ class MigrationInfoServiceImpl(
      * @return The applied migrations. An empty array if none.
      */
     override fun applied(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state.isApplied }.orEmpty<MigrationInfo>().toTypedArray()
+        return migrationInfos.filter { it.state.isApplied }.orEmpty().toTypedArray()
     }
 
     /**
@@ -114,7 +114,7 @@ class MigrationInfoServiceImpl(
      * @return The resolved migrations. An empty array if none.
      */
     override fun resolved(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state.isResolved }.orEmpty<MigrationInfo>().toTypedArray()
+        return migrationInfos.filter { it.state.isResolved }.orEmpty().toTypedArray()
     }
 
     /**
@@ -123,7 +123,7 @@ class MigrationInfoServiceImpl(
      * @return The failed migrations. An empty array if none.
      */
     override fun failed(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state.isFailed }.orEmpty<MigrationInfo>().toTypedArray()
+        return migrationInfos.filter { it.state.isFailed }.orEmpty().toTypedArray()
     }
 
     /**
@@ -132,7 +132,7 @@ class MigrationInfoServiceImpl(
      * @return The future migrations. An empty array if none.
      */
     override fun future(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state === MigrationState.FUTURE_SUCCESS }.orEmpty<MigrationInfo>().toTypedArray()
+        return migrationInfos.filter { it.state === MigrationState.FUTURE_SUCCESS }.orEmpty().toTypedArray()
     }
 
     /**
@@ -141,7 +141,7 @@ class MigrationInfoServiceImpl(
      * @return The out of order migrations. An empty array if none.
      */
     override fun outOfOrder(): Array<MigrationInfo> {
-        return migrationInfos?.filter { it.state === MigrationState.OUT_OF_ORDER }.orEmpty<MigrationInfo>().toTypedArray()
+        return migrationInfos.filter { it.state === MigrationState.OUT_OF_ORDER }.orEmpty().toTypedArray()
     }
 
     /**

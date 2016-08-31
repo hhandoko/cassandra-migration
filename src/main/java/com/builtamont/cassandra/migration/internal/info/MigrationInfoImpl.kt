@@ -34,9 +34,9 @@ import java.util.*
  * @param context The current context.
  */
 class MigrationInfoImpl(
-        val resolvedMigration: ResolvedMigration?,
-        val appliedMigration: AppliedMigration?,
-        private val context: MigrationInfoContext
+    val resolvedMigration: ResolvedMigration?,
+    val appliedMigration: AppliedMigration?,
+    private val context: MigrationInfoContext
 ) : MigrationInfo {
 
     /**

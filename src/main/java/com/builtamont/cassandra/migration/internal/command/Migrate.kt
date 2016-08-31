@@ -72,10 +72,7 @@ class Migrate(
 
             // Initialise `firstRun` and `currentSchemaVersion` variables
             val firstRun = migrationSuccessCount == 0
-            var currentSchemaVersion = MigrationVersion.EMPTY
-            if (infoService.current() != null) {
-                currentSchemaVersion = infoService.current()!!.version
-            }
+            val currentSchemaVersion = infoService.current()?.version ?: MigrationVersion.CURRENT
 
             // First run only
             // ~~~~~
@@ -93,7 +90,7 @@ class Migrate(
             // Log future migrations and warn users if there are no resolved migrations, or
             // if there current version migration is newer than what is available
             val future = infoService.future()
-            if (future.size > 0) {
+            if (future.isNotEmpty()) {
                 val resolvedLogMsg = "Keyspace $keyspaceName has version $currentSchemaVersion"
                 val resolved = infoService.resolved()
                 if (resolved.size == 0) {
@@ -108,7 +105,7 @@ class Migrate(
             // ~~~~~
             // Log failed future migrations and throw `CassandraMigrationException` for everything else
             val failed = infoService.failed()
-            if (failed.size > 0) {
+            if (failed.isNotEmpty()) {
                 val isFutureFailed = failed[0].state === MigrationState.FUTURE_FAILED
                 val failedVersion = failed[0].version
                 if (failed.size == 1 && isFutureFailed) {
@@ -122,14 +119,17 @@ class Migrate(
 
             // Pending migrations
             // ~~~~~
-            // Early return if there are no pending migrations, otherwise
-            // apply pending migrations and exit when error is thrown
-            val pendingMigrations = infoService.pending() as Array<MigrationInfoImpl>
-            if (pendingMigrations.size == 0) {
+            // Apply pending migrations
+            val pendingMigrations = infoService.pending()
+            if (pendingMigrations.isNotEmpty()) {
+                if (pendingMigrations[0] is MigrationInfoImpl) {
+                    val isOutOfOrder = pendingMigrations[0].version.compareTo(currentSchemaVersion) < 0
+                    applyMigration(pendingMigrations[0] as MigrationInfoImpl, isOutOfOrder) ?: break
+                }
+            } else {
+                // Exit if there are no more pending migrations
                 break
             }
-            val isOutOfOrder = pendingMigrations[0].version.compareTo(currentSchemaVersion) < 0
-            applyMigration(pendingMigrations[0], isOutOfOrder) ?: break
 
             migrationSuccessCount++
         }
@@ -184,9 +184,9 @@ class Migrate(
         stopWatch.start()
 
         var isMigrationSuccess = false
-        val migrationExecutor = migration.resolvedMigration?.executor
         try {
-            migrationExecutor!!.execute(session)
+            val executor = migration.resolvedMigration!!.executor!!
+            executor.execute(session)
             isMigrationSuccess = true
             LOG.debug("$logMsg success!")
         } catch (e: Exception) {

@@ -25,6 +25,7 @@ import com.builtamont.cassandra.migration.api.configuration.CassandraMigrationCo
 import com.builtamont.cassandra.migration.api.configuration.MigrationConfigs
 import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
 import com.builtamont.cassandra.migration.config.Keyspace
+import com.builtamont.cassandra.migration.internal.command.Baseline
 import com.builtamont.cassandra.migration.internal.command.Initialize
 import com.builtamont.cassandra.migration.internal.command.Migrate
 import com.builtamont.cassandra.migration.internal.command.Validate
@@ -60,6 +61,16 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * The Cassandra migration configuration.
      */
     lateinit var configs: MigrationConfigs
+
+    /**
+     * The baseline version.
+     */
+    private val baselineVersion = MigrationVersion.Companion.fromVersion("1")
+
+    /**
+     * The baseline description.
+     */
+    private val baselineDescription = "<< Cassandra Baseline >>"
 
     /**
      * CassandraMigration initialization.
@@ -143,8 +154,14 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * Baselines an existing database, excluding all migrations up to and including baselineVersion.
      */
     fun baseline() {
-        // TODO: Create the Cassandra migration implementation, refer to existing PR: https://github.com/Contrast-Security-OSS/cassandra-migration/pull/17
-        throw NotImplementedException()
+        execute(object : Action<Unit> {
+            override fun execute(session: Session): Unit {
+                val migrationResolver = createMigrationResolver()
+                val schemaVersionDao = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
+                val baseline = Baseline(migrationResolver, baselineVersion, schemaVersionDao, baselineDescription)
+                baseline.run()
+            }
+        })
     }
 
     /**

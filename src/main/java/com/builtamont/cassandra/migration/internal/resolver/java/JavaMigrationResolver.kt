@@ -86,9 +86,11 @@ class JavaMigrationResolver(
      */
     @Throws(CassandraMigrationException::class)
     fun extractMigrationInfo(javaMigration: JavaMigration): ResolvedMigration {
-        var checksum: Int? = null
+        val checksum: Int?
         if (javaMigration is MigrationChecksumProvider) {
             checksum = javaMigration.checksum
+        } else {
+            checksum = 0
         }
 
         val version: MigrationVersion

@@ -18,11 +18,10 @@
  */
 package com.builtamont.cassandra.migration;
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException;
-import com.builtamont.cassandra.migration.api.MigrationInfo;
-import com.builtamont.cassandra.migration.api.MigrationInfoService;
-import com.builtamont.cassandra.migration.api.MigrationType;
+import com.builtamont.cassandra.migration.api.*;
+import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO;
 import com.builtamont.cassandra.migration.internal.info.MigrationInfoDumper;
+import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration;
 import com.datastax.driver.core.ResultSet;
 import com.datastax.driver.core.Row;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
@@ -186,15 +185,18 @@ public class CassandraMigrationIT extends BaseIT {
 		cm = new CassandraMigration();
 		cm.getConfigs().setScriptsLocations(scriptsLocations);
 		cm.setKeyspace(getKeyspace());
+
 		cm.validate();
 
 		cm = new CassandraMigration();
 		cm.getConfigs().setScriptsLocations(new String[] { "migration/integ/java" });
 		cm.setKeyspace(getKeyspace());
+
 		try {
 			cm.validate();
 			Assert.fail("The expected CassandraMigrationException was not raised");
 		} catch (CassandraMigrationException e) {
+			Assert.assertTrue("expected CassandraMigrationException", true);
 		}
 	}
 
@@ -226,6 +228,33 @@ public class CassandraMigrationIT extends BaseIT {
 			Thread.sleep(1000L);
 
 		assertThat(runCmdTestSuccess, is(true));
+	}
+
+	@Test
+	public void testBaseLine(){
+		String[] scriptsLocations = {"migration/integ", "migration/integ/java"};
+		CassandraMigration cm = new CassandraMigration();
+		cm.getConfigs().setScriptsLocations(scriptsLocations);
+		cm.setKeyspace(getKeyspace());
+		cm.baseline();
+
+		SchemaVersionDAO schemaVersionDao = new SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.Companion.getCURRENT().getTable());
+		AppliedMigration baselineMarker = schemaVersionDao.getBaselineMarker();
+		assertThat(baselineMarker.getVersion(), is(MigrationVersion.Companion.fromVersion("1")));
+	}
+
+	@Test(expected = CassandraMigrationException.class)
+	public void testBaseLineWithMigrations() {
+		String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
+		CassandraMigration cm = new CassandraMigration();
+		cm.getConfigs().setScriptsLocations(scriptsLocations);
+		cm.setKeyspace(getKeyspace());
+		cm.migrate();
+
+		cm = new CassandraMigration();
+		cm.getConfigs().setScriptsLocations(scriptsLocations);
+		cm.setKeyspace(getKeyspace());
+		cm.baseline();
 	}
 
 	private static void watch(final Process process) {

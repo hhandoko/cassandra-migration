@@ -23,7 +23,6 @@ import com.builtamont.cassandra.migration.internal.util.logging.Log
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.builtamont.cassandra.migration.internal.util.logging.console.ConsoleLog
 import com.builtamont.cassandra.migration.internal.util.logging.console.ConsoleLogCreator
-import java.util.*
 
 /**
  * Cassandra migration command line runner.
@@ -39,6 +38,11 @@ object CommandLine {
      * Command to trigger validate action.
      */
     val VALIDATE = "validate"
+
+    /**
+     * Command to trigger baseline action.
+     */
+    val BASELINE = "baseline"
 
     /**
      * Logging support.
@@ -69,6 +73,8 @@ object CommandLine {
             cm.migrate()
         } else if (VALIDATE.equals(operation, ignoreCase = true)) {
             cm.validate()
+        } else if (BASELINE.equals(operation, ignoreCase = true)) {
+            cm.baseline()
         }
     }
 
@@ -76,15 +82,7 @@ object CommandLine {
      * Get a list of applicable operations.
      */
     private fun determineOperations(args: Array<String>): List<String> {
-        val operations = ArrayList<String>()
-
-        for (arg in args) {
-            if (!arg.startsWith("-")) {
-                operations.add(arg)
-            }
-        }
-
-        return operations
+        return args.filterNot { it.startsWith("-") }
     }
 
     /**
@@ -124,6 +122,7 @@ object CommandLine {
         LOG.info("========")
         LOG.info("migrate  : Migrates the database")
         LOG.info("validate : Validates the applied migrations against the available ones")
+        LOG.info("baseline : Baselines an existing database, excluding all migrations up to, and including baselineVersion")
         LOG.info("")
         LOG.info("Add -X to print debug output")
         LOG.info("Add -q to suppress all output, except for errors and warnings")

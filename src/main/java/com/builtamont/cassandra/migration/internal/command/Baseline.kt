@@ -50,19 +50,22 @@ class Baseline(
     fun run() {
         val baselineMigration = schemaVersionDAO.baselineMarker
         if (schemaVersionDAO.hasAppliedMigrations()) {
-            throw CassandraMigrationException("Unable to baseline metadata table " + schemaVersionDAO.tableName + " as it already contains migrations");
+            val msg = "Unable to baseline metadata table ${schemaVersionDAO.tableName} as it already contains migrations"
+            throw CassandraMigrationException(msg)
         }
 
         if (schemaVersionDAO.hasBaselineMarker()) {
-            if (!baselineMigration.version!!.equals(baselineVersion) || !baselineMigration.description.equals(baselineDescription)) {
-                throw CassandraMigrationException("Unable to baseline metadata table " + schemaVersionDAO.tableName + " with (" + baselineVersion +
-                        "," + baselineDescription + ") as it has already been initialized with (" + baselineMigration.version + "," + baselineMigration
-                        .description + ")")
+            val isNotBaselineByVersion = !(baselineMigration.version?.equals(baselineVersion) ?: false)
+            val isNotBaselineByDescription = !baselineMigration.description.equals(baselineDescription)
+            if (isNotBaselineByVersion || isNotBaselineByDescription) {
+                val msg = "Unable to baseline metadata table ${schemaVersionDAO.tableName} with ($baselineVersion, $baselineDescription)" +
+                        " as it has already been initialized with (${baselineMigration.version}, ${baselineMigration.description})"
+                throw CassandraMigrationException(msg)
             }
         } else {
             if (baselineVersion.equals(MigrationVersion.fromVersion("0"))) {
-                throw CassandraMigrationException("Unable to baseline metadata table " + schemaVersionDAO.tableName + " with version 0 as this " +
-                        "version was used for schema creation")
+                val msg = "Unable to baseline metadata table ${schemaVersionDAO.tableName} with version 0 as this version was used for schema creation"
+                throw CassandraMigrationException(msg)
             }
             schemaVersionDAO.addBaselineMarker(baselineVersion, baselineDescription, user)
         }

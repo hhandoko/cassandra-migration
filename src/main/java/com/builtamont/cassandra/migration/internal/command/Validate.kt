@@ -72,7 +72,8 @@ class Validate(
      * @param executionTime The total time taken to perform this migration run (in ms).
      */
     private fun logSummary(count: Int, executionTime: Long) {
-        LOG.info("Validated %d migrations (execution time %s)".format(count, TimeFormat.format(executionTime)))
+        val time = TimeFormat.format(executionTime)
+        LOG.info("Validated $count migrations (execution time $time)")
     }
 
     /**

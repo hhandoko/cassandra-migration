@@ -25,6 +25,8 @@ Import this library as a dependency (Maven example):
 </dependency>
 ```
 
+***NOTE:** Integration test in Travis CI is only run against Oracle JDK 1.8, due to embedded Cassandra's dependencies on JDK 1.8* 
+
 ### Migration version table
 
 ``` shell
@@ -164,9 +166,9 @@ There are various reasons why Kotlin was chosen, but three main reasons are:
 
 Run `mvn test` to run the unit tests.
 
-Run `mvn package` to package the jars, then `mvn test -Dtest=com.builtamont.cassandra.migration.CassandraMigrationIT` to run the integration tests.
+Run `mvn verify` to run the integration tests.
 
-***NOTE:** The integration test might complain about some missing SIGAR binaries in OSX / macOS with Java 8, this can be safely ignored. If you wish, you can download the missing binaries and set `java.library.path` parameter to point to the containing folder (e.g. `mvn test -Dtest=com.builtamont.cassandra.migration.CassandraMigrationIT -Djava.library.path=lib` where `lib` is the `/lib` folder relative to the project root).*
+***NOTE:** The integration test might complain about some missing SIGAR binaries, this can be safely ignored. If you wish, you can download the missing binaries and set `java.library.path` parameter to point to the containing folder (e.g. `mvn verify -Djava.library.path=lib` where `lib` is the `/lib` folder relative to the project root).*
 
 ## Contributing
 

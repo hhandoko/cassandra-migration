@@ -25,12 +25,19 @@ import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 
 /**
  * Handles the baseline command.
+ *
+ * @param migrationResolver The Cassandra migration resolver.
+ * @param baselineVersion The baseline version of the migration.
+ * @param schemaVersionDAO The Cassandra migration schema version DAO.
+ * @param baselineDescription The baseline version description / comments.
+ * @param user The user to execute the migration as.
  */
 class Baseline(
     private val migrationResolver: MigrationResolver,
     private val baselineVersion: MigrationVersion,
-    private val schemaVersionDao: SchemaVersionDAO,
-    private val baselineDescription: String
+    private val schemaVersionDAO: SchemaVersionDAO,
+    private val baselineDescription: String,
+    private val user: String
 ) {
 
     /**
@@ -41,23 +48,23 @@ class Baseline(
      */
     @Throws(CassandraMigrationException::class)
     fun run() {
-        val baselineMigration = schemaVersionDao.baselineMarker
-        if (schemaVersionDao.hasAppliedMigrations()) {
-            throw CassandraMigrationException("Unable to baseline metadata table " + schemaVersionDao.tableName + " as it already contains migrations");
+        val baselineMigration = schemaVersionDAO.baselineMarker
+        if (schemaVersionDAO.hasAppliedMigrations()) {
+            throw CassandraMigrationException("Unable to baseline metadata table " + schemaVersionDAO.tableName + " as it already contains migrations");
         }
 
-        if (schemaVersionDao.hasBaselineMarker()) {
+        if (schemaVersionDAO.hasBaselineMarker()) {
             if (!baselineMigration.version!!.equals(baselineVersion) || !baselineMigration.description.equals(baselineDescription)) {
-                throw CassandraMigrationException("Unable to baseline metadata table " + schemaVersionDao.tableName + " with (" + baselineVersion +
+                throw CassandraMigrationException("Unable to baseline metadata table " + schemaVersionDAO.tableName + " with (" + baselineVersion +
                         "," + baselineDescription + ") as it has already been initialized with (" + baselineMigration.version + "," + baselineMigration
                         .description + ")")
             }
         } else {
             if (baselineVersion.equals(MigrationVersion.fromVersion("0"))) {
-                throw CassandraMigrationException("Unable to baseline metadata table " + schemaVersionDao.tableName + " with version 0 as this " +
+                throw CassandraMigrationException("Unable to baseline metadata table " + schemaVersionDAO.tableName + " with version 0 as this " +
                         "version was used for schema creation")
             }
-            schemaVersionDao.addBaselineMarker(baselineVersion, baselineDescription)
+            schemaVersionDAO.addBaselineMarker(baselineVersion, baselineDescription, user)
         }
     }
 

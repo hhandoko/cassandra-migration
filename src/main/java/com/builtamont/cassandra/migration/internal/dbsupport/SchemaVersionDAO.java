@@ -284,17 +284,19 @@ public class SchemaVersionDAO {
         return !filteredMigrations.isEmpty();
     }
 
-    public void addBaselineMarker(final MigrationVersion baselineVersion, final String baselineDescription) {
-        addAppliedMigration(new AppliedMigration(
+    public void addBaselineMarker(final MigrationVersion baselineVersion, final String baselineDescription, final String user) {
+        addAppliedMigration(
+            new AppliedMigration(
                 baselineVersion,
                 baselineDescription,
                 MigrationType.BASELINE,
                 baselineDescription,
                 0,
-                null,
+                user,
                 0,
                 true
-        ));
+            )
+        );
     }
 
     public AppliedMigration getBaselineMarker() {

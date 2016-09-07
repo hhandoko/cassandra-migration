@@ -115,7 +115,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      */
     fun info(): MigrationInfoService {
         return execute(object : Action<MigrationInfoService> {
-            override fun execute(session: Session): MigrationInfoService? {
+            override fun execute(session: Session): MigrationInfoService {
                 val migrationResolver = createMigrationResolver()
                 val schemaVersionDAO = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
                 val migrationInfoService = MigrationInfoServiceImpl(migrationResolver, schemaVersionDAO, configs.target, false, true)
@@ -139,8 +139,8 @@ class CassandraMigration : CassandraMigrationConfiguration {
         val validationError = execute(object : Action<String?> {
             override fun execute(session: Session): String? {
                 val migrationResolver = createMigrationResolver()
-                val schemaVersionDao = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
-                val validate = Validate(migrationResolver, configs.target, schemaVersionDao, true, false)
+                val schemaVersionDAO = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
+                val validate = Validate(migrationResolver, configs.target, schemaVersionDAO, true, false)
                 return validate.run()
             }
         })
@@ -157,8 +157,8 @@ class CassandraMigration : CassandraMigrationConfiguration {
         execute(object : Action<Unit> {
             override fun execute(session: Session): Unit {
                 val migrationResolver = createMigrationResolver()
-                val schemaVersionDao = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
-                val baseline = Baseline(migrationResolver, baselineVersion, schemaVersionDao, baselineDescription)
+                val schemaVersionDAO = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
+                val baseline = Baseline(migrationResolver, baselineVersion, schemaVersionDAO, baselineDescription, keyspace.cluster.username)
                 baseline.run()
             }
         })
@@ -214,7 +214,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
             else
                 throw CassandraMigrationException("Keyspace: " + keyspace.name + " does not exist.")
 
-            result = action.execute(session)!!
+            result = action.execute(session)
         } finally {
             if (null != session && !session.isClosed)
                 try {
@@ -276,7 +276,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
          * @param session The Cassandra session connection to use to execute the migration.
          * @return The action result.
          */
-        fun execute(session: Session): T?
+        fun execute(session: Session): T
 
     }
 

@@ -219,7 +219,7 @@ class Migrate(
          * @return The migration success log message.
          */
         fun successLogMsg(): String {
-            return "Successfully applied $count migration to keyspace $keyspaceName (execution time ${TimeFormat.format(executionTime)})"
+            return "Successfully applied $count migration(s) to keyspace $keyspaceName (execution time ${TimeFormat.format(executionTime)})"
         }
 
         when (count) {

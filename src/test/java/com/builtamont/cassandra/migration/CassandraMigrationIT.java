@@ -238,8 +238,8 @@ public class CassandraMigrationIT extends BaseIT {
 		cm.setKeyspace(getKeyspace());
 		cm.baseline();
 
-		SchemaVersionDAO schemaVersionDao = new SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.Companion.getCURRENT().getTable());
-		AppliedMigration baselineMarker = schemaVersionDao.getBaselineMarker();
+		SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.Companion.getCURRENT().getTable());
+		AppliedMigration baselineMarker = schemaVersionDAO.getBaselineMarker();
 		assertThat(baselineMarker.getVersion(), is(MigrationVersion.Companion.fromVersion("1")));
 	}
 
@@ -264,7 +264,7 @@ public class CassandraMigrationIT extends BaseIT {
 				String line;
 				try {
 					while ((line = input.readLine()) != null) {
-						if (line.contains("Successfully applied 2 migrations"))
+						if (line.contains("Successfully applied 2 migration(s)"))
 							runCmdTestSuccess = true;
 						System.out.println(line);
 					}

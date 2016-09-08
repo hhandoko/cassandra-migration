@@ -382,7 +382,7 @@ public class SchemaVersionDAO {
 
         Select select = QueryBuilder
                 .select("count")
-                .from(tableName + COUNTS_TABLE_NAME_SUFFIX);
+                .from(keyspace.getName(), tableName + COUNTS_TABLE_NAME_SUFFIX);
         select.where(eq("name", "installed_rank"));
 
         select.setConsistencyLevel(this.consistencyLevel);

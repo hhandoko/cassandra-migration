@@ -87,24 +87,18 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @return The number of successfully applied migrations.
      */
     fun migrate(): Int {
-        return execute(object : Action<Int> {
-            override fun execute(session: Session): Int {
-                Initialize().run(session, keyspace, MigrationVersion.CURRENT.table)
+        return execute(migrateAction())
+    }
 
-                val migrationResolver = createMigrationResolver()
-                val schemaVersionDAO = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
-                val migrate = Migrate(
-                    migrationResolver,
-                    configs.target,
-                    schemaVersionDAO,
-                    session,
-                    keyspace.cluster.username,
-                    configs.isAllowOutOfOrder
-                )
-
-                return migrate.run()
-            }
-        })
+    /**
+     * Starts the database migration. All pending migrations will be applied in order.
+     * Calling migrate on an up-to-date database has no effect.
+     *
+     * @param session The Cassandra connection session.
+     * @return The number of successfully applied migrations.
+     */
+    fun migrate(session: Session): Int {
+        return execute(migrateAction(), session)
     }
 
     /**
@@ -114,16 +108,18 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @return All migrations sorted by version, oldest first.
      */
     fun info(): MigrationInfoService {
-        return execute(object : Action<MigrationInfoService> {
-            override fun execute(session: Session): MigrationInfoService {
-                val migrationResolver = createMigrationResolver()
-                val schemaVersionDAO = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
-                val migrationInfoService = MigrationInfoServiceImpl(migrationResolver, schemaVersionDAO, configs.target, false, true)
-                migrationInfoService.refresh()
+        return execute(infoAction())
+    }
 
-                return migrationInfoService
-            }
-        })
+    /**
+     * Retrieves the complete information about all the migrations including applied, pending and current migrations with
+     * details and status.
+     *
+     * @param session The Cassandra connection session.
+     * @return All migrations sorted by version, oldest first.
+     */
+    fun info(session: Session): MigrationInfoService {
+        return execute(infoAction(), session)
     }
 
     /**
@@ -136,17 +132,29 @@ class CassandraMigration : CassandraMigrationConfiguration {
      *  * versions have been resolved that haven't been applied yet
      */
     fun validate() {
-        val validationError = execute(object : Action<String?> {
-            override fun execute(session: Session): String? {
-                val migrationResolver = createMigrationResolver()
-                val schemaVersionDAO = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
-                val validate = Validate(migrationResolver, configs.target, schemaVersionDAO, true, false)
-                return validate.run()
-            }
-        })
+        val validationError = execute(validateAction())
 
         if (validationError != null) {
-            throw CassandraMigrationException("Validation failed. " + validationError)
+            throw CassandraMigrationException("Validation failed. $validationError")
+        }
+    }
+
+    /**
+     * Validate applied migrations against resolved ones (on the filesystem or classpath)
+     * to detect accidental changes that may prevent the schema(s) from being recreated exactly.
+     *
+     * Validation fails if:
+     *  * differences in migration names, types or checksums are found
+     *  * versions have been applied that aren't resolved locally anymore
+     *  * versions have been resolved that haven't been applied yet
+     *
+     * @param session The Cassandra connection session.
+     */
+    fun validate(session: Session) {
+        val validationError = execute(validateAction(), session)
+
+        if (validationError != null) {
+            throw CassandraMigrationException("Validation failed. $validationError")
         }
     }
 
@@ -154,14 +162,16 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * Baselines an existing database, excluding all migrations up to and including baselineVersion.
      */
     fun baseline() {
-        execute(object : Action<Unit> {
-            override fun execute(session: Session): Unit {
-                val migrationResolver = createMigrationResolver()
-                val schemaVersionDAO = SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
-                val baseline = Baseline(migrationResolver, baselineVersion, schemaVersionDAO, baselineDescription, keyspace.cluster.username)
-                baseline.run()
-            }
-        })
+        execute(baselineAction())
+    }
+
+    /**
+     * Baselines an existing database, excluding all migrations up to and including baselineVersion.
+     *
+     * @param session The Cassandra connection session.
+     */
+    fun baseline(session: Session) {
+        execute(baselineAction(), session)
     }
 
     /**
@@ -179,11 +189,11 @@ class CassandraMigration : CassandraMigrationConfiguration {
         var cluster: Cluster? = null
         var session: Session? = null
         try {
-            if (null == keyspace)
-                throw IllegalArgumentException("Unable to establish Cassandra session. Keyspace is not configured.")
-
-            if (null == keyspace.cluster)
-                throw IllegalArgumentException("Unable to establish Cassandra session. Cluster is not configured.")
+            // Guard clauses
+            val errorMsg = "Unable to establish Cassandra session"
+            if (keyspace == null) throw IllegalArgumentException("$errorMsg. Keyspace is not configured.")
+            if (keyspace.cluster == null) throw IllegalArgumentException("$errorMsg. Cluster is not configured.")
+            if (keyspace.name.isNullOrEmpty()) throw IllegalArgumentException("$errorMsg. Keyspace is not specified.")
 
             val builder = Cluster.Builder()
             builder.addContactPoints(*keyspace.cluster.contactpoints).withPort(keyspace.cluster.port)
@@ -200,8 +210,6 @@ class CassandraMigration : CassandraMigrationConfiguration {
             LOG.info(getConnectionInfo(metadata))
 
             session = cluster.newSession()
-            if (null == keyspace.name || keyspace.name.trim { it <= ' ' }.length == 0)
-                throw IllegalArgumentException("Keyspace not specified.")
 
             val keyspaces = metadata.keyspaces
             var keyspaceExists = false
@@ -209,10 +217,11 @@ class CassandraMigration : CassandraMigrationConfiguration {
                 if (keyspaceMetadata.name.equals(keyspace.name, ignoreCase = true))
                     keyspaceExists = true
             }
-            if (keyspaceExists)
-                session!!.execute("USE " + keyspace.name)
-            else
-                throw CassandraMigrationException("Keyspace: " + keyspace.name + " does not exist.")
+            if (keyspaceExists) {
+                session!!.execute("USE ${keyspace.name}")
+            } else {
+                throw CassandraMigrationException("Keyspace: ${keyspace.name} does not exist.")
+            }
 
             result = action.execute(session)
         } finally {
@@ -229,9 +238,20 @@ class CassandraMigration : CassandraMigrationConfiguration {
                 } catch (e: Exception) {
                     LOG.warn("Error closing Cassandra cluster")
                 }
-
         }
         return result
+    }
+
+    /**
+     * Executes this command with an existing session, with proper resource handling and cleanup.
+     *
+     * @param action The action to execute.
+     * @param session The Cassandra connection session.
+     * @param T The action result type.
+     * @return The action result.
+     */
+    internal fun <T> execute(action: Action<T>, session: Session): T {
+        return action.execute(session)
     }
 
     /**
@@ -261,6 +281,102 @@ class CassandraMigration : CassandraMigrationConfiguration {
      */
     private fun createMigrationResolver(): MigrationResolver {
         return CompositeMigrationResolver(classLoader, ScriptsLocations(*configs.scriptsLocations), configs.encoding)
+    }
+
+    /**
+     * Creates the SchemaVersionDAO.
+     *
+     * @return A configured SchemaVersionDAO instance.
+     */
+    private fun createSchemaVersionDAO(session: Session): SchemaVersionDAO {
+        return SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
+    }
+
+    /**
+     * @return The database migration action.
+     */
+    private fun migrateAction(): Action<Int> {
+        return object: Action<Int> {
+            override fun execute(session: Session): Int {
+                Initialize().run(session, keyspace, MigrationVersion.CURRENT.table)
+
+                val migrationResolver = createMigrationResolver()
+                val schemaVersionDAO = createSchemaVersionDAO(session)
+                val migrate = Migrate(
+                        migrationResolver,
+                        configs.target,
+                        schemaVersionDAO,
+                        session,
+                        keyspace.cluster.username,
+                        configs.isAllowOutOfOrder
+                )
+
+                return migrate.run()
+            }
+        }
+    }
+
+    /**
+     * @return The migration info service action.
+     */
+    private fun infoAction(): Action<MigrationInfoService> {
+        return object : Action<MigrationInfoService> {
+            override fun execute(session: Session): MigrationInfoService {
+                val migrationResolver = createMigrationResolver()
+                val schemaVersionDAO = createSchemaVersionDAO(session)
+                val migrationInfoService = MigrationInfoServiceImpl(
+                        migrationResolver,
+                        schemaVersionDAO,
+                        configs.target,
+                        false, // Out-of-order
+                        true   // Pending or future
+                )
+                migrationInfoService.refresh()
+
+                return migrationInfoService
+            }
+        }
+    }
+
+    /**
+     * @return The migration validation action.
+     */
+    private fun validateAction(): Action<String?> {
+        return object : Action<String?> {
+            override fun execute(session: Session): String? {
+                val migrationResolver = createMigrationResolver()
+                val schemaVersionDAO = createSchemaVersionDAO(session)
+                val validate = Validate(
+                        migrationResolver,
+                        configs.target,
+                        schemaVersionDAO,
+                        true, // Out-of-order
+                        false // Pending or future
+                )
+
+                return validate.run()
+            }
+        }
+    }
+
+    /**
+     * @return The migration baselining action.
+     */
+    private fun baselineAction(): Action<Unit> {
+        return object : Action<Unit> {
+            override fun execute(session: Session): Unit {
+                val migrationResolver = createMigrationResolver()
+                val schemaVersionDAO = createSchemaVersionDAO(session)
+                val baseline = Baseline(
+                        migrationResolver,
+                        baselineVersion,
+                        schemaVersionDAO,
+                        baselineDescription,
+                        keyspace.cluster.username
+                )
+                baseline.run()
+            }
+        }
     }
 
     /**

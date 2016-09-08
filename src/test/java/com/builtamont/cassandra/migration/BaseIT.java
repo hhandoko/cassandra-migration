@@ -1,3 +1,21 @@
+/**
+ * File     : BaseIT.java
+ * License  :
+ *   Original   - Copyright (c) 2015 - 2016 Contrast Security
+ *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *           http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
+ */
 package com.builtamont.cassandra.migration;
 
 import com.builtamont.cassandra.migration.config.Keyspace;
@@ -12,7 +30,8 @@ import org.junit.Before;
 import org.junit.BeforeClass;
 
 public abstract class BaseIT {
-    public static final String CASSANDRA__KEYSPACE = "cassandra_migration_test";
+
+    public static final String CASSANDRA_KEYSPACE = "cassandra_migration_test";
     public static final String CASSANDRA_CONTACT_POINT = "localhost";
     public static final int CASSANDRA_PORT = 9147;
     public static final String CASSANDRA_USERNAME = "cassandra";
@@ -36,23 +55,26 @@ public abstract class BaseIT {
     @Before
     public void createKeyspace() {
         Statement statement = new SimpleStatement(
-                "CREATE KEYSPACE " + CASSANDRA__KEYSPACE +
+                "CREATE KEYSPACE " + CASSANDRA_KEYSPACE +
                         "  WITH REPLICATION = { 'class' : 'SimpleStrategy', 'replication_factor' : 1 };"
         );
         getSession(getKeyspace()).execute(statement);
+
+        // Reconnect session to the keyspace
+        session = session.getCluster().connect(CASSANDRA_KEYSPACE);
     }
 
     @After
     public void dropKeyspace() {
         Statement statement = new SimpleStatement(
-                "DROP KEYSPACE " + CASSANDRA__KEYSPACE + ";"
+                "DROP KEYSPACE " + CASSANDRA_KEYSPACE + ";"
         );
         getSession(getKeyspace()).execute(statement);
     }
 
     protected Keyspace getKeyspace() {
         Keyspace ks = new Keyspace();
-        ks.setName(CASSANDRA__KEYSPACE);
+        ks.setName(CASSANDRA_KEYSPACE);
         ks.getCluster().setContactpoints(CASSANDRA_CONTACT_POINT);
         ks.getCluster().setPort(CASSANDRA_PORT);
         ks.getCluster().setUsername(CASSANDRA_USERNAME);
@@ -60,13 +82,16 @@ public abstract class BaseIT {
         return ks;
     }
 
-    private Session getSession(Keyspace keyspace) {
+    protected Session getSession(Keyspace keyspace) {
         if (session != null && !session.isClosed())
             return session;
 
-        com.datastax.driver.core.Cluster.Builder builder = new com.datastax.driver.core.Cluster.Builder();
-        builder.addContactPoints(CASSANDRA_CONTACT_POINT).withPort(CASSANDRA_PORT);
-        builder.withCredentials(keyspace.getCluster().getUsername(), keyspace.getCluster().getPassword());
+        String username = keyspace.getCluster().getUsername();
+        String password = keyspace.getCluster().getPassword();
+        Cluster.Builder builder = new Cluster.Builder();
+        builder.addContactPoints(CASSANDRA_CONTACT_POINT)
+                .withPort(CASSANDRA_PORT)
+                .withCredentials(username, password);
         Cluster cluster = builder.build();
         session = cluster.connect();
         return session;

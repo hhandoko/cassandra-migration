@@ -25,6 +25,8 @@ Import this library as a dependency (Maven example):
 </dependency>
 ```
 
+***NOTE:** Integration test in Travis CI is only run against Oracle JDK 1.8, due to embedded Cassandra's dependencies on JDK 1.8* 
+
 ### Migration version table
 
 ``` shell
@@ -140,7 +142,6 @@ Keyspace:
 
 ### Limitations
 
- * Baselining not supported yet
  * The tool does not roll back the database upon migration failure. You're expected to manually restore backup.
 
 ## Project Rationale
@@ -160,6 +161,14 @@ There are various reasons why Kotlin was chosen, but three main reasons are:
  * code brevity and reduced noise,
  * stronger `null` checks (enforced at the compiler level), and
  * better Java collection support (e.g. additional functional features)
+
+## Testing
+
+Run `mvn test` to run the unit tests.
+
+Run `mvn verify` to run the integration tests.
+
+***NOTE:** The integration test might complain about some missing SIGAR binaries, this can be safely ignored. If you wish, you can download the missing binaries and set `java.library.path` parameter to point to the containing folder (e.g. `mvn verify -Djava.library.path=lib` where `lib` is the `/lib` folder relative to the project root).*
 
 ## Contributing
 
@@ -208,3 +217,4 @@ https://github.com/builtamont/cassandra-migration/releases
 [Flyway's project license page]: https://github.com/flyway/flyway/blob/master/LICENSE
 [fork-and-pull]: https://help.github.com/articles/using-pull-requests
 [LICENSE]: LICENSE
+[SIGAR]: https://support.hyperic.com/display/SIGAR/Home

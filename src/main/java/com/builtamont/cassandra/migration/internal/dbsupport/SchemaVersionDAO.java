@@ -30,13 +30,13 @@ import com.datastax.driver.core.exceptions.InvalidQueryException;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
 import com.datastax.driver.core.querybuilder.Select;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 import static com.datastax.driver.core.querybuilder.QueryBuilder.eq;
 
+/**
+ * Schema migrations table Data Access Object.
+ */
 // TODO: Convert to Kotlin code... Some challenges with Mockito mocking :)
 public class SchemaVersionDAO {
 
@@ -49,20 +49,35 @@ public class SchemaVersionDAO {
     private CachePrepareStatement cachePs;
     private ConsistencyLevel consistencyLevel;
 
+    /**
+     * Creates a new schema version DAO.
+     *
+     * @param session The Cassandra session connection to use to execute the migration.
+     * @param keyspace The Cassandra keyspace to connect to.
+     * @param tableName The Cassandra migration version table name.
+     */
     public SchemaVersionDAO(Session session, Keyspace keyspace, String tableName) {
         this.session = session;
         this.keyspace = keyspace;
         this.tableName = tableName;
         this.cachePs = new CachePrepareStatement(session);
-        //If running on a single host, don't force ConsistencyLevel.ALL
-        this.consistencyLevel =
-                session.getCluster().getMetadata().getAllHosts().size() > 1 ? ConsistencyLevel.ALL :  ConsistencyLevel.ONE;
+
+        // If running on a single host, don't force ConsistencyLevel.ALL
+        boolean isClustered = session.getCluster().getMetadata().getAllHosts().size() > 1;
+        this.consistencyLevel = isClustered ? ConsistencyLevel.ALL : ConsistencyLevel.ONE;
+    }
+
+    public String getTableName() {
+        return tableName;
     }
 
     public Keyspace getKeyspace() {
         return this.keyspace;
     }
 
+    /**
+     * Create schema migration version table if it does not exists.
+     */
     public void createTablesIfNotExist() {
         if (tablesExist()) {
             return;
@@ -96,6 +111,11 @@ public class SchemaVersionDAO {
         session.execute(statement);
     }
 
+    /**
+     * Check if schema migration version table has already been created.
+     *
+     * @return {@code true} if schema migration version table exists in the keyspace.
+     */
     public boolean tablesExist() {
         boolean schemaVersionTableExists = false;
         boolean schemaVersionCountsTableExists = false;
@@ -134,6 +154,11 @@ public class SchemaVersionDAO {
         return schemaVersionTableExists && schemaVersionCountsTableExists;
     }
 
+    /**
+     * Add applied migration record into the schema migration version table.
+     *
+     * @param appliedMigration The applied migration.
+     */
     public void addAppliedMigration(AppliedMigration appliedMigration) {
         createTablesIfNotExist();
 
@@ -141,11 +166,17 @@ public class SchemaVersionDAO {
 
         int versionRank = calculateVersionRank(version);
         PreparedStatement statement = cachePs.prepare(
-                "INSERT INTO " + keyspace.getName() + "." + tableName +
-                        " (version_rank, installed_rank, version, description, type, script, checksum, installed_on," +
-                        "  installed_by, execution_time, success)" +
-                        " VALUES" +
-                        " (?, ?, ?, ?, ?, ?, ?, dateOf(now()), ?, ?, ?);"
+                "INSERT INTO " + keyspace.getName() + "." + tableName + "(" +
+                        "  version_rank, installed_rank, version," +
+                        "  description, type, script," +
+                        "  checksum, installed_on, installed_by," +
+                        "  execution_time, success" +
+                        ") VALUES (" +
+                        "  ?, ?, ?," +
+                        "  ?, ?, ?," +
+                        "  ?, dateOf(now()), ?," +
+                        "  ?, ?" +
+                        ");"
         );
 
         statement.setConsistencyLevel(this.consistencyLevel);
@@ -165,7 +196,7 @@ public class SchemaVersionDAO {
     }
 
     /**
-     * Retrieve the applied migrations from the metadata table.
+     * Retrieve the applied migrations from the schema migration version table.
      *
      * @return The applied migrations.
      */
@@ -208,9 +239,131 @@ public class SchemaVersionDAO {
             ));
         }
 
-        //order by version_rank not necessary here as it eventually gets saved in TreeMap that uses natural ordering
-
+        // NOTE: Order by `version_rank` not necessary here, as it eventually gets saved in TreeMap
+        //       that uses natural ordering
         return resultsList;
+    }
+
+    /**
+     * Retrieve the applied migrations from the metadata table.
+     *
+     * @param migrationTypes The migration types to find.
+     * @return The applied migrations.
+     */
+    public List<AppliedMigration> findAppliedMigrations(MigrationType... migrationTypes) {
+        if (!tablesExist()) {
+            return new ArrayList<>();
+        }
+
+        Select select = QueryBuilder
+                .select()
+                .column("version_rank")
+                .column("installed_rank")
+                .column("version")
+                .column("description")
+                .column("type")
+                .column("script")
+                .column("checksum")
+                .column("installed_on")
+                .column("installed_by")
+                .column("execution_time")
+                .column("success")
+                .from(keyspace.getName(), tableName);
+
+        select.setConsistencyLevel(ConsistencyLevel.ALL);
+        ResultSet results = session.execute(select);
+        List<AppliedMigration> resultsList = new ArrayList<>();
+        List<MigrationType> migTypeList = Arrays.asList(migrationTypes);
+        for (Row row : results) {
+            MigrationType migType = MigrationType.valueOf(row.getString("type"));
+            if(migTypeList.contains(migType)){
+                resultsList.add(new AppliedMigration(
+                        row.getInt("version_rank"),
+                        row.getInt("installed_rank"),
+                        MigrationVersion.Companion.fromVersion(row.getString("version")),
+                        row.getString("description"),
+                        migType,
+                        row.getString("script"),
+                        row.getInt("checksum"),
+                        row.getTimestamp("installed_on"),
+                        row.getString("installed_by"),
+                        row.getInt("execution_time"),
+                        row.getBool("success")
+                ));
+            }
+        }
+
+        // NOTE: Order by `version_rank` not necessary here, as it eventually gets saved in TreeMap
+        //       that uses natural ordering
+        return resultsList;
+    }
+
+    /**
+     * Check if the keyspace has applied migrations.
+     *
+     * @return {@code true} if the keyspace has applied migrations.
+     */
+    public boolean hasAppliedMigrations() {
+        if (!tablesExist()) {
+            return false;
+        }
+
+        createTablesIfNotExist();
+        List<AppliedMigration> filteredMigrations = new ArrayList<>();
+        List<AppliedMigration> appliedMigrations = findAppliedMigrations();
+        for (AppliedMigration appliedMigration : appliedMigrations) {
+            if (!appliedMigration.getType().equals(MigrationType.BASELINE)) {
+                filteredMigrations.add(appliedMigration);
+            }
+        }
+        return !filteredMigrations.isEmpty();
+    }
+
+    /**
+     * Add a baseline version marker.
+     *
+     * @param baselineVersion The baseline version.
+     * @param baselineDescription the baseline version description.
+     * @param user The user's username executing the baselining.
+     */
+    public void addBaselineMarker(final MigrationVersion baselineVersion, final String baselineDescription, final String user) {
+        addAppliedMigration(
+            new AppliedMigration(
+                baselineVersion,
+                baselineDescription,
+                MigrationType.BASELINE,
+                baselineDescription,
+                0,
+                user,
+                0,
+                true
+            )
+        );
+    }
+
+    /**
+     * Get the baseline marker's applied migration.
+     *
+     * @return The baseline marker's applied migration.
+     */
+    public AppliedMigration getBaselineMarker() {
+        List<AppliedMigration> appliedMigrations = findAppliedMigrations(MigrationType.BASELINE);
+        return appliedMigrations.isEmpty() ? null : appliedMigrations.get(0);
+    }
+
+    /**
+     * Check if schema migration version table has a baseline marker.
+     *
+     * @return {@code true} if the schema migration version table has a baseline marker.
+     */
+    public boolean hasBaselineMarker() {
+        if (!tablesExist()) {
+            return false;
+        }
+
+        createTablesIfNotExist();
+
+        return !findAppliedMigrations(MigrationType.BASELINE).isEmpty();
     }
 
     /**
@@ -222,27 +375,20 @@ public class SchemaVersionDAO {
         Statement statement = new SimpleStatement(
                 "UPDATE " + keyspace.getName() + "." + tableName + COUNTS_TABLE_NAME_SUFFIX +
                         " SET count = count + 1" +
-                        "WHERE name = 'installed_rank';");
+                        " WHERE name = 'installed_rank'" +
+                        ";");
+
         session.execute(statement);
+
         Select select = QueryBuilder
                 .select("count")
                 .from(tableName + COUNTS_TABLE_NAME_SUFFIX);
         select.where(eq("name", "installed_rank"));
+
         select.setConsistencyLevel(this.consistencyLevel);
         ResultSet result = session.execute(select);
+
         return (int) result.one().getLong("count");
-    }
-
-    class MigrationMetaHolder {
-        private int versionRank;
-
-        public MigrationMetaHolder(int versionRank) {
-            this.versionRank = versionRank;
-        }
-
-        public int getVersionRank() {
-            return versionRank;
-        }
     }
 
     /**
@@ -257,6 +403,7 @@ public class SchemaVersionDAO {
                 .column("version")
                 .column("version_rank")
                 .from(keyspace.getName(), tableName);
+
         statement.setConsistencyLevel(this.consistencyLevel);
         ResultSet versionRows = session.execute(statement);
 
@@ -275,7 +422,8 @@ public class SchemaVersionDAO {
         PreparedStatement preparedStatement = cachePs.prepare(
                 "UPDATE " + keyspace.getName() + "." + tableName +
                         " SET version_rank = ?" +
-                        " WHERE version = ?;");
+                        " WHERE version = ?" +
+                        ";");
 
         for (int i = 0; i < migrationVersions.size(); i++) {
             if (version.compareTo(migrationVersions.get(i)) < 0) {
@@ -292,6 +440,21 @@ public class SchemaVersionDAO {
         session.execute(batchStatement);
 
         return migrationVersions.size() + 1;
+    }
+
+    /**
+     * Schema migration (transient) metadata.
+     */
+    class MigrationMetaHolder {
+        private int versionRank;
+
+        public MigrationMetaHolder(int versionRank) {
+            this.versionRank = versionRank;
+        }
+
+        public int getVersionRank() {
+            return versionRank;
+        }
     }
 
 }

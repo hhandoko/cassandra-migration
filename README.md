@@ -199,7 +199,7 @@ https://github.com/builtamont/cassandra-migration/releases
 ## Version 0.9 Release Pending Actions
 
  * Replace `config.Cluster.java` and `config.Keyspace.java` to the one provided by DataStax Cassandra driver
- * Add additional features from upstream open PRs
+ * ~~Add additional features from upstream open PRs~~ (DONE as per 8 September 2016 PRs)
  * Add standalone Cassandra (DataStax Community Edition) integration test
  
 ## Non-Critical Pending Actions

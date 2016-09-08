@@ -38,7 +38,6 @@ import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.datastax.driver.core.Cluster
 import com.datastax.driver.core.Metadata
 import com.datastax.driver.core.Session
-import sun.reflect.generics.reflectiveObjects.NotImplementedException
 
 /**
  * This is the centre point of Cassandra migration, and for most users, the only class they will ever have to deal with.
@@ -189,16 +188,17 @@ class CassandraMigration : CassandraMigrationConfiguration {
         var cluster: Cluster? = null
         var session: Session? = null
         try {
-            // Guard clauses
+            // Guard clauses: Cluster and Keyspace must be defined
             val errorMsg = "Unable to establish Cassandra session"
             if (keyspace == null) throw IllegalArgumentException("$errorMsg. Keyspace is not configured.")
             if (keyspace.cluster == null) throw IllegalArgumentException("$errorMsg. Cluster is not configured.")
             if (keyspace.name.isNullOrEmpty()) throw IllegalArgumentException("$errorMsg. Keyspace is not specified.")
 
+            // Build the Cluster
             val builder = Cluster.Builder()
             builder.addContactPoints(*keyspace.cluster.contactpoints).withPort(keyspace.cluster.port)
-            if (null != keyspace.cluster.username && !keyspace.cluster.username.trim { it <= ' ' }.isEmpty()) {
-                if (null != keyspace.cluster.password && !keyspace.cluster.password.trim { it <= ' ' }.isEmpty()) {
+            if (!keyspace.cluster.username.isNullOrBlank()) {
+                if (!keyspace.cluster.password.isNullOrBlank()) {
                     builder.withCredentials(keyspace.cluster.username, keyspace.cluster.password)
                 } else {
                     throw IllegalArgumentException("Password must be provided with username.")
@@ -206,19 +206,16 @@ class CassandraMigration : CassandraMigrationConfiguration {
             }
             cluster = builder.build()
 
-            val metadata = cluster!!.metadata
-            LOG.info(getConnectionInfo(metadata))
+            LOG.info(getConnectionInfo(cluster.metadata))
 
+            // Create a new Session
             session = cluster.newSession()
 
-            val keyspaces = metadata.keyspaces
-            var keyspaceExists = false
-            for (keyspaceMetadata in keyspaces) {
-                if (keyspaceMetadata.name.equals(keyspace.name, ignoreCase = true))
-                    keyspaceExists = true
-            }
+            // Connect to the specific Keyspace context (if already defined)
+            val keyspaces = cluster.metadata.keyspaces.map { it.name }
+            val keyspaceExists = keyspaces.first { it.equals(keyspace.name, ignoreCase = true) }.isNotEmpty()
             if (keyspaceExists) {
-                session!!.execute("USE ${keyspace.name}")
+                session = cluster.connect(keyspace.name)
             } else {
                 throw CassandraMigrationException("Keyspace: ${keyspace.name} does not exist.")
             }
@@ -328,8 +325,8 @@ class CassandraMigration : CassandraMigrationConfiguration {
                         migrationResolver,
                         schemaVersionDAO,
                         configs.target,
-                        false, // Out-of-order
-                        true   // Pending or future
+                        outOfOrder = false,
+                        pendingOrFuture = true
                 )
                 migrationInfoService.refresh()
 
@@ -350,8 +347,8 @@ class CassandraMigration : CassandraMigrationConfiguration {
                         migrationResolver,
                         configs.target,
                         schemaVersionDAO,
-                        true, // Out-of-order
-                        false // Pending or future
+                        outOfOrder = true,
+                        pendingOrFuture = false
                 )
 
                 return validate.run()

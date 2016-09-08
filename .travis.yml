@@ -12,7 +12,7 @@ matrix:
     - jdk: oraclejdk8
       script: mvn test
     - jdk: oraclejdk8
-      script: travis_wait 15 mvn verify
+      script: mvn verify
 deploy:
   provider: script
   script: ./scripts/deploy.sh

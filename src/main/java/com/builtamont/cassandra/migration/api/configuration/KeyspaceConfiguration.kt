@@ -21,17 +21,7 @@ package com.builtamont.cassandra.migration.api.configuration
 /**
  * Keyspace configuration.
  */
-class KeyspaceConfiguration : Configuration() {
-
-    /**
-     * Keyspace configuration properties.
-     *
-     * @param namespace The property namespace.
-     * @param description The property description.
-     */
-    enum class KeyspaceProperty constructor(val namespace: String, val description: String) {
-        NAME(PROPERTY_PREFIX + "name", "Name of Cassandra keyspace")
-    }
+class KeyspaceConfiguration {
 
     /**
      * Cluster configuration.
@@ -50,15 +40,8 @@ class KeyspaceConfiguration : Configuration() {
     init {
         clusterConfig = ClusterConfiguration()
 
-        val keyspaceProp = System.getProperty(KeyspaceProperty.NAME.namespace)
+        val keyspaceProp = System.getProperty(ConfigurationProperty.KEYSPACE_NAME.namespace)
         if (!keyspaceProp.isNullOrBlank()) this.name = keyspaceProp.trim()
-    }
-
-    /**
-     * KeyspaceConfiguration companion object.
-     */
-    companion object {
-        private val PROPERTY_PREFIX = BASE_PREFIX + "keyspace."
     }
 
 }

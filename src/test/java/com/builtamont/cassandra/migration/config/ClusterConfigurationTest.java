@@ -1,6 +1,7 @@
 package com.builtamont.cassandra.migration.config;
 
 import com.builtamont.cassandra.migration.api.configuration.ClusterConfiguration;
+import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty;
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -19,10 +20,10 @@ public class ClusterConfigurationTest {
 
     @Test
     public void systemPropsShouldOverrideDefaultConfigValues() {
-        System.setProperty(ClusterConfiguration.ClusterProperty.CONTACT_POINTS.getNamespace(), "192.168.0.1,192.168.0.2, 192.168.0.3");
-        System.setProperty(ClusterConfiguration.ClusterProperty.PORT.getNamespace(), "9144");
-        System.setProperty(ClusterConfiguration.ClusterProperty.USERNAME.getNamespace(), "user");
-        System.setProperty(ClusterConfiguration.ClusterProperty.PASSWORD.getNamespace(), "pass");
+        System.setProperty(ConfigurationProperty.CONTACT_POINTS.getNamespace(), "192.168.0.1,192.168.0.2, 192.168.0.3");
+        System.setProperty(ConfigurationProperty.PORT.getNamespace(), "9144");
+        System.setProperty(ConfigurationProperty.USERNAME.getNamespace(), "user");
+        System.setProperty(ConfigurationProperty.PASSWORD.getNamespace(), "pass");
 
         ClusterConfiguration clusterConfig = new ClusterConfiguration();
         assertThat(clusterConfig.getContactpoints()[0], is("192.168.0.1"));

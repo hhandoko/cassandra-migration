@@ -22,7 +22,7 @@ import com.builtamont.cassandra.migration.api.CassandraMigrationException
 import com.builtamont.cassandra.migration.api.MigrationInfoService
 import com.builtamont.cassandra.migration.api.MigrationVersion
 import com.builtamont.cassandra.migration.api.configuration.CassandraMigrationConfiguration
-import com.builtamont.cassandra.migration.api.configuration.MigrationConfiguration
+import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty
 import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
 import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
 import com.builtamont.cassandra.migration.internal.command.Baseline
@@ -50,11 +50,6 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * The Cassandra keyspace configuration.
      */
     lateinit var keyspaceConfig: KeyspaceConfiguration
-
-    /**
-     * The Cassandra migration configuration.
-     */
-    lateinit var migrationConfig: MigrationConfiguration
 
     /**
      * The ClassLoader to use for resolving migrations on the classpath.
@@ -103,18 +98,17 @@ class CassandraMigration : CassandraMigrationConfiguration {
      */
     init {
         this.keyspaceConfig = KeyspaceConfiguration()
-        this.migrationConfig = MigrationConfiguration()
 
-        val targetVersionProp = System.getProperty(MigrationConfiguration.MigrationProperty.TARGET_VERSION.namespace)
+        val targetVersionProp = System.getProperty(ConfigurationProperty.TARGET_VERSION.namespace)
         if (!targetVersionProp.isNullOrBlank()) target = MigrationVersion.fromVersion(targetVersionProp)
 
-        val encodingProp = System.getProperty(MigrationConfiguration.MigrationProperty.SCRIPTS_ENCODING.namespace)
+        val encodingProp = System.getProperty(ConfigurationProperty.SCRIPTS_ENCODING.namespace)
         if (!encodingProp.isNullOrBlank()) encoding = encodingProp.trim()
 
-        val locationsProp = System.getProperty(MigrationConfiguration.MigrationProperty.SCRIPTS_LOCATIONS.namespace)
+        val locationsProp = System.getProperty(ConfigurationProperty.SCRIPTS_LOCATIONS.namespace)
         if (!locationsProp.isNullOrBlank()) locations = StringUtils.tokenizeToStringArray(locationsProp, ",")
 
-        val allowOutOfOrderProp = System.getProperty(MigrationConfiguration.MigrationProperty.ALLOW_OUT_OF_ORDER.namespace)
+        val allowOutOfOrderProp = System.getProperty(ConfigurationProperty.ALLOW_OUT_OF_ORDER.namespace)
         if (!allowOutOfOrderProp.isNullOrBlank()) allowOutOfOrder = allowOutOfOrderProp.toBoolean()
     }
 

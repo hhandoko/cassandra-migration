@@ -21,46 +21,49 @@ package com.builtamont.cassandra.migration.api.configuration
 /**
  * Cluster configuration.
  */
-class ClusterConfiguration {
+class ClusterConfiguration : Configuration() {
 
     /**
      * Cluster configuration properties.
      */
     enum class ClusterProperty constructor(val prefix: String, val description: String) {
-        CONTACTPOINTS(PROPERTY_PREFIX + "contactpoints", "Comma separated values of node IP addresses"),
+        CONTACT_POINTS(PROPERTY_PREFIX + "contactpoints", "Comma separated values of node IP addresses"),
         PORT(PROPERTY_PREFIX + "port", "CQL native transport port"),
         USERNAME(PROPERTY_PREFIX + "username", "Username for password authenticator"),
         PASSWORD(PROPERTY_PREFIX + "password", "Password for password authenticator")
     }
 
     /**
-     * Cluster contact points.
+     * Cluster node IP address(es).
      * (default: ["localhost"])
      */
     var contactpoints = arrayOf("localhost")
       get set
 
     /**
-     * Cluster connection port.
+     * Cluster CQL native transport port.
      * (default: 9042)
      */
     var port = 9042
       get set
 
     /**
-     * The username to connect to the cluster.
+     * The username for password authenticator.
      */
     var username: String? = null
       get set
 
     /**
-     * The password to connect to the cluster.
+     * The password for password authenticator.
      */
     var password: String? = null
       get set
 
+    /**
+     * ClusterConfiguration initialization.
+     */
     init {
-        val contactpointsP = System.getProperty(ClusterProperty.CONTACTPOINTS.prefix)
+        val contactpointsP = System.getProperty(ClusterProperty.CONTACT_POINTS.prefix)
         if (null != contactpointsP && contactpointsP.trim { it <= ' ' }.length != 0)
             this.contactpoints = contactpointsP.replace("\\s+".toRegex(), "").split("[,]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
@@ -81,7 +84,7 @@ class ClusterConfiguration {
      * ClusterConfiguration companion object.
      */
     companion object {
-        private val PROPERTY_PREFIX = "cassandra.migration.cluster."
+        private val PROPERTY_PREFIX = BASE_PREFIX + "cluster."
     }
 
 }

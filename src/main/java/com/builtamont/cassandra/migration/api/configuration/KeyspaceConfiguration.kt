@@ -21,7 +21,7 @@ package com.builtamont.cassandra.migration.api.configuration
 /**
  * Keyspace configuration.
  */
-class KeyspaceConfiguration {
+class KeyspaceConfiguration : Configuration() {
 
     /**
      * Keyspace configuration properties.
@@ -36,11 +36,14 @@ class KeyspaceConfiguration {
     lateinit var clusterConfig: ClusterConfiguration
 
     /**
-     * Keyspace name.
+     * Cassandra keyspace name.
      */
     var name: String? = null
       get set
 
+    /**
+     * KeyspaceConfiguration initialization.
+     */
     init {
         clusterConfig = ClusterConfiguration()
         val keyspaceP = System.getProperty(KeyspaceProperty.NAME.prefix)
@@ -52,7 +55,7 @@ class KeyspaceConfiguration {
      * KeyspaceConfiguration companion object.
      */
     companion object {
-        private val PROPERTY_PREFIX = "cassandra.migration.keyspace."
+        private val PROPERTY_PREFIX = BASE_PREFIX + "keyspace."
     }
 
 }

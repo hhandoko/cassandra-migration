@@ -25,36 +25,38 @@ import com.builtamont.cassandra.migration.internal.util.StringUtils
  * Main Cassandra migration configuration.
  */
 // TODO: To be merged with `CassandraMigrationConfiguration`
-class MigrationConfiguration {
+class MigrationConfiguration : Configuration() {
 
     /**
      * Cassandra migration configuration properties.
      */
     enum class MigrationProperty constructor(val prefix: String, val description: String) {
-        SCRIPTS_ENCODING("cassandra.migration.scripts.encoding", "Encoding for CQL scripts"),
-        SCRIPTS_LOCATIONS("cassandra.migration.scripts.locations", "Locations of the migration scripts in CSV format"),
-        ALLOW_OUTOFORDER("cassandra.migration.scripts.allowoutoforder", "Allow out of order migration"),
-        TARGET_VERSION("cassandra.migration.version.target", "The target version. Migrations with a higher version number will be ignored.")
+        SCRIPTS_ENCODING(BASE_PREFIX + "scripts.encoding", "Encoding for CQL scripts"),
+        SCRIPTS_LOCATIONS(BASE_PREFIX + "scripts.locations", "Locations of the migration scripts in CSV format"),
+        ALLOW_OUTOFORDER(BASE_PREFIX + "scripts.allowoutoforder", "Allow out of order migration"),
+        TARGET_VERSION(BASE_PREFIX + "version.target", "The target version. Migrations with a higher version number will be ignored.")
     }
 
     /**
-     * The encoding of Cql migration scripts.
+     * The encoding of CQL migration scripts.
      * (default: UTF-8)
      */
     var encoding = "UTF-8"
+      get set
 
     /**
      * Locations of the migration scripts in CSV format.
      * (default: db/migration)
      */
     var scriptsLocations = arrayOf("db/migration")
+      get set
 
     /**
      * The target version. Migrations with a higher version number will be ignored.
      * (default: the latest version)
      */
     var target = MigrationVersion.LATEST
-        private set
+        get private set
 
     /**
      * Set the target version property from String value.
@@ -70,7 +72,7 @@ class MigrationConfiguration {
      * (default: false)
      */
     var isAllowOutOfOrder = false
-        set
+        get set
 
     /**
      * Set allow out of order migration property from String value.

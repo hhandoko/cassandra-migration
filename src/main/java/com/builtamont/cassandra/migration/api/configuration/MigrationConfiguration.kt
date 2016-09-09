@@ -18,9 +18,6 @@
  */
 package com.builtamont.cassandra.migration.api.configuration
 
-import com.builtamont.cassandra.migration.api.MigrationVersion
-import com.builtamont.cassandra.migration.internal.util.StringUtils
-
 /**
  * Main Cassandra migration configuration.
  */
@@ -38,69 +35,6 @@ class MigrationConfiguration : Configuration() {
         SCRIPTS_LOCATIONS(BASE_PREFIX + "scripts.locations", "Locations of the migration scripts in CSV format"),
         ALLOW_OUT_OF_ORDER(BASE_PREFIX + "scripts.allowoutoforder", "Allow out of order migration"),
         TARGET_VERSION(BASE_PREFIX + "version.target", "The target version. Migrations with a higher version number will be ignored.")
-    }
-
-    /**
-     * The encoding of CQL migration scripts.
-     * (default: UTF-8)
-     */
-    var encoding = "UTF-8"
-      get set
-
-    /**
-     * Locations of the migration scripts in CSV format.
-     * (default: db/migration)
-     */
-    var scriptsLocations = arrayOf("db/migration")
-      get set
-
-    /**
-     * The target version. Migrations with a higher version number will be ignored.
-     * (default: the latest version)
-     */
-    var target = MigrationVersion.LATEST
-        get private set
-
-    /**
-     * Set the target version property from String value.
-     *
-     * @param target Target version as String.
-     */
-    fun setTargetFromString(target: String) {
-        this.target = MigrationVersion.fromVersion(target)
-    }
-
-    /**
-     * Allow out of order migrations.
-     * (default: false)
-     */
-    var isAllowOutOfOrder = false
-        get set
-
-    /**
-     * Set allow out of order migration property from String value.
-     *
-     * @param allowOutOfOrder Allow out of order as String.
-     */
-    fun setIsAllowOutOfOrderFromString(allowOutOfOrder: String) {
-        this.isAllowOutOfOrder = allowOutOfOrder.toBoolean()
-    }
-
-    /**
-     * MigrationConfig initialization.
-     */
-    init {
-        val scriptsEncodingProp = System.getProperty(MigrationProperty.SCRIPTS_ENCODING.namespace)
-        if (!scriptsEncodingProp.isNullOrBlank()) this.encoding = scriptsEncodingProp.trim()
-
-        val targetVersionProp = System.getProperty(MigrationProperty.TARGET_VERSION.namespace)
-        if (!targetVersionProp.isNullOrBlank()) setTargetFromString(targetVersionProp)
-
-        val locationsProp = System.getProperty(MigrationProperty.SCRIPTS_LOCATIONS.namespace)
-        if (!locationsProp.isNullOrBlank()) scriptsLocations = StringUtils.tokenizeToStringArray(locationsProp, ",")
-
-        val allowOutOfOrderProp = System.getProperty(MigrationProperty.ALLOW_OUT_OF_ORDER.namespace)
-        if (!allowOutOfOrderProp.isNullOrBlank()) setIsAllowOutOfOrderFromString(allowOutOfOrderProp)
     }
 
 }

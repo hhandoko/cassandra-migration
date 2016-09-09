@@ -18,6 +18,8 @@
  */
 package com.builtamont.cassandra.migration.api.configuration
 
+import com.builtamont.cassandra.migration.api.MigrationVersion
+
 /**
  * Readonly interface for main Cassandra migration configuration.
  * Can be used to provide configuration data to migrations and callbacks.
@@ -40,21 +42,21 @@ interface CassandraMigrationConfiguration {
 //     */
 //    val dataSource: DataSource
 
-//    /**
-//     * Retrieves the version to tag an existing schema with when executing baseline.
-//     *
-//     * @return The version to tag an existing schema with when executing baseline.
-//     *         (default: 1)
-//     */
-//    val baselineVersion: MigrationVersion
+    /**
+     * Retrieves the version to tag an existing schema with when executing baseline.
+     *
+     * @return The version to tag an existing schema with when executing baseline.
+     *         (default: 1)
+     */
+    val baselineVersion: MigrationVersion
 
-//    /**
-//     * Retrieves the description to tag an existing schema with when executing baseline.
-//     *
-//     * @return The description to tag an existing schema with when executing baseline.
-//     *         (default: << Cassandra Migration Baseline >>)
-//     */
-//    val baselineDescription: String
+    /**
+     * Retrieves the description to tag an existing schema with when executing baseline.
+     *
+     * @return The description to tag an existing schema with when executing baseline.
+     *         (default: << Cassandra Baseline >>)
+     */
+    val baselineDescription: String
 
 //    /**
 //     * Retrieves the the custom MigrationResolvers to be used in addition to the built-in ones for resolving migrations to apply.
@@ -164,16 +166,16 @@ interface CassandraMigrationConfiguration {
 //     */
 //    val placeholders: Map<String, String>
 
-//    /**
-//     * Retrieves the target version up to which Cassandra migration should consider migrations.
-//     * Migrations with a higher version number will be ignored.
-//     *
-//     * The special value `current` designates the current version of the schema.
-//     *
-//     * @return The target version up to which Cassandra migration should consider migrations.
-//     *         (default: the latest version)
-//     */
-//    val target: MigrationVersion
+    /**
+     * Retrieves the target version up to which Cassandra migration should consider migrations.
+     * Migrations with a higher version number will be ignored.
+     *
+     * The special value `current` designates the current version of the schema.
+     *
+     * @return The target version up to which Cassandra migration should consider migrations.
+     *         (default: the latest version)
+     */
+    val target: MigrationVersion
 
 //    /**
 //     * Retrieves the name of the schema metadata table that will be used by Cassandra migration.
@@ -200,28 +202,28 @@ interface CassandraMigrationConfiguration {
 //     */
 //    val schemas: Array<String>
 
-//    /**
-//     * Retrieves the encoding of CQL migrations.
-//     *
-//     * @return The encoding of CQL migrations.
-//     *         (default: UTF-8)
-//     */
-//    val encoding: String
+    /**
+     * Retrieves the encoding of CQL migrations.
+     *
+     * @return The encoding of CQL migrations.
+     *         (default: UTF-8)
+     */
+    val encoding: String
 
-//    /**
-//     * Retrieves the locations to scan recursively for migrations.
-//     *
-//     * The location type is determined by its prefix.
-//     *
-//     * Unprefixed locations or locations starting with `classpath:` point to a package on the classpath and may
-//     * contain both CQL and Java-based migrations.
-//     *
-//     * Locations starting with `filesystem:` point to a directory on the filesystem and may only contain sql
-//     * migrations.
-//     *
-//     * @return Locations to scan recursively for migrations.
-//     *         (default: db/migration)
-//     */
-//    val locations: Array<String>
+    /**
+     * Retrieves the locations to scan recursively for migrations.
+     *
+     * The location type is determined by its prefix.
+     *
+     * Unprefixed locations or locations starting with `classpath:` point to a package on the classpath and may
+     * contain both CQL and Java-based migrations.
+     *
+     * Locations starting with `filesystem:` point to a directory on the filesystem and may only contain sql
+     * migrations.
+     *
+     * @return Locations to scan recursively for migrations.
+     *         (default: db/migration)
+     */
+    val locations: Array<String>
 
 }

@@ -18,6 +18,9 @@
  */
 package com.builtamont.cassandra.migration.api.configuration
 
+/**
+ * Cluster configuration.
+ */
 class ClusterConfiguration {
 
     /**
@@ -30,9 +33,17 @@ class ClusterConfiguration {
         PASSWORD(PROPERTY_PREFIX + "password", "Password for password authenticator")
     }
 
+    /**
+     * Cluster contact points.
+     * (default: ["localhost"])
+     */
     var contactpoints = arrayOf("localhost")
       get set
 
+    /**
+     * Cluster connection port.
+     * (default: 9042)
+     */
     var port = 9042
       get set
 
@@ -40,11 +51,13 @@ class ClusterConfiguration {
      * The username to connect to the cluster.
      */
     var username: String? = null
+      get set
 
     /**
      * The password to connect to the cluster.
      */
     var password: String? = null
+      get set
 
     init {
         val contactpointsP = System.getProperty(ClusterProperty.CONTACTPOINTS.prefix)

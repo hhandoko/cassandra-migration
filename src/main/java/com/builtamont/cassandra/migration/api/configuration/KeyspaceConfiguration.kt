@@ -49,9 +49,9 @@ class KeyspaceConfiguration : Configuration() {
      */
     init {
         clusterConfig = ClusterConfiguration()
-        val keyspaceP = System.getProperty(KeyspaceProperty.NAME.namespace)
-        if (null != keyspaceP && keyspaceP.trim { it <= ' ' }.length != 0)
-            this.name = keyspaceP
+
+        val keyspaceProp = System.getProperty(KeyspaceProperty.NAME.namespace)
+        if (!keyspaceProp.isNullOrBlank()) this.name = keyspaceProp.trim()
     }
 
     /**

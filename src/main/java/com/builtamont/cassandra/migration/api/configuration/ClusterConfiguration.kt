@@ -18,6 +18,8 @@
  */
 package com.builtamont.cassandra.migration.api.configuration
 
+import com.builtamont.cassandra.migration.internal.util.StringUtils
+
 /**
  * Cluster configuration.
  */
@@ -66,21 +68,17 @@ class ClusterConfiguration : Configuration() {
      * ClusterConfiguration initialization.
      */
     init {
-        val contactpointsP = System.getProperty(ClusterProperty.CONTACT_POINTS.namespace)
-        if (null != contactpointsP && contactpointsP.trim { it <= ' ' }.length != 0)
-            this.contactpoints = contactpointsP.replace("\\s+".toRegex(), "").split("[,]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        val contactpointsProp = System.getProperty(ClusterProperty.CONTACT_POINTS.namespace)
+        if (!contactpointsProp.isNullOrBlank()) this.contactpoints = StringUtils.tokenizeToStringArray(contactpointsProp, ",")
 
-        val portP = System.getProperty(ClusterProperty.PORT.namespace)
-        if (null != portP && portP.trim { it <= ' ' }.length != 0)
-            this.port = Integer.parseInt(portP)
+        val portProp = System.getProperty(ClusterProperty.PORT.namespace)
+        if (!portProp.isNullOrBlank()) this.port = Integer.parseInt(portProp)
 
-        val usernameP = System.getProperty(ClusterProperty.USERNAME.namespace)
-        if (null != usernameP && usernameP.trim { it <= ' ' }.length != 0)
-            this.username = usernameP
+        val usernameProp = System.getProperty(ClusterProperty.USERNAME.namespace)
+        if (!usernameProp.isNullOrBlank()) this.username = usernameProp.trim()
 
-        val passwordP = System.getProperty(ClusterProperty.PASSWORD.namespace)
-        if (null != passwordP && passwordP.trim { it <= ' ' }.length != 0)
-            this.password = passwordP
+        val passwordProp = System.getProperty(ClusterProperty.PASSWORD.namespace)
+        if (!passwordProp.isNullOrBlank()) this.password = passwordProp.trim()
     }
 
     /**

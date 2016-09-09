@@ -36,7 +36,7 @@ class MigrationConfiguration : Configuration() {
     enum class MigrationProperty constructor(val namespace: String, val description: String) {
         SCRIPTS_ENCODING(BASE_PREFIX + "scripts.encoding", "Encoding for CQL scripts"),
         SCRIPTS_LOCATIONS(BASE_PREFIX + "scripts.locations", "Locations of the migration scripts in CSV format"),
-        ALLOW_OUTOFORDER(BASE_PREFIX + "scripts.allowoutoforder", "Allow out of order migration"),
+        ALLOW_OUT_OF_ORDER(BASE_PREFIX + "scripts.allowoutoforder", "Allow out of order migration"),
         TARGET_VERSION(BASE_PREFIX + "version.target", "The target version. Migrations with a higher version number will be ignored.")
     }
 
@@ -90,23 +90,17 @@ class MigrationConfiguration : Configuration() {
      * MigrationConfig initialization.
      */
     init {
-        val scriptsEncodingP = System.getProperty(MigrationProperty.SCRIPTS_ENCODING.namespace)
-        if (null != scriptsEncodingP && scriptsEncodingP.trim { it <= ' ' }.length != 0)
-            this.encoding = scriptsEncodingP
+        val scriptsEncodingProp = System.getProperty(MigrationProperty.SCRIPTS_ENCODING.namespace)
+        if (!scriptsEncodingProp.isNullOrBlank()) this.encoding = scriptsEncodingProp.trim()
 
-        val targetVersionP = System.getProperty(MigrationProperty.TARGET_VERSION.namespace)
-        if (null != targetVersionP && targetVersionP.trim { it <= ' ' }.length != 0)
-            setTargetFromString(targetVersionP)
+        val targetVersionProp = System.getProperty(MigrationProperty.TARGET_VERSION.namespace)
+        if (!targetVersionProp.isNullOrBlank()) setTargetFromString(targetVersionProp)
 
         val locationsProp = System.getProperty(MigrationProperty.SCRIPTS_LOCATIONS.namespace)
-        if (locationsProp != null && locationsProp.trim { it <= ' ' }.length != 0) {
-            scriptsLocations = StringUtils.tokenizeToStringArray(locationsProp, ",")
-        }
+        if (!locationsProp.isNullOrBlank()) scriptsLocations = StringUtils.tokenizeToStringArray(locationsProp, ",")
 
-        val allowOutOfOrderProp = System.getProperty(MigrationProperty.ALLOW_OUTOFORDER.namespace)
-        if (allowOutOfOrderProp != null && allowOutOfOrderProp.trim { it <= ' ' }.length != 0) {
-            setIsAllowOutOfOrderFromString(allowOutOfOrderProp)
-        }
+        val allowOutOfOrderProp = System.getProperty(MigrationProperty.ALLOW_OUT_OF_ORDER.namespace)
+        if (!allowOutOfOrderProp.isNullOrBlank()) setIsAllowOutOfOrderFromString(allowOutOfOrderProp)
     }
 
 }

@@ -94,7 +94,7 @@ keyspaceConfig.getClusterConfig().setPassword(CASSANDRA_PASSWORD);
 
 CassandraMigration cm = new CassandraMigration();
 cm.getConfigs().setScriptsLocations(scriptsLocations);
-cm.setKeyspace(keyspace);
+cm.setKeyspaceConfig(keyspaceConfig);
 cm.migrate();
 ```
 

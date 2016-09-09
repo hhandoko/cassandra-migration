@@ -1,6 +1,6 @@
-package com.builtamont.cassandra.migration.config;
+package com.builtamont.cassandra.migration.api.configuration;
 
-public class Keyspace {
+public class KeyspaceConfiguration {
     private static final String PROPERTY_PREFIX = "cassandra.migration.keyspace.";
 
     public enum KeyspaceProperty {
@@ -23,22 +23,22 @@ public class Keyspace {
         }
     }
 
-    private Cluster cluster;
+    private ClusterConfiguration clusterConfig;
     private String name;
 
-    public Keyspace() {
-        cluster = new Cluster();
+    public KeyspaceConfiguration() {
+        clusterConfig = new ClusterConfiguration();
         String keyspaceP = System.getProperty(KeyspaceProperty.NAME.getName());
         if (null != keyspaceP && keyspaceP.trim().length() != 0)
             this.name = keyspaceP;
     }
 
-    public Cluster getCluster() {
-        return cluster;
+    public ClusterConfiguration getClusterConfig() {
+        return clusterConfig;
     }
 
-    public void setCluster(Cluster cluster) {
-        this.cluster = cluster;
+    public void setClusterConfig(ClusterConfiguration clusterConfig) {
+        this.clusterConfig = clusterConfig;
     }
 
     public String getName() {

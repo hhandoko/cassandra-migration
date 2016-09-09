@@ -1,6 +1,6 @@
-package com.builtamont.cassandra.migration.config;
+package com.builtamont.cassandra.migration.api.configuration;
 
-public class Cluster {
+public class ClusterConfiguration {
     private static final String PROPERTY_PREFIX = "cassandra.migration.cluster.";
 
     public enum ClusterProperty {
@@ -31,7 +31,7 @@ public class Cluster {
     private String username;
     private String password;
 
-    public Cluster() {
+    public ClusterConfiguration() {
         String contactpointsP = System.getProperty(ClusterProperty.CONTACTPOINTS.getName());
         if (null != contactpointsP && contactpointsP.trim().length() != 0)
             this.contactpoints = contactpointsP.replaceAll("\\s+", "").split("[,]");

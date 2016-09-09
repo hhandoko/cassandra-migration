@@ -20,7 +20,7 @@ package com.builtamont.cassandra.migration.internal.dbsupport;
 
 import com.builtamont.cassandra.migration.api.MigrationType;
 import com.builtamont.cassandra.migration.api.MigrationVersion;
-import com.builtamont.cassandra.migration.config.Keyspace;
+import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration;
 import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration;
 import com.builtamont.cassandra.migration.internal.util.CachePrepareStatement;
 import com.builtamont.cassandra.migration.internal.util.logging.Log;
@@ -44,7 +44,7 @@ public class SchemaVersionDAO {
     private static final String COUNTS_TABLE_NAME_SUFFIX = "_counts";
 
     private Session session;
-    private Keyspace keyspace;
+    private KeyspaceConfiguration keyspaceConfig;
     private String tableName;
     private CachePrepareStatement cachePs;
     private ConsistencyLevel consistencyLevel;
@@ -53,12 +53,12 @@ public class SchemaVersionDAO {
      * Creates a new schema version DAO.
      *
      * @param session The Cassandra session connection to use to execute the migration.
-     * @param keyspace The Cassandra keyspace to connect to.
+     * @param keyspaceConfig The Cassandra keyspace to connect to.
      * @param tableName The Cassandra migration version table name.
      */
-    public SchemaVersionDAO(Session session, Keyspace keyspace, String tableName) {
+    public SchemaVersionDAO(Session session, KeyspaceConfiguration keyspaceConfig, String tableName) {
         this.session = session;
-        this.keyspace = keyspace;
+        this.keyspaceConfig = keyspaceConfig;
         this.tableName = tableName;
         this.cachePs = new CachePrepareStatement(session);
 
@@ -71,8 +71,8 @@ public class SchemaVersionDAO {
         return tableName;
     }
 
-    public Keyspace getKeyspace() {
-        return this.keyspace;
+    public KeyspaceConfiguration getKeyspaceConfig() {
+        return this.keyspaceConfig;
     }
 
     /**
@@ -84,7 +84,7 @@ public class SchemaVersionDAO {
         }
 
         Statement statement = new SimpleStatement(
-                "CREATE TABLE IF NOT EXISTS " + keyspace.getName() + "." + tableName + "(" +
+                "CREATE TABLE IF NOT EXISTS " + keyspaceConfig.getName() + "." + tableName + "(" +
                         "  version_rank int," +
                         "  installed_rank int," +
                         "  version text," +
@@ -102,7 +102,7 @@ public class SchemaVersionDAO {
         session.execute(statement);
 
         statement = new SimpleStatement(
-                "CREATE TABLE IF NOT EXISTS " + keyspace.getName() + "." + tableName + COUNTS_TABLE_NAME_SUFFIX + " (" +
+                "CREATE TABLE IF NOT EXISTS " + keyspaceConfig.getName() + "." + tableName + COUNTS_TABLE_NAME_SUFFIX + " (" +
                         "  name text," +
                         "  count counter," +
                         "  PRIMARY KEY (name)" +
@@ -123,12 +123,12 @@ public class SchemaVersionDAO {
         Statement schemaVersionStatement = QueryBuilder
                 .select()
                 .countAll()
-                .from(keyspace.getName(), tableName);
+                .from(keyspaceConfig.getName(), tableName);
 
         Statement schemaVersionCountsStatement = QueryBuilder
                 .select()
                 .countAll()
-                .from(keyspace.getName(), tableName + COUNTS_TABLE_NAME_SUFFIX);
+                .from(keyspaceConfig.getName(), tableName + COUNTS_TABLE_NAME_SUFFIX);
 
         schemaVersionStatement.setConsistencyLevel(this.consistencyLevel);
         schemaVersionCountsStatement.setConsistencyLevel(this.consistencyLevel);
@@ -166,7 +166,7 @@ public class SchemaVersionDAO {
 
         int versionRank = calculateVersionRank(version);
         PreparedStatement statement = cachePs.prepare(
-                "INSERT INTO " + keyspace.getName() + "." + tableName + "(" +
+                "INSERT INTO " + keyspaceConfig.getName() + "." + tableName + "(" +
                         "  version_rank, installed_rank, version," +
                         "  description, type, script," +
                         "  checksum, installed_on, installed_by," +
@@ -218,7 +218,7 @@ public class SchemaVersionDAO {
                 .column("installed_by")
                 .column("execution_time")
                 .column("success")
-                .from(keyspace.getName(), tableName);
+                .from(keyspaceConfig.getName(), tableName);
 
         select.setConsistencyLevel(this.consistencyLevel);
         ResultSet results = session.execute(select);
@@ -268,7 +268,7 @@ public class SchemaVersionDAO {
                 .column("installed_by")
                 .column("execution_time")
                 .column("success")
-                .from(keyspace.getName(), tableName);
+                .from(keyspaceConfig.getName(), tableName);
 
         select.setConsistencyLevel(ConsistencyLevel.ALL);
         ResultSet results = session.execute(select);
@@ -373,7 +373,7 @@ public class SchemaVersionDAO {
      */
     private int calculateInstalledRank() {
         Statement statement = new SimpleStatement(
-                "UPDATE " + keyspace.getName() + "." + tableName + COUNTS_TABLE_NAME_SUFFIX +
+                "UPDATE " + keyspaceConfig.getName() + "." + tableName + COUNTS_TABLE_NAME_SUFFIX +
                         " SET count = count + 1" +
                         " WHERE name = 'installed_rank'" +
                         ";");
@@ -382,7 +382,7 @@ public class SchemaVersionDAO {
 
         Select select = QueryBuilder
                 .select("count")
-                .from(keyspace.getName(), tableName + COUNTS_TABLE_NAME_SUFFIX);
+                .from(keyspaceConfig.getName(), tableName + COUNTS_TABLE_NAME_SUFFIX);
         select.where(eq("name", "installed_rank"));
 
         select.setConsistencyLevel(this.consistencyLevel);
@@ -402,7 +402,7 @@ public class SchemaVersionDAO {
                 .select()
                 .column("version")
                 .column("version_rank")
-                .from(keyspace.getName(), tableName);
+                .from(keyspaceConfig.getName(), tableName);
 
         statement.setConsistencyLevel(this.consistencyLevel);
         ResultSet versionRows = session.execute(statement);
@@ -420,7 +420,7 @@ public class SchemaVersionDAO {
 
         BatchStatement batchStatement = new BatchStatement();
         PreparedStatement preparedStatement = cachePs.prepare(
-                "UPDATE " + keyspace.getName() + "." + tableName +
+                "UPDATE " + keyspaceConfig.getName() + "." + tableName +
                         " SET version_rank = ?" +
                         " WHERE version = ?" +
                         ";");

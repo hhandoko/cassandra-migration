@@ -22,9 +22,9 @@ import com.builtamont.cassandra.migration.api.CassandraMigrationException
 import com.builtamont.cassandra.migration.api.MigrationInfoService
 import com.builtamont.cassandra.migration.api.MigrationVersion
 import com.builtamont.cassandra.migration.api.configuration.CassandraMigrationConfiguration
-import com.builtamont.cassandra.migration.api.configuration.MigrationConfigs
+import com.builtamont.cassandra.migration.api.configuration.MigrationConfiguration
 import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
-import com.builtamont.cassandra.migration.config.Keyspace
+import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
 import com.builtamont.cassandra.migration.internal.command.Baseline
 import com.builtamont.cassandra.migration.internal.command.Initialize
 import com.builtamont.cassandra.migration.internal.command.Migrate
@@ -54,12 +54,12 @@ class CassandraMigration : CassandraMigrationConfiguration {
     /**
      * The Cassandra keyspace to connect to.
      */
-    lateinit var keyspace: Keyspace
+    lateinit var keyspaceConfig: KeyspaceConfiguration
 
     /**
      * The Cassandra migration configuration.
      */
-    lateinit var configs: MigrationConfigs
+    lateinit var migrationConfig: MigrationConfiguration
 
     /**
      * The baseline version.
@@ -75,8 +75,8 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * CassandraMigration initialization.
      */
     init {
-        this.keyspace = Keyspace()
-        this.configs = MigrationConfigs()
+        this.keyspaceConfig = KeyspaceConfiguration()
+        this.migrationConfig = MigrationConfiguration()
     }
 
     /**
@@ -190,16 +190,16 @@ class CassandraMigration : CassandraMigrationConfiguration {
         try {
             // Guard clauses: Cluster and Keyspace must be defined
             val errorMsg = "Unable to establish Cassandra session"
-            if (keyspace == null) throw IllegalArgumentException("$errorMsg. Keyspace is not configured.")
-            if (keyspace.cluster == null) throw IllegalArgumentException("$errorMsg. Cluster is not configured.")
-            if (keyspace.name.isNullOrEmpty()) throw IllegalArgumentException("$errorMsg. Keyspace is not specified.")
+            if (keyspaceConfig == null) throw IllegalArgumentException("$errorMsg. Keyspace is not configured.")
+            if (keyspaceConfig.clusterConfig == null) throw IllegalArgumentException("$errorMsg. Cluster is not configured.")
+            if (keyspaceConfig.name.isNullOrEmpty()) throw IllegalArgumentException("$errorMsg. Keyspace is not specified.")
 
             // Build the Cluster
             val builder = Cluster.Builder()
-            builder.addContactPoints(*keyspace.cluster.contactpoints).withPort(keyspace.cluster.port)
-            if (!keyspace.cluster.username.isNullOrBlank()) {
-                if (!keyspace.cluster.password.isNullOrBlank()) {
-                    builder.withCredentials(keyspace.cluster.username, keyspace.cluster.password)
+            builder.addContactPoints(*keyspaceConfig.clusterConfig.contactpoints).withPort(keyspaceConfig.clusterConfig.port)
+            if (!keyspaceConfig.clusterConfig.username.isNullOrBlank()) {
+                if (!keyspaceConfig.clusterConfig.password.isNullOrBlank()) {
+                    builder.withCredentials(keyspaceConfig.clusterConfig.username, keyspaceConfig.clusterConfig.password)
                 } else {
                     throw IllegalArgumentException("Password must be provided with username.")
                 }
@@ -213,11 +213,11 @@ class CassandraMigration : CassandraMigrationConfiguration {
 
             // Connect to the specific Keyspace context (if already defined)
             val keyspaces = cluster.metadata.keyspaces.map { it.name }
-            val keyspaceExists = keyspaces.first { it.equals(keyspace.name, ignoreCase = true) }.isNotEmpty()
+            val keyspaceExists = keyspaces.first { it.equals(keyspaceConfig.name, ignoreCase = true) }.isNotEmpty()
             if (keyspaceExists) {
-                session = cluster.connect(keyspace.name)
+                session = cluster.connect(keyspaceConfig.name)
             } else {
-                throw CassandraMigrationException("Keyspace: ${keyspace.name} does not exist.")
+                throw CassandraMigrationException("Keyspace: ${keyspaceConfig.name} does not exist.")
             }
 
             result = action.execute(session)
@@ -277,7 +277,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @return A new, fully configured, MigrationResolver instance.
      */
     private fun createMigrationResolver(): MigrationResolver {
-        return CompositeMigrationResolver(classLoader, ScriptsLocations(*configs.scriptsLocations), configs.encoding)
+        return CompositeMigrationResolver(classLoader, ScriptsLocations(*migrationConfig.scriptsLocations), migrationConfig.encoding)
     }
 
     /**
@@ -286,7 +286,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @return A configured SchemaVersionDAO instance.
      */
     private fun createSchemaVersionDAO(session: Session): SchemaVersionDAO {
-        return SchemaVersionDAO(session, keyspace, MigrationVersion.CURRENT.table)
+        return SchemaVersionDAO(session, keyspaceConfig, MigrationVersion.CURRENT.table)
     }
 
     /**
@@ -295,17 +295,17 @@ class CassandraMigration : CassandraMigrationConfiguration {
     private fun migrateAction(): Action<Int> {
         return object: Action<Int> {
             override fun execute(session: Session): Int {
-                Initialize().run(session, keyspace, MigrationVersion.CURRENT.table)
+                Initialize().run(session, keyspaceConfig, MigrationVersion.CURRENT.table)
 
                 val migrationResolver = createMigrationResolver()
                 val schemaVersionDAO = createSchemaVersionDAO(session)
                 val migrate = Migrate(
                         migrationResolver,
-                        configs.target,
+                        migrationConfig.target,
                         schemaVersionDAO,
                         session,
-                        keyspace.cluster.username,
-                        configs.isAllowOutOfOrder
+                        keyspaceConfig.clusterConfig.username,
+                        migrationConfig.isAllowOutOfOrder
                 )
 
                 return migrate.run()
@@ -324,7 +324,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                 val migrationInfoService = MigrationInfoServiceImpl(
                         migrationResolver,
                         schemaVersionDAO,
-                        configs.target,
+                        migrationConfig.target,
                         outOfOrder = false,
                         pendingOrFuture = true
                 )
@@ -345,7 +345,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                 val schemaVersionDAO = createSchemaVersionDAO(session)
                 val validate = Validate(
                         migrationResolver,
-                        configs.target,
+                        migrationConfig.target,
                         schemaVersionDAO,
                         outOfOrder = true,
                         pendingOrFuture = false
@@ -369,7 +369,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                         baselineVersion,
                         schemaVersionDAO,
                         baselineDescription,
-                        keyspace.cluster.username
+                        keyspaceConfig.clusterConfig.username
                 )
                 baseline.run()
             }

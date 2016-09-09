@@ -18,7 +18,7 @@
  */
 package com.builtamont.cassandra.migration;
 
-import com.builtamont.cassandra.migration.config.Keyspace;
+import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration;
 import com.datastax.driver.core.Cluster;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.SimpleStatement;
@@ -72,22 +72,22 @@ public abstract class BaseIT {
         getSession(getKeyspace()).execute(statement);
     }
 
-    protected Keyspace getKeyspace() {
-        Keyspace ks = new Keyspace();
+    protected KeyspaceConfiguration getKeyspace() {
+        KeyspaceConfiguration ks = new KeyspaceConfiguration();
         ks.setName(CASSANDRA_KEYSPACE);
-        ks.getCluster().setContactpoints(CASSANDRA_CONTACT_POINT);
-        ks.getCluster().setPort(CASSANDRA_PORT);
-        ks.getCluster().setUsername(CASSANDRA_USERNAME);
-        ks.getCluster().setPassword(CASSANDRA_PASSWORD);
+        ks.getClusterConfig().setContactpoints(CASSANDRA_CONTACT_POINT);
+        ks.getClusterConfig().setPort(CASSANDRA_PORT);
+        ks.getClusterConfig().setUsername(CASSANDRA_USERNAME);
+        ks.getClusterConfig().setPassword(CASSANDRA_PASSWORD);
         return ks;
     }
 
-    protected Session getSession(Keyspace keyspace) {
+    protected Session getSession(KeyspaceConfiguration keyspaceConfig) {
         if (session != null && !session.isClosed())
             return session;
 
-        String username = keyspace.getCluster().getUsername();
-        String password = keyspace.getCluster().getPassword();
+        String username = keyspaceConfig.getClusterConfig().getUsername();
+        String password = keyspaceConfig.getClusterConfig().getPassword();
         Cluster.Builder builder = new Cluster.Builder();
         builder.addContactPoints(CASSANDRA_CONTACT_POINT)
                 .withPort(CASSANDRA_PORT)

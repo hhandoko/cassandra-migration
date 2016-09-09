@@ -18,7 +18,7 @@
  */
 package com.builtamont.cassandra.migration.internal.command
 
-import com.builtamont.cassandra.migration.config.Keyspace
+import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
 import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.datastax.driver.core.Session
 
@@ -31,11 +31,11 @@ class Initialize {
      * Runs the initialization.
      *
      * @param session The Cassandra session connection to use to execute the migration.
-     * @param keyspace The Cassandra keyspace to connect to.
+     * @param keyspaceConfig The Cassandra keyspace to connect to.
      * @param migrationVersionTableName The Cassandra migration version table name.
      */
-    fun run(session: Session, keyspace: Keyspace, migrationVersionTableName: String) {
-        val dao = SchemaVersionDAO(session, keyspace, migrationVersionTableName)
+    fun run(session: Session, keyspaceConfig: KeyspaceConfiguration, migrationVersionTableName: String) {
+        val dao = SchemaVersionDAO(session, keyspaceConfig, migrationVersionTableName)
         dao.createTablesIfNotExist()
     }
 

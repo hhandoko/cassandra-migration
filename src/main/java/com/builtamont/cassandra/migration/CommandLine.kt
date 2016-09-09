@@ -18,7 +18,7 @@
  */
 package com.builtamont.cassandra.migration
 
-import com.builtamont.cassandra.migration.config.Keyspace
+import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
 import com.builtamont.cassandra.migration.internal.util.logging.Log
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.builtamont.cassandra.migration.internal.util.logging.console.ConsoleLog
@@ -67,8 +67,8 @@ object CommandLine {
         val operation = operations[0]
 
         val cm = CassandraMigration()
-        val ks = Keyspace()
-        cm.keyspace = ks
+        val ks = KeyspaceConfiguration()
+        cm.keyspaceConfig = ks
         if (MIGRATE.equals(operation, ignoreCase = true)) {
             cm.migrate()
         } else if (VALIDATE.equals(operation, ignoreCase = true)) {

@@ -52,7 +52,7 @@ class Migrate(
 ) {
 
     /** Keyspace name lensing */
-    private val keyspaceName = schemaVersionDAO.keyspace.name
+    private val keyspaceName = schemaVersionDAO.keyspaceConfig.name
 
     /**
      * Runs the actual migration.

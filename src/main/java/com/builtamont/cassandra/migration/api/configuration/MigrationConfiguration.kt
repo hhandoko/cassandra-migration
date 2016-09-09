@@ -25,7 +25,7 @@ import com.builtamont.cassandra.migration.internal.util.StringUtils
  * Main Cassandra migration configuration.
  */
 // TODO: To be merged with `CassandraMigrationConfiguration`
-class MigrationConfigs {
+class MigrationConfiguration {
 
     /**
      * Cassandra migration configuration properties.

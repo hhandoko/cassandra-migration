@@ -10,7 +10,7 @@ public class KeyspaceConfigurationTest {
     @Test
     public void shouldDefaultToNoKeyspaceButCanBeOverridden() {
         assertThat(new KeyspaceConfiguration().getName(), is(nullValue()));
-        System.setProperty(KeyspaceConfiguration.KeyspaceProperty.NAME.getPrefix(), "myspace");
+        System.setProperty(KeyspaceConfiguration.KeyspaceProperty.NAME.getNamespace(), "myspace");
         assertThat(new KeyspaceConfiguration().getName(), is("myspace"));
     }
 

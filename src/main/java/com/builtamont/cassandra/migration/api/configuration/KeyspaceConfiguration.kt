@@ -25,8 +25,11 @@ class KeyspaceConfiguration : Configuration() {
 
     /**
      * Keyspace configuration properties.
+     *
+     * @param namespace The property namespace.
+     * @param description The property description.
      */
-    enum class KeyspaceProperty constructor(val prefix: String, val description: String) {
+    enum class KeyspaceProperty constructor(val namespace: String, val description: String) {
         NAME(PROPERTY_PREFIX + "name", "Name of Cassandra keyspace")
     }
 
@@ -46,7 +49,7 @@ class KeyspaceConfiguration : Configuration() {
      */
     init {
         clusterConfig = ClusterConfiguration()
-        val keyspaceP = System.getProperty(KeyspaceProperty.NAME.prefix)
+        val keyspaceP = System.getProperty(KeyspaceProperty.NAME.namespace)
         if (null != keyspaceP && keyspaceP.trim { it <= ' ' }.length != 0)
             this.name = keyspaceP
     }

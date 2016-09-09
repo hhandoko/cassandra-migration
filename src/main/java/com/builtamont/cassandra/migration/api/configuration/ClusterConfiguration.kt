@@ -25,8 +25,11 @@ class ClusterConfiguration : Configuration() {
 
     /**
      * Cluster configuration properties.
+     *
+     * @param namespace The property namespace.
+     * @param description The property description.
      */
-    enum class ClusterProperty constructor(val prefix: String, val description: String) {
+    enum class ClusterProperty constructor(val namespace: String, val description: String) {
         CONTACT_POINTS(PROPERTY_PREFIX + "contactpoints", "Comma separated values of node IP addresses"),
         PORT(PROPERTY_PREFIX + "port", "CQL native transport port"),
         USERNAME(PROPERTY_PREFIX + "username", "Username for password authenticator"),
@@ -63,19 +66,19 @@ class ClusterConfiguration : Configuration() {
      * ClusterConfiguration initialization.
      */
     init {
-        val contactpointsP = System.getProperty(ClusterProperty.CONTACT_POINTS.prefix)
+        val contactpointsP = System.getProperty(ClusterProperty.CONTACT_POINTS.namespace)
         if (null != contactpointsP && contactpointsP.trim { it <= ' ' }.length != 0)
             this.contactpoints = contactpointsP.replace("\\s+".toRegex(), "").split("[,]".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
 
-        val portP = System.getProperty(ClusterProperty.PORT.prefix)
+        val portP = System.getProperty(ClusterProperty.PORT.namespace)
         if (null != portP && portP.trim { it <= ' ' }.length != 0)
             this.port = Integer.parseInt(portP)
 
-        val usernameP = System.getProperty(ClusterProperty.USERNAME.prefix)
+        val usernameP = System.getProperty(ClusterProperty.USERNAME.namespace)
         if (null != usernameP && usernameP.trim { it <= ' ' }.length != 0)
             this.username = usernameP
 
-        val passwordP = System.getProperty(ClusterProperty.PASSWORD.prefix)
+        val passwordP = System.getProperty(ClusterProperty.PASSWORD.namespace)
         if (null != passwordP && passwordP.trim { it <= ' ' }.length != 0)
             this.password = passwordP
     }

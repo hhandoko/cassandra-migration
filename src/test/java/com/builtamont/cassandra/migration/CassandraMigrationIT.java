@@ -45,8 +45,8 @@ public class CassandraMigrationIT extends BaseIT {
     public void runApiTest() {
         String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
         CassandraMigration cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.migrate();
 
         MigrationInfoService infoService = cm.info();
@@ -101,8 +101,8 @@ public class CassandraMigrationIT extends BaseIT {
         // test out of order when out of order is not allowed
         String[] outOfOrderScriptsLocations = { "migration/integ_outoforder", "migration/integ/java" };
         cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(outOfOrderScriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(outOfOrderScriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.migrate();
 
         infoService = cm.info();
@@ -124,9 +124,9 @@ public class CassandraMigrationIT extends BaseIT {
         // test out of order when out of order is allowed
         String[] outOfOrder2ScriptsLocations = { "migration/integ_outoforder2", "migration/integ/java" };
         cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(outOfOrder2ScriptsLocations);
-        cm.getConfigs().setAllowOutOfOrder(true);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(outOfOrder2ScriptsLocations);
+        cm.getMigrationConfig().setAllowOutOfOrder(true);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.migrate();
 
         infoService = cm.info();
@@ -148,9 +148,9 @@ public class CassandraMigrationIT extends BaseIT {
         // test out of order when out of order is allowed again
         String[] outOfOrder3ScriptsLocations = { "migration/integ_outoforder3", "migration/integ/java" };
         cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(outOfOrder3ScriptsLocations);
-        cm.getConfigs().setAllowOutOfOrder(true);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(outOfOrder3ScriptsLocations);
+        cm.getMigrationConfig().setAllowOutOfOrder(true);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.migrate();
 
         infoService = cm.info();
@@ -175,8 +175,8 @@ public class CassandraMigrationIT extends BaseIT {
         // apply migration scripts
         String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
         CassandraMigration cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.migrate();
 
         MigrationInfoService infoService = cm.info();
@@ -184,14 +184,14 @@ public class CassandraMigrationIT extends BaseIT {
         Assert.assertNull(validationError);
 
         cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
 
         cm.validate();
 
         cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(new String[] { "migration/integ/java" });
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(new String[] { "migration/integ/java" });
+        cm.setKeyspaceConfig(getKeyspace());
 
         try {
             cm.validate();
@@ -207,8 +207,8 @@ public class CassandraMigrationIT extends BaseIT {
         String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
         Session session = getSession();
         CassandraMigration cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.migrate(session);
 
         MigrationInfoService infoService = cm.info(session);
@@ -216,14 +216,14 @@ public class CassandraMigrationIT extends BaseIT {
         Assert.assertNull(validationError);
 
         cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
 
         cm.validate(session);
 
         cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(new String[] { "migration/integ/java" });
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(new String[] { "migration/integ/java" });
+        cm.setKeyspaceConfig(getKeyspace());
 
         try {
             cm.validate(session);
@@ -238,8 +238,8 @@ public class CassandraMigrationIT extends BaseIT {
     public void testBaseLine() {
         String[] scriptsLocations = {"migration/integ", "migration/integ/java"};
         CassandraMigration cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.baseline();
 
         SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.Companion.getCURRENT().getTable());
@@ -252,8 +252,8 @@ public class CassandraMigrationIT extends BaseIT {
         String[] scriptsLocations = {"migration/integ", "migration/integ/java"};
         Session session = getSession();
         CassandraMigration cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.baseline(session);
 
         SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.Companion.getCURRENT().getTable());
@@ -265,13 +265,13 @@ public class CassandraMigrationIT extends BaseIT {
     public void testBaseLineWithMigrations() {
         String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
         CassandraMigration cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.migrate();
 
         cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.baseline();
     }
 
@@ -280,13 +280,13 @@ public class CassandraMigrationIT extends BaseIT {
         String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
         Session session = getSession();
         CassandraMigration cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.migrate(session);
 
         cm = new CassandraMigration();
-        cm.getConfigs().setScriptsLocations(scriptsLocations);
-        cm.setKeyspace(getKeyspace());
+        cm.getMigrationConfig().setScriptsLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
         cm.baseline(session);
     }
 

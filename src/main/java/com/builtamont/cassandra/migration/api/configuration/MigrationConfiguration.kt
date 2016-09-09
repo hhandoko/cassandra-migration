@@ -1,5 +1,5 @@
 /**
- * File     : MigrationConfigs.kt
+ * File     : MigrationConfiguration.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -25,36 +25,41 @@ import com.builtamont.cassandra.migration.internal.util.StringUtils
  * Main Cassandra migration configuration.
  */
 // TODO: To be merged with `CassandraMigrationConfiguration`
-class MigrationConfigs {
+class MigrationConfiguration : Configuration() {
 
     /**
      * Cassandra migration configuration properties.
+     *
+     * @param namespace The property namespace.
+     * @param description The property description.
      */
-    enum class MigrationProperty constructor(val prefix: String, val description: String) {
-        SCRIPTS_ENCODING("cassandra.migration.scripts.encoding", "Encoding for CQL scripts"),
-        SCRIPTS_LOCATIONS("cassandra.migration.scripts.locations", "Locations of the migration scripts in CSV format"),
-        ALLOW_OUTOFORDER("cassandra.migration.scripts.allowoutoforder", "Allow out of order migration"),
-        TARGET_VERSION("cassandra.migration.version.target", "The target version. Migrations with a higher version number will be ignored.")
+    enum class MigrationProperty constructor(val namespace: String, val description: String) {
+        SCRIPTS_ENCODING(BASE_PREFIX + "scripts.encoding", "Encoding for CQL scripts"),
+        SCRIPTS_LOCATIONS(BASE_PREFIX + "scripts.locations", "Locations of the migration scripts in CSV format"),
+        ALLOW_OUT_OF_ORDER(BASE_PREFIX + "scripts.allowoutoforder", "Allow out of order migration"),
+        TARGET_VERSION(BASE_PREFIX + "version.target", "The target version. Migrations with a higher version number will be ignored.")
     }
 
     /**
-     * The encoding of Cql migration scripts.
+     * The encoding of CQL migration scripts.
      * (default: UTF-8)
      */
     var encoding = "UTF-8"
+      get set
 
     /**
      * Locations of the migration scripts in CSV format.
      * (default: db/migration)
      */
     var scriptsLocations = arrayOf("db/migration")
+      get set
 
     /**
      * The target version. Migrations with a higher version number will be ignored.
      * (default: the latest version)
      */
     var target = MigrationVersion.LATEST
-        private set
+        get private set
 
     /**
      * Set the target version property from String value.
@@ -70,7 +75,7 @@ class MigrationConfigs {
      * (default: false)
      */
     var isAllowOutOfOrder = false
-        set
+        get set
 
     /**
      * Set allow out of order migration property from String value.
@@ -85,23 +90,17 @@ class MigrationConfigs {
      * MigrationConfig initialization.
      */
     init {
-        val scriptsEncodingP = System.getProperty(MigrationProperty.SCRIPTS_ENCODING.prefix)
-        if (null != scriptsEncodingP && scriptsEncodingP.trim { it <= ' ' }.length != 0)
-            this.encoding = scriptsEncodingP
+        val scriptsEncodingProp = System.getProperty(MigrationProperty.SCRIPTS_ENCODING.namespace)
+        if (!scriptsEncodingProp.isNullOrBlank()) this.encoding = scriptsEncodingProp.trim()
 
-        val targetVersionP = System.getProperty(MigrationProperty.TARGET_VERSION.prefix)
-        if (null != targetVersionP && targetVersionP.trim { it <= ' ' }.length != 0)
-            setTargetFromString(targetVersionP)
+        val targetVersionProp = System.getProperty(MigrationProperty.TARGET_VERSION.namespace)
+        if (!targetVersionProp.isNullOrBlank()) setTargetFromString(targetVersionProp)
 
-        val locationsProp = System.getProperty(MigrationProperty.SCRIPTS_LOCATIONS.prefix)
-        if (locationsProp != null && locationsProp.trim { it <= ' ' }.length != 0) {
-            scriptsLocations = StringUtils.tokenizeToStringArray(locationsProp, ",")
-        }
+        val locationsProp = System.getProperty(MigrationProperty.SCRIPTS_LOCATIONS.namespace)
+        if (!locationsProp.isNullOrBlank()) scriptsLocations = StringUtils.tokenizeToStringArray(locationsProp, ",")
 
-        val allowOutOfOrderProp = System.getProperty(MigrationProperty.ALLOW_OUTOFORDER.prefix)
-        if (allowOutOfOrderProp != null && allowOutOfOrderProp.trim { it <= ' ' }.length != 0) {
-            setIsAllowOutOfOrderFromString(allowOutOfOrderProp)
-        }
+        val allowOutOfOrderProp = System.getProperty(MigrationProperty.ALLOW_OUT_OF_ORDER.namespace)
+        if (!allowOutOfOrderProp.isNullOrBlank()) setIsAllowOutOfOrderFromString(allowOutOfOrderProp)
     }
 
 }

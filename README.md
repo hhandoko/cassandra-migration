@@ -85,16 +85,16 @@ Example:
 ``` java
 String[] scriptsLocations = {"migration/cassandra"};
 
-Keyspace keyspace = new Keyspace();
-keyspace.setName(CASSANDRA__KEYSPACE);
-keyspace.getCluster().setContactpoints(CASSANDRA_CONTACT_POINT);
-keyspace.getCluster().setPort(CASSANDRA_PORT);
-keyspace.getCluster().setUsername(CASSANDRA_USERNAME);
-keyspace.getCluster().setPassword(CASSANDRA_PASSWORD);
+KeyspaceConfiguration keyspaceConfig = new KeyspaceConfiguration();
+keyspaceConfig.setName(CASSANDRA_KEYSPACE);
+keyspaceConfig.getClusterConfig().setContactpoints(CASSANDRA_CONTACT_POINT);
+keyspaceConfig.getClusterConfig().setPort(CASSANDRA_PORT);
+keyspaceConfig.getClusterConfig().setUsername(CASSANDRA_USERNAME);
+keyspaceConfig.getClusterConfig().setPassword(CASSANDRA_PASSWORD);
 
 CassandraMigration cm = new CassandraMigration();
 cm.getConfigs().setScriptsLocations(scriptsLocations);
-cm.setKeyspace(keyspace);
+cm.setKeyspaceConfig(keyspaceConfig);
 cm.migrate();
 ```
 
@@ -113,8 +113,8 @@ target/*-jar-with-dependencies.jar migrate
 
 Logging level can be set by passing the following arguments:
  * INFO: This is the default
- * DEBUG: '-X'
- * WARNING: '-q'
+ * DEBUG: `-X`
+ * WARNING: `-q`
 
 ### VM Options
 
@@ -198,14 +198,14 @@ https://github.com/builtamont/cassandra-migration/releases
 
 ## Version 0.9 Release Pending Actions
 
- * Replace `config.Cluster.java` and `config.Keyspace.java` to the one provided by DataStax Cassandra driver
- * ~~Add additional features from upstream open PRs~~ (DONE as per 8 September 2016 PRs)
+ * ~~Replace `config.Cluster.java` and `config.Keyspace.java` to the one provided by DataStax Cassandra driver~~<br />***NOTE:** The classes are merely configuration objects, and has been updated for clarity.*
+ * ~~Add additional features from upstream open PRs~~<br />***DONE:** as per 8 September 2016 PRs.*
  * Add standalone Cassandra (DataStax Community Edition) integration test
  
 ## Non-Critical Pending Actions
 
  * Refactor build system to use Gradle
- * Refactor constructor and method signatures to avoid passing `null`s (via Kotlin `lateinit`, and / or use of `Option` values)
+ * Refactor constructor and method signatures to avoid passing `null`s (via Kotlin `lateinit`)
  * Refactor methods body to idiomatic Kotlin
 
 [Axel Fontaine / BoxFuse Flyway]: https://github.com/flyway/flyway

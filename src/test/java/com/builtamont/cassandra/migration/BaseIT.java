@@ -75,7 +75,7 @@ public abstract class BaseIT {
     protected KeyspaceConfiguration getKeyspace() {
         KeyspaceConfiguration ks = new KeyspaceConfiguration();
         ks.setName(CASSANDRA_KEYSPACE);
-        ks.getClusterConfig().setContactpoints(CASSANDRA_CONTACT_POINT);
+        ks.getClusterConfig().setContactpoints(new String[] { CASSANDRA_CONTACT_POINT });
         ks.getClusterConfig().setPort(CASSANDRA_PORT);
         ks.getClusterConfig().setUsername(CASSANDRA_USERNAME);
         ks.getClusterConfig().setPassword(CASSANDRA_PASSWORD);

@@ -1,5 +1,5 @@
 /**
- * File     : MigrationConfigs.kt
+ * File     : MigrationConfiguration.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd

@@ -19,10 +19,10 @@ public class ClusterConfigurationTest {
 
     @Test
     public void systemPropsShouldOverrideDefaultConfigValues() {
-        System.setProperty(ClusterConfiguration.ClusterProperty.CONTACTPOINTS.getName(), "192.168.0.1,192.168.0.2, 192.168.0.3");
-        System.setProperty(ClusterConfiguration.ClusterProperty.PORT.getName(), "9144");
-        System.setProperty(ClusterConfiguration.ClusterProperty.USERNAME.getName(), "user");
-        System.setProperty(ClusterConfiguration.ClusterProperty.PASSWORD.getName(), "pass");
+        System.setProperty(ClusterConfiguration.ClusterProperty.CONTACTPOINTS.getPrefix(), "192.168.0.1,192.168.0.2, 192.168.0.3");
+        System.setProperty(ClusterConfiguration.ClusterProperty.PORT.getPrefix(), "9144");
+        System.setProperty(ClusterConfiguration.ClusterProperty.USERNAME.getPrefix(), "user");
+        System.setProperty(ClusterConfiguration.ClusterProperty.PASSWORD.getPrefix(), "pass");
 
         ClusterConfiguration clusterConfig = new ClusterConfiguration();
         assertThat(clusterConfig.getContactpoints()[0], is("192.168.0.1"));

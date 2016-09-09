@@ -304,7 +304,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                         migrationConfig.target,
                         schemaVersionDAO,
                         session,
-                        keyspaceConfig.clusterConfig.username,
+                        keyspaceConfig.clusterConfig.username ?: "",
                         migrationConfig.isAllowOutOfOrder
                 )
 
@@ -369,7 +369,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                         baselineVersion,
                         schemaVersionDAO,
                         baselineDescription,
-                        keyspaceConfig.clusterConfig.username
+                        keyspaceConfig.clusterConfig.username ?: ""
                 )
                 baseline.run()
             }

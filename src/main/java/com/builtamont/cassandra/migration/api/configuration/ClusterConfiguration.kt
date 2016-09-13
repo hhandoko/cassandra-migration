@@ -23,20 +23,7 @@ import com.builtamont.cassandra.migration.internal.util.StringUtils
 /**
  * Cluster configuration.
  */
-class ClusterConfiguration : Configuration() {
-
-    /**
-     * Cluster configuration properties.
-     *
-     * @param namespace The property namespace.
-     * @param description The property description.
-     */
-    enum class ClusterProperty constructor(val namespace: String, val description: String) {
-        CONTACT_POINTS(PROPERTY_PREFIX + "contactpoints", "Comma separated values of node IP addresses"),
-        PORT(PROPERTY_PREFIX + "port", "CQL native transport port"),
-        USERNAME(PROPERTY_PREFIX + "username", "Username for password authenticator"),
-        PASSWORD(PROPERTY_PREFIX + "password", "Password for password authenticator")
-    }
+class ClusterConfiguration {
 
     /**
      * Cluster node IP address(es).
@@ -68,24 +55,17 @@ class ClusterConfiguration : Configuration() {
      * ClusterConfiguration initialization.
      */
     init {
-        val contactpointsProp = System.getProperty(ClusterProperty.CONTACT_POINTS.namespace)
+        val contactpointsProp = System.getProperty(ConfigurationProperty.CONTACT_POINTS.namespace)
         if (!contactpointsProp.isNullOrBlank()) this.contactpoints = StringUtils.tokenizeToStringArray(contactpointsProp, ",")
 
-        val portProp = System.getProperty(ClusterProperty.PORT.namespace)
+        val portProp = System.getProperty(ConfigurationProperty.PORT.namespace)
         if (!portProp.isNullOrBlank()) this.port = Integer.parseInt(portProp)
 
-        val usernameProp = System.getProperty(ClusterProperty.USERNAME.namespace)
+        val usernameProp = System.getProperty(ConfigurationProperty.USERNAME.namespace)
         if (!usernameProp.isNullOrBlank()) this.username = usernameProp.trim()
 
-        val passwordProp = System.getProperty(ClusterProperty.PASSWORD.namespace)
+        val passwordProp = System.getProperty(ConfigurationProperty.PASSWORD.namespace)
         if (!passwordProp.isNullOrBlank()) this.password = passwordProp.trim()
-    }
-
-    /**
-     * ClusterConfiguration companion object.
-     */
-    companion object {
-        private val PROPERTY_PREFIX = BASE_PREFIX + "cluster."
     }
 
 }

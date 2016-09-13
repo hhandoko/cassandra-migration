@@ -22,7 +22,7 @@ import com.builtamont.cassandra.migration.api.CassandraMigrationException
 import com.builtamont.cassandra.migration.api.MigrationInfoService
 import com.builtamont.cassandra.migration.api.MigrationVersion
 import com.builtamont.cassandra.migration.api.configuration.CassandraMigrationConfiguration
-import com.builtamont.cassandra.migration.api.configuration.MigrationConfiguration
+import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty
 import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
 import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
 import com.builtamont.cassandra.migration.internal.command.Baseline
@@ -33,6 +33,7 @@ import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.builtamont.cassandra.migration.internal.info.MigrationInfoServiceImpl
 import com.builtamont.cassandra.migration.internal.resolver.CompositeMigrationResolver
 import com.builtamont.cassandra.migration.internal.util.ScriptsLocations
+import com.builtamont.cassandra.migration.internal.util.StringUtils
 import com.builtamont.cassandra.migration.internal.util.VersionPrinter
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.datastax.driver.core.Cluster
@@ -46,37 +47,69 @@ import com.datastax.driver.core.Session
 class CassandraMigration : CassandraMigrationConfiguration {
 
     /**
+     * The Cassandra keyspace configuration.
+     */
+    lateinit var keyspaceConfig: KeyspaceConfiguration
+
+    /**
      * The ClassLoader to use for resolving migrations on the classpath.
      * (default: Thread.currentThread().getContextClassLoader())
      */
     override var classLoader = Thread.currentThread().contextClassLoader
 
     /**
-     * The Cassandra keyspace to connect to.
+     * The target version. Migrations with a higher version number will be ignored.
+     * (default: MigrationVersion.LATEST)
      */
-    lateinit var keyspaceConfig: KeyspaceConfiguration
-
-    /**
-     * The Cassandra migration configuration.
-     */
-    lateinit var migrationConfig: MigrationConfiguration
+    override var target = MigrationVersion.LATEST
 
     /**
      * The baseline version.
+     * (default: MigrationVersion.fromVersion("1"))
      */
-    private val baselineVersion = MigrationVersion.Companion.fromVersion("1")
+    override var baselineVersion = MigrationVersion.fromVersion("1")
 
     /**
      * The baseline description.
+     * (default: "<< Cassandra Baseline >>")
      */
-    private val baselineDescription = "<< Cassandra Baseline >>"
+    override var baselineDescription = "<< Cassandra Baseline >>"
+
+    /**
+     * The encoding of CQL migrations script encoding.
+     * (default: "UTF-8")
+     */
+    override var encoding = "UTF-8"
+
+    /**
+     * Locations to scan recursively for migrations.
+     * (default: new String[] {"db/migration"})
+     */
+    override var locations = arrayOf("db/migration")
+
+    /**
+     * Allow out of order migrations.
+     * (default: false)
+     */
+    var allowOutOfOrder = false
 
     /**
      * CassandraMigration initialization.
      */
     init {
         this.keyspaceConfig = KeyspaceConfiguration()
-        this.migrationConfig = MigrationConfiguration()
+
+        val targetVersionProp = System.getProperty(ConfigurationProperty.TARGET_VERSION.namespace)
+        if (!targetVersionProp.isNullOrBlank()) target = MigrationVersion.fromVersion(targetVersionProp)
+
+        val encodingProp = System.getProperty(ConfigurationProperty.SCRIPTS_ENCODING.namespace)
+        if (!encodingProp.isNullOrBlank()) encoding = encodingProp.trim()
+
+        val locationsProp = System.getProperty(ConfigurationProperty.SCRIPTS_LOCATIONS.namespace)
+        if (!locationsProp.isNullOrBlank()) locations = StringUtils.tokenizeToStringArray(locationsProp, ",")
+
+        val allowOutOfOrderProp = System.getProperty(ConfigurationProperty.ALLOW_OUT_OF_ORDER.namespace)
+        if (!allowOutOfOrderProp.isNullOrBlank()) allowOutOfOrder = allowOutOfOrderProp.toBoolean()
     }
 
     /**
@@ -277,7 +310,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @return A new, fully configured, MigrationResolver instance.
      */
     private fun createMigrationResolver(): MigrationResolver {
-        return CompositeMigrationResolver(classLoader, ScriptsLocations(*migrationConfig.scriptsLocations), migrationConfig.encoding)
+        return CompositeMigrationResolver(classLoader, ScriptsLocations(*locations), encoding)
     }
 
     /**
@@ -301,11 +334,11 @@ class CassandraMigration : CassandraMigrationConfiguration {
                 val schemaVersionDAO = createSchemaVersionDAO(session)
                 val migrate = Migrate(
                         migrationResolver,
-                        migrationConfig.target,
+                        target,
                         schemaVersionDAO,
                         session,
                         keyspaceConfig.clusterConfig.username ?: "",
-                        migrationConfig.isAllowOutOfOrder
+                        allowOutOfOrder
                 )
 
                 return migrate.run()
@@ -324,7 +357,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                 val migrationInfoService = MigrationInfoServiceImpl(
                         migrationResolver,
                         schemaVersionDAO,
-                        migrationConfig.target,
+                        target,
                         outOfOrder = false,
                         pendingOrFuture = true
                 )
@@ -345,7 +378,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                 val schemaVersionDAO = createSchemaVersionDAO(session)
                 val validate = Validate(
                         migrationResolver,
-                        migrationConfig.target,
+                        target,
                         schemaVersionDAO,
                         outOfOrder = true,
                         pendingOrFuture = false

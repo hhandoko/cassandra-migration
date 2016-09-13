@@ -93,7 +93,7 @@ keyspaceConfig.getClusterConfig().setUsername(CASSANDRA_USERNAME);
 keyspaceConfig.getClusterConfig().setPassword(CASSANDRA_PASSWORD);
 
 CassandraMigration cm = new CassandraMigration();
-cm.getConfigs().setScriptsLocations(scriptsLocations);
+cm.setLocations(scriptsLocations);
 cm.setKeyspaceConfig(keyspaceConfig);
 cm.migrate();
 ```

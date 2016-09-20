@@ -16,7 +16,21 @@ Ensure the following prerequisites are met:
  * **Apache Cassandra 3.0.x:**<br />The library is currently tested using embedded Cassandra, testing with standalone Cassandra (DataStax Community Edition) is in the roadmap
  * **Pre-existing Keyspace:**<br />Cassandra's Keyspace should be managed outside the migration tool by sysadmins (e.g. tune replication factor, etc)
 
-Import this library as a dependency (Maven example):
+Add the Sonatype Nexus OSS repo, and...
+``` xml
+<repositories>
+    <repository>
+        <id>oss-sonatype</id>
+        <name>oss-sonatype</name>
+        <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+        <snapshots>
+            <enabled>true</enabled>
+        </snapshots>
+    </repository>
+</repositories>
+```
+
+import this library as a dependency:
 ``` xml
 <dependency>
     <groupId>com.builtamont</groupId>

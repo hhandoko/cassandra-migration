@@ -323,7 +323,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
     }
 
     private fun migrationTableName(): String{
-        return tablePrefix + MigrationVersion.CURRENT.table
+        return tablePrefix.orEmpty() + MigrationVersion.CURRENT.table
     }
 
     /**

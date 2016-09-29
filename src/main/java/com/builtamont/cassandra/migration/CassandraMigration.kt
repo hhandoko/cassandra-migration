@@ -88,6 +88,12 @@ class CassandraMigration : CassandraMigrationConfiguration {
     override var locations = arrayOf("db/migration")
 
     /**
+     * The prefix to be prepended to `cassandra_migration_version*` table names.
+     * (default: "")
+     */
+    override var tablePrefix = ""
+
+    /**
      * Allow out of order migrations.
      * (default: false)
      */
@@ -107,6 +113,9 @@ class CassandraMigration : CassandraMigrationConfiguration {
 
         val locationsProp = System.getProperty(ConfigurationProperty.SCRIPTS_LOCATIONS.namespace)
         if (!locationsProp.isNullOrBlank()) locations = StringUtils.tokenizeToStringArray(locationsProp, ",")
+
+        val tablePrefixProp = System.getProperty(ConfigurationProperty.TABLE_PREFIX.namespace)
+        if (!tablePrefixProp.isNullOrBlank()) tablePrefix = tablePrefixProp.trim()
 
         val allowOutOfOrderProp = System.getProperty(ConfigurationProperty.ALLOW_OUT_OF_ORDER.namespace)
         if (!allowOutOfOrderProp.isNullOrBlank()) allowOutOfOrder = allowOutOfOrderProp.toBoolean()
@@ -313,13 +322,17 @@ class CassandraMigration : CassandraMigrationConfiguration {
         return CompositeMigrationResolver(classLoader, ScriptsLocations(*locations), encoding)
     }
 
+    private fun migrationTableName(): String{
+        return tablePrefix + MigrationVersion.CURRENT.table
+    }
+
     /**
      * Creates the SchemaVersionDAO.
      *
      * @return A configured SchemaVersionDAO instance.
      */
     private fun createSchemaVersionDAO(session: Session): SchemaVersionDAO {
-        return SchemaVersionDAO(session, keyspaceConfig, MigrationVersion.CURRENT.table)
+        return SchemaVersionDAO(session, keyspaceConfig, migrationTableName())
     }
 
     /**
@@ -328,7 +341,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
     private fun migrateAction(): Action<Int> {
         return object: Action<Int> {
             override fun execute(session: Session): Int {
-                Initialize().run(session, keyspaceConfig, MigrationVersion.CURRENT.table)
+                Initialize().run(session, keyspaceConfig, migrationTableName())
 
                 val migrationResolver = createMigrationResolver()
                 val schemaVersionDAO = createSchemaVersionDAO(session)

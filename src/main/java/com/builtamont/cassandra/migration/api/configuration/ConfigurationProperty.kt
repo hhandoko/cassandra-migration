@@ -38,6 +38,11 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
             "Locations of the migration scripts in CSV format"
     ),
 
+    TABLE_PREFIX(
+            "cassandra.migration.table.prefix",
+            "Prefix to be prepended to cassandra_migration_version* table names"
+    ),
+
     ALLOW_OUT_OF_ORDER(
             "cassandra.migration.scripts.allowoutoforder",
             "Allow out of order migration"

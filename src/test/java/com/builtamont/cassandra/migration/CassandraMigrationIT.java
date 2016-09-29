@@ -248,6 +248,20 @@ public class CassandraMigrationIT extends BaseIT {
     }
 
     @Test
+    public void testBaseLineWithTablePrefix() {
+        String[] scriptsLocations = {"migration/integ", "migration/integ/java"};
+        CassandraMigration cm = new CassandraMigration();
+        cm.setLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
+        cm.setTablePrefix("test1_");
+        cm.baseline();
+
+        SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(getSession(), getKeyspace(), cm.getTablePrefix() + MigrationVersion.Companion.getCURRENT().getTable());
+        AppliedMigration baselineMarker = schemaVersionDAO.getBaselineMarker();
+        assertThat(baselineMarker.getVersion(), is(MigrationVersion.Companion.fromVersion("1")));
+    }
+
+    @Test
     public void testBaseLineWithSession() {
         String[] scriptsLocations = {"migration/integ", "migration/integ/java"};
         Session session = getSession();
@@ -257,6 +271,21 @@ public class CassandraMigrationIT extends BaseIT {
         cm.baseline(session);
 
         SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.Companion.getCURRENT().getTable());
+        AppliedMigration baselineMarker = schemaVersionDAO.getBaselineMarker();
+        assertThat(baselineMarker.getVersion(), is(MigrationVersion.Companion.fromVersion("1")));
+    }
+
+    @Test
+    public void testBaseLineWithSessionAndTablePrefix() {
+        String[] scriptsLocations = {"migration/integ", "migration/integ/java"};
+        Session session = getSession();
+        CassandraMigration cm = new CassandraMigration();
+        cm.setLocations(scriptsLocations);
+        cm.setKeyspaceConfig(getKeyspace());
+        cm.setTablePrefix("test2_");
+        cm.baseline(session);
+
+        SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(getSession(), getKeyspace(), cm.getTablePrefix() + MigrationVersion.Companion.getCURRENT().getTable());
         AppliedMigration baselineMarker = schemaVersionDAO.getBaselineMarker();
         assertThat(baselineMarker.getVersion(), is(MigrationVersion.Companion.fromVersion("1")));
     }

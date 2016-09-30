@@ -17,7 +17,7 @@
 #   limitations under the License.
 ###
 
-# Created by https://www.gitignore.io/api/windows,osx,linux,intellij,eclipse,netbeans,maven
+# Created by https://www.gitignore.io/api/windows,osx,linux,intellij,eclipse,netbeans,maven,vagrant
 
 ### Windows ###
 # Windows image file caches
@@ -191,6 +191,10 @@ release.properties
 dependency-reduced-pom.xml
 buildNumber.properties
 .mvn/timing.properties
+
+
+### Vagrant ###
+.vagrant/
 
 
 ### Others ###

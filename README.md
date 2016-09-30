@@ -109,6 +109,7 @@ keyspaceConfig.getClusterConfig().setPassword(CASSANDRA_PASSWORD);
 CassandraMigration cm = new CassandraMigration();
 cm.setLocations(scriptsLocations);
 cm.setKeyspaceConfig(keyspaceConfig);
+cm.setTablePrefix("my_app_");
 cm.migrate();
 ```
 
@@ -117,6 +118,7 @@ cm.migrate();
 ``` shell
 java -jar \
 -Dcassandra.migration.scripts.locations=filesystem:target/test-classes/migration/integ \
+-Dcassandra.migration.table.prefix=another_app_ \
 -Dcassandra.migration.cluster.contactpoints=localhost \
 -Dcassandra.migration.cluster.port=9147 \
 -Dcassandra.migration.cluster.username=cassandra \
@@ -139,6 +141,7 @@ Migration:
  * `cassandra.migration.scripts.encoding`: The encoding of CQL scripts (default=UTF-8)
  * `cassandra.migration.scripts.allowoutoforder`: Allow out of order migration (default=false)
  * `cassandra.migration.version.target`: The target version. Migrations with a higher version number will be ignored. (default=latest)
+ * `cassandra.migration.table.prefix`: The prefix to be prepended to `cassandra_migration_version*` table names.
 
 Cluster:
  * `cassandra.migration.cluster.contactpoints`: Comma separated values of node IP addresses (default=localhost)

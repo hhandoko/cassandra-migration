@@ -226,4 +226,15 @@ interface CassandraMigrationConfiguration {
      */
     val locations: Array<String>
 
+    /**
+     * Retrieves the migration table prefix.
+     *
+     * The prefix will be prepended to `cassandra_migration_version*` table names.
+     *
+     * By providing the prefix, multiple applications can have their own migration tables tracking the migration of their
+     * own cassandra database assets without interfering with each other.
+     *
+     * @return the prefix to be prepended to `cassandra_migration_version*` table names
+     */
+    val tablePrefix: String
 }

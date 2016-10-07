@@ -27,14 +27,23 @@
 # Configuration
 # -----------------------------------------------------------------------------
 # Guest VM(s) cluster configuration
-# ~~~~~
-CFG_MEMSIZE  = ENV['CASS_MEM'] || "2048"            # Configured memory for each guest VM
-CFG_CPUCOUNT = ENV['CASS_CPU'] || "2"               # Configured CPU core for each guest VM
-CFG_IP       = ENV['CASS_IP']  || "192.168.10.10"   # Configured VM's IP address
-CFG_TZ       = "UTC"                                # Configured timezone, e.g.  US/Pacific, US/Eastern, UTC, Europe/Warsaw, etc.
+# ~~~~~~
+CFG_MEMSIZE  = ENV['CASS_MEM']  || "2048"            # Configured memory for each guest VM
+CFG_CPUCOUNT = ENV['CASS_CPU']  || "2"               # Configured CPU core for each guest VM
+CFG_IP       = ENV['CASS_IP']   || "192.168.10.10"   # Configured VM's IP address
+CFG_DIST     = ENV['CASS_DIST'] || "dsc30"           # Cassandra distribution type (e.g. DataStax Enterprise or Apache Cassandra)
+CFG_TZ       = "UTC"                                 # Configured timezone, e.g.  US/Pacific, US/Eastern, UTC, Europe/Warsaw, etc.
+
+# Apache Cassandra release manager's GPG public key
+# ~~~~~~
+# Use the following known keys corresponding to the version you choose:
+#   - 37x -> 749D6EEC0353B12C
+#   - 38x -> A278B781FE4B2BDA
+#   - 39x -> A278B781FE4B2BDA
+CFG_GPG      = ENV['CASS_GPG']  || "A278B781FE4B2BDA"
 
 # VM host configuration
-# ~~~~~
+# ~~~~~~
 VAGRANTFILE_API_VERSION = "2"
 
 
@@ -42,6 +51,7 @@ VAGRANTFILE_API_VERSION = "2"
 # Provisioning Scripts
 # -----------------------------------------------------------------------------
 # Debian proxy client configuration
+# ~~~~~~
 # Note: Only if 'DEB_CACHE_HOST' is defined
 deb_cache_cmds = ""
 if ENV['DEB_CACHE_HOST']
@@ -56,6 +66,7 @@ CACHE
 end
 
 # OpenJDK provisioning script
+# ~~~~~~
 node_script = <<SCRIPT
 #!/bin/bash
 
@@ -93,27 +104,48 @@ apt-get -qqy install zulu-8=8.15.0.1
 echo "Info: Base VM provisioning complete"
 SCRIPT
 
-# DataStax Enterprise Community Edition provisioning script
+# DataStax Enterprise Community Edition installation
+# ~~~~~~
 dsec_install_script = <<SCRIPT
 #!/bin/bash
 
 # Add DataStax repository (incl. repository key)
 echo "Task: Adding DataStax repository"
-echo "deb http://debian.datastax.com/community stable main" | sudo tee -a /etc/apt/sources.list.d/cassandra.sources.list
+echo "deb http://debian.datastax.com/community stable main" >> /etc/apt/sources.list.d/cassandra.sources.list
 curl -L https://debian.datastax.com/debian/repo_key | sudo apt-key add -
 apt-get -qq update
 
 # Install DataStax Enterprise Community Edition Cassandra distribution (incl. optional utilities)
 echo "Task: Installing DataStax Enterprise Community Edition"
-apt-get -qqy install dsc30
+apt-get -qqy install #{CFG_DIST}
 apt-get -qqy install cassandra-tools
 
 echo "Info: DataStax Enterprise Community Edition provisioning complete"
 SCRIPT
 
-# DataStax Community 3.x configuration script
-dsec_configure_script = <<SCRIPT
-echo "Task: Configuring DataStax Community 3.x"
+# Apache Cassandra installation
+# ~~~~~~
+cass_install_script = <<SCRIPT
+#!/bin/bash
+
+# Add Apache Cassandra repository (incl. repository key)
+echo "Task: Adding Apache Cassandra repository"
+echo "deb http://www.apache.org/dist/cassandra/debian #{CFG_DIST} main" >> /etc/apt/sources.list.d/cassandra.list
+gpg --keyserver pgp.mit.edu --recv-keys #{CFG_GPG}
+gpg --export --armor #{CFG_GPG} | sudo apt-key add -
+apt-get -qq update
+
+# Install Apache Cassandra distribution
+echo "Task: Installing Apache Cassandra"
+apt-get -qqy install cassandra
+
+echo "Info: Apache Cassandra provisioning complete"
+SCRIPT
+
+# Cassandra configuration
+# ~~~~~~
+cass_configure_script = <<SCRIPT
+echo "Task: Configuring Cassandra"
 service cassandra stop
 rm -rf /var/lib/cassandra/data/system/*
 sudo sed -i "s|cluster_name: 'Test Cluster'|cluster_name: 'Cassandra Migration'|" /etc/cassandra/cassandra.yaml
@@ -123,16 +155,15 @@ sudo sed -i "s|start_rpc: false|start_rpc: true|" /etc/cassandra/cassandra.yaml
 sudo sed -i "s|rpc_address: localhost|rpc_address: #{CFG_IP}|" /etc/cassandra/cassandra.yaml
 service cassandra start
 
-echo "Info: DataStax Community 3.x configuration complete"
+echo "Info: Cassandra configuration complete"
 SCRIPT
-
 
 
 # -----------------------------------------------------------------------------
 # Vagrant Script
 # -----------------------------------------------------------------------------
 # VM provisioning
-# ~~~~~
+# ~~~~~~
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   # Use `vagrant-cachier` to cache common packages and reduce time to provision boxes
   if Vagrant.has_plugin?("vagrant-cachier")
@@ -163,7 +194,15 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     node.vm.hostname = "cassandra"
     node.vm.provision :shell, :inline => node_script
-    node.vm.provision :shell, :inline => dsec_install_script
-    node.vm.provision :shell, :inline => dsec_configure_script
+
+    if CFG_DIST.start_with?('dsc')
+      # Provision DataStax Enterprise Community Edition
+      node.vm.provision :shell, :inline => dsec_install_script
+    else
+      # Provision Apache Cassandra
+      node.vm.provision :shell, :inline => cass_install_script
+    end
+
+    node.vm.provision :shell, :inline => cass_configure_script
   end
 end

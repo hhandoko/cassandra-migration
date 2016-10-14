@@ -9,18 +9,24 @@ matrix:
       services: cassandra
       script: ./scripts/verify.sh
     - jdk: openjdk7
+      sudo: required
+      dist: trusty
       before_install: ./scripts/configure-apache-cassandra.sh
       script: ./scripts/verify.sh
     - jdk: oraclejdk7
       services: cassandra
       script: ./scripts/verify.sh
     - jdk: oraclejdk7
+      sudo: required
+      dist: trusty
       before_install: ./scripts/configure-apache-cassandra.sh
       script: ./scripts/verify.sh
     - jdk: oraclejdk8
       services: cassandra
       script: ./scripts/verify.sh
     - jdk: oraclejdk8
+      sudo: required
+      dist: trusty
       before_install: ./scripts/configure-apache-cassandra.sh
       script: ./scripts/verify.sh
     - jdk: oraclejdk8

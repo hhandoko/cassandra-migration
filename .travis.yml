@@ -8,15 +8,15 @@ services:
 matrix:
   include:
     - jdk: openjdk7
-      script: mvn test
+      script: ./scripts/verify.sh
     - jdk: oraclejdk7
-      script: mvn test
+      script: ./scripts/verify.sh
     - jdk: oraclejdk8
-      script: mvn test
+      script: ./scripts/verify.sh
     - jdk: oraclejdk8
-      script: mvn verify
+      script: ./scripts/verify.sh
     - jdk: oraclejdk8
-      script: mvn verify -Dcassandra.migration.cluster.contactpoints=127.0.0.1 -Dcassandra.migration.cluster.port=9042 -Dcassandra.migration.disable_embedded=true
+      script: ./scripts/verify-embedded.sh
 deploy:
   provider: script
   script: ./scripts/deploy.sh

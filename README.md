@@ -13,7 +13,7 @@ It is designed to work similar to Flyway, supporting plain CQL and Java-based mi
 Ensure the following prerequisites are met: 
 
  * **Java SDK 1.7+:**<br />The library is developed using Azul Zulu 1.8, and release-tested (Travis CI) with OpenJDK 1.7, Oracle JDK 1.7, and Oracle JDK 1.8
- * **Apache Cassandra 3.0.x:**<br />The library is currently tested using embedded Cassandra, testing with standalone Cassandra (DataStax Community Edition) is in the roadmap
+ * **Apache Cassandra 3.0.x:**<br />The library is release-tested (Travis CI) on embedded Cassandra, Apache Cassandra, and DataStax Enterprise Community Edition (on Oracle JDK 1.8)
  * **Pre-existing Keyspace:**<br />Cassandra's Keyspace should be managed outside the migration tool by sysadmins (e.g. tune replication factor, etc)
 
 Add the Sonatype Nexus OSS repo, and...
@@ -39,7 +39,7 @@ import this library as a dependency:
 </dependency>
 ```
 
-***NOTE:** Integration test in Travis CI is only run against Oracle JDK 1.8, due to embedded Cassandra's dependencies on JDK 1.8* 
+***NOTE:** A Vagrant script is provided to enable quick integration testing against different or older Cassandra distributions.* 
 
 ### Migration version table
 
@@ -187,6 +187,14 @@ Run `mvn verify` to run the integration tests.
 
 ***NOTE:** The integration test might complain about some missing SIGAR binaries, this can be safely ignored. If you wish, you can download the missing binaries and set `java.library.path` parameter to point to the containing folder (e.g. `mvn verify -Djava.library.path=lib` where `lib` is the `/lib` folder relative to the project root).*
 
+### Travis CI Integration Test Matrix
+
+| Casandra Distribution         | OpenJDK 1.7 | Oracle JDK 1.7 | Oracle JDK 1.8 |
+| ----------------------------- |:-----------:|:--------------:|:--------------:|
+| Embedded Cassandra            |             |                | `YES`          |
+| Apache Cassandra 3.9          |             |                | `YES`          |
+| DataStax Enterprise Community | `YES`       | `YES`          | `YES`          |
+
 ## Contributing
 
 We follow the "[fork-and-pull]" Git workflow.
@@ -217,7 +225,7 @@ https://github.com/builtamont/cassandra-migration/releases
 
  * ~~Replace `config.Cluster.java` and `config.Keyspace.java` to the one provided by DataStax Cassandra driver~~<br />*NOTE: The classes are merely configuration objects, and has been updated for clarity.*
  * ~~Add additional features from upstream open PRs~~<br />*DONE: as per 8 September 2016 PRs.*
- * Add standalone Cassandra (DataStax Community Edition) integration test
+ * ~~Add standalone Cassandra (DataStax Community Edition) integration test~~<br />*DONE: Uses Travis' provided DataStax Enterprise Community distribution.*
  
 ## Non-Critical Pending Actions
 

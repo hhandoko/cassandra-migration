@@ -31,16 +31,36 @@ import org.junit.BeforeClass;
 
 public abstract class BaseIT {
 
-    public static final String CASSANDRA_KEYSPACE = "cassandra_migration_test";
-    public static final String CASSANDRA_CONTACT_POINT = "localhost";
-    public static final int CASSANDRA_PORT = 9147;
-    public static final String CASSANDRA_USERNAME = "cassandra";
-    public static final String CASSANDRA_PASSWORD = "cassandra";
+    public static final String CASSANDRA_KEYSPACE =
+            System.getProperty("cassandra.migration.keyspace.name") != null
+                    ? System.getProperty("cassandra.migration.keyspace.name")
+                    : "cassandra_migration_test";
+    public static final String CASSANDRA_CONTACT_POINT =
+            System.getProperty("cassandra.migration.cluster.contactpoints") != null
+                    ? System.getProperty("cassandra.migration.cluster.contactpoints")
+                    : "localhost";
+    public static final int CASSANDRA_PORT =
+            System.getProperty("cassandra.migration.cluster.port") != null
+                    ? Integer.parseInt(System.getProperty("cassandra.migration.cluster.port"))
+                    : 9147;
+    public static final String CASSANDRA_USERNAME =
+            System.getProperty("cassandra.migration.cluster.username") != null
+                    ? System.getProperty("cassandra.migration.cluster.username")
+                    : "cassandra";
+    public static final String CASSANDRA_PASSWORD =
+            System.getProperty("cassandra.migration.cluster.password") != null
+                    ? System.getProperty("cassandra.migration.cluster.password")
+                    : "cassandra";
+    public static final boolean DISABLE_EMBEDDED =
+            System.getProperty("cassandra.migration.disable_embedded") != null
+                    && Boolean.parseBoolean(System.getProperty("cassandra.migration.disable_embedded"));
 
     private Session session;
 
     @BeforeClass
     public static void beforeSuite() throws Exception {
+        if (DISABLE_EMBEDDED) return;
+
         EmbeddedCassandraServerHelper.startEmbeddedCassandra(
                 "cassandra-unit.yaml",
                 "target/embeddedCassandra",
@@ -49,6 +69,8 @@ public abstract class BaseIT {
 
     @AfterClass
     public static void afterSuite() {
+        if (DISABLE_EMBEDDED) return;
+
         EmbeddedCassandraServerHelper.cleanEmbeddedCassandra();
     }
 

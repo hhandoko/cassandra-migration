@@ -6,13 +6,21 @@ env:
 matrix:
   include:
     - jdk: openjdk7
-      script: mvn test
+      services: cassandra
+      script: ./scripts/verify.sh
     - jdk: oraclejdk7
-      script: mvn test
+      services: cassandra
+      script: ./scripts/verify.sh
     - jdk: oraclejdk8
-      script: mvn test
+      services: cassandra
+      script: ./scripts/verify.sh
     - jdk: oraclejdk8
-      script: mvn verify
+      sudo: required
+      dist: trusty
+      before_install: ./scripts/configure-apache-cassandra.sh
+      script: ./scripts/verify.sh
+    - jdk: oraclejdk8
+      script: ./scripts/verify-embedded.sh
 deploy:
   provider: script
   script: ./scripts/deploy.sh

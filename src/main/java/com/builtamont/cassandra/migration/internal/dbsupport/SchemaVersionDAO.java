@@ -120,14 +120,26 @@ public class SchemaVersionDAO {
         boolean schemaVersionTableExists = false;
         boolean schemaVersionCountsTableExists = false;
 
+        // ISSUE #17
+        // ~~~~~~
+        // Ref    : https://github.com/builtamont-oss/cassandra-migration/issues/17
+        // Summary:
+        //   Table check query fails following a `DROP TABLE` statement when run against embedded Cassandra and Apache
+        //   Cassandra 3.7 and earlier.
+        // Fix    :
+        //   Use `SELECT *` rather than `SELECT count(*)` as a workaround, less efficient but universal.
+        // Notes  :
+        //   Can be reverted (to use count) once the affected Cassandra version has been superseded by another major
+        //   version (e.g. 4.x).
+        // ~~~~~~
         Statement schemaVersionStatement = QueryBuilder
                 .select()
-                .countAll()
+                //.countAll()
                 .from(keyspaceConfig.getName(), tableName);
 
         Statement schemaVersionCountsStatement = QueryBuilder
                 .select()
-                .countAll()
+                //.countAll()
                 .from(keyspaceConfig.getName(), tableName + COUNTS_TABLE_NAME_SUFFIX);
 
         schemaVersionStatement.setConsistencyLevel(this.consistencyLevel);

@@ -90,4 +90,34 @@ public class ApiValidateCommandIT extends BaseIT {
         Assert.assertFalse(session.isClosed());
     }
 
+    @Test
+    public void validate_cmd_with_ext_session_and_defaulted_keyspace_config_should_throw_exception_when_invalid_migration_scripts_are_provided() {
+        // apply migration scripts
+        String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
+        Session session = getSession();
+        CassandraMigration cm = new CassandraMigration();
+        cm.setLocations(scriptsLocations);
+        cm.migrate(session);
+
+        MigrationInfoService infoService = cm.info(session);
+        String validationError = infoService.validate();
+        Assert.assertNull(validationError);
+
+        cm = new CassandraMigration();
+        cm.setLocations(scriptsLocations);
+
+        cm.validate(session);
+
+        cm = new CassandraMigration();
+        cm.setLocations(new String[] { "migration/integ/java" });
+
+        try {
+            cm.validate(session);
+            Assert.fail("The expected CassandraMigrationException was not raised");
+        } catch (CassandraMigrationException e) {
+        }
+
+        Assert.assertFalse(session.isClosed());
+    }
+
 }

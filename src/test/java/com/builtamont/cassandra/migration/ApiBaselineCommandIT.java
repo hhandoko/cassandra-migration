@@ -72,12 +72,39 @@ public class ApiBaselineCommandIT extends BaseIT {
     }
 
     @Test
+    public void baseline_cmd_with_ext_session_and_defaulted_keyspace_config_before_migration_should_mark_at_first_migration_script() {
+        String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
+        Session session = getSession(getKeyspace());
+        CassandraMigration cm = new CassandraMigration();
+        cm.setLocations(scriptsLocations);
+        cm.baseline(session);
+
+        SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.Companion.getCURRENT().getTable());
+        AppliedMigration baselineMarker = schemaVersionDAO.getBaselineMarker();
+        assertThat(baselineMarker.getVersion(), is(MigrationVersion.Companion.fromVersion("1")));
+    }
+
+    @Test
     public void baseline_cmd_with_ext_session_and_table_prefix_before_migration_should_mark_at_first_migration_script() {
         String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
         Session session = getSession();
         CassandraMigration cm = new CassandraMigration();
         cm.setLocations(scriptsLocations);
         cm.setKeyspaceConfig(getKeyspace());
+        cm.setTablePrefix("test2_");
+        cm.baseline(session);
+
+        SchemaVersionDAO schemaVersionDAO = new SchemaVersionDAO(getSession(), getKeyspace(), cm.getTablePrefix() + MigrationVersion.Companion.getCURRENT().getTable());
+        AppliedMigration baselineMarker = schemaVersionDAO.getBaselineMarker();
+        assertThat(baselineMarker.getVersion(), is(MigrationVersion.Companion.fromVersion("1")));
+    }
+
+    @Test
+    public void baseline_cmd_with_ext_session_and_defaulted_keyspace_config_and_table_prefix_before_migration_should_mark_at_first_migration_script() {
+        String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
+        Session session = getSession(getKeyspace());
+        CassandraMigration cm = new CassandraMigration();
+        cm.setLocations(scriptsLocations);
         cm.setTablePrefix("test2_");
         cm.baseline(session);
 
@@ -112,6 +139,19 @@ public class ApiBaselineCommandIT extends BaseIT {
         cm = new CassandraMigration();
         cm.setLocations(scriptsLocations);
         cm.setKeyspaceConfig(getKeyspace());
+        cm.baseline(session);
+    }
+
+    @Test(expected = CassandraMigrationException.class)
+    public void baseline_cmd_with_ext_session_and_defaulted_keyspace_config_should_throw_exception_when_baselining_after_successful_migration() {
+        String[] scriptsLocations = { "migration/integ", "migration/integ/java" };
+        Session session = getSession();
+        CassandraMigration cm = new CassandraMigration();
+        cm.setLocations(scriptsLocations);
+        cm.migrate(session);
+
+        cm = new CassandraMigration();
+        cm.setLocations(scriptsLocations);
         cm.baseline(session);
     }
 

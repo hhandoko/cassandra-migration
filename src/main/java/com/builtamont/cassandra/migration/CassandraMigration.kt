@@ -219,78 +219,79 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * Executes this command with proper resource handling and cleanup.
      *
      * @param action The action to execute.
+     * @param extSession The external session if provided, defaults to null.
      * @param T The action result type.
      * @return The action result.
      */
-    internal fun <T> execute(action: Action<T>): T {
+    internal fun <T> execute(action: Action<T>, extSession: Session? = null): T {
         val result: T
 
         VersionPrinter.printVersion(classLoader)
 
+        val useExternalSession = extSession != null
         var cluster: Cluster? = null
         var session: Session? = null
         try {
-            // Guard clauses: Cluster and Keyspace must be defined
-            val errorMsg = "Unable to establish Cassandra session"
-            if (keyspaceConfig == null) throw IllegalArgumentException("$errorMsg. Keyspace is not configured.")
-            if (keyspaceConfig.clusterConfig == null) throw IllegalArgumentException("$errorMsg. Cluster is not configured.")
-            if (keyspaceConfig.name.isNullOrEmpty()) throw IllegalArgumentException("$errorMsg. Keyspace is not specified.")
-
-            // Build the Cluster
-            val builder = Cluster.Builder()
-            builder.addContactPoints(*keyspaceConfig.clusterConfig.contactpoints).withPort(keyspaceConfig.clusterConfig.port)
-            if (!keyspaceConfig.clusterConfig.username.isNullOrBlank()) {
-                if (!keyspaceConfig.clusterConfig.password.isNullOrBlank()) {
-                    builder.withCredentials(keyspaceConfig.clusterConfig.username, keyspaceConfig.clusterConfig.password)
-                } else {
-                    throw IllegalArgumentException("Password must be provided with username.")
-                }
-            }
-            cluster = builder.build()
-
-            LOG.info(getConnectionInfo(cluster.metadata))
-
-            // Create a new Session
-            session = cluster.newSession()
-
-            // Connect to the specific Keyspace context (if already defined)
-            val keyspaces = cluster.metadata.keyspaces.map { it.name }
-            val keyspaceExists = keyspaces.first { it.equals(keyspaceConfig.name, ignoreCase = true) }.isNotEmpty()
-            if (keyspaceExists) {
-                session = cluster.connect(keyspaceConfig.name)
+            if (extSession != null) {
+                // TODO: Refactor KeyspaceConfiguration, it's referenced indirectly in many places in this class (code smell)
+                keyspaceConfig.name = extSession.loggedKeyspace
+                session = extSession
+                cluster = extSession.cluster
             } else {
-                throw CassandraMigrationException("Keyspace: ${keyspaceConfig.name} does not exist.")
+                // Guard clauses: Cluster and Keyspace must be defined
+                val errorMsg = "Unable to establish Cassandra session"
+                if (keyspaceConfig == null) throw IllegalArgumentException("$errorMsg. Keyspace is not configured.")
+                if (keyspaceConfig.clusterConfig == null) throw IllegalArgumentException("$errorMsg. Cluster is not configured.")
+                if (keyspaceConfig.name.isNullOrEmpty()) throw IllegalArgumentException("$errorMsg. Keyspace is not specified.")
+
+                // Build the Cluster
+                val builder = Cluster.Builder()
+                builder.addContactPoints(*keyspaceConfig.clusterConfig.contactpoints).withPort(keyspaceConfig.clusterConfig.port)
+                if (!keyspaceConfig.clusterConfig.username.isNullOrBlank()) {
+                    if (!keyspaceConfig.clusterConfig.password.isNullOrBlank()) {
+                        builder.withCredentials(keyspaceConfig.clusterConfig.username, keyspaceConfig.clusterConfig.password)
+                    } else {
+                        throw IllegalArgumentException("Password must be provided with username.")
+                    }
+                }
+                cluster = builder.build()
+
+                LOG.info(getConnectionInfo(cluster.metadata))
+
+                // Create a new Session
+                session = cluster.newSession()
+
+                // Connect to the specific Keyspace context (if already defined)
+                val keyspaces = cluster.metadata.keyspaces.map { it.name }
+                val keyspaceExists = keyspaces.first { it.equals(keyspaceConfig.name, ignoreCase = true) }.isNotEmpty()
+                if (keyspaceExists) {
+                    session = cluster.connect(keyspaceConfig.name)
+                } else {
+                    throw CassandraMigrationException("Keyspace: ${keyspaceConfig.name} does not exist.")
+                }
             }
 
-            result = action.execute(session)
+            result = action.execute(session!!)
         } finally {
-            if (null != session && !session.isClosed)
-                try {
-                    session.close()
-                } catch (e: Exception) {
-                    LOG.warn("Error closing Cassandra session")
-                }
+            // NOTE: We don't close external sessions, and let those sessions be managed outside the Cassandra Migration
+            //       lifecycle.
+            if (!useExternalSession) {
+                if (session != null && !session.isClosed)
+                    try {
+                        session.close()
+                    } catch (e: Exception) {
+                        LOG.warn("Error closing Cassandra session")
+                    }
 
-            if (null != cluster && !cluster.isClosed)
-                try {
-                    cluster.close()
-                } catch (e: Exception) {
-                    LOG.warn("Error closing Cassandra cluster")
-                }
+                if (cluster != null && !cluster.isClosed)
+                    try {
+                        cluster.close()
+                    } catch (e: Exception) {
+                        LOG.warn("Error closing Cassandra cluster")
+                    }
+            }
         }
         return result
-    }
-
-    /**
-     * Executes this command with an existing session, with proper resource handling and cleanup.
-     *
-     * @param action The action to execute.
-     * @param session The Cassandra connection session.
-     * @param T The action result type.
-     * @return The action result.
-     */
-    internal fun <T> execute(action: Action<T>, session: Session): T {
-        return action.execute(session)
     }
 
     /**

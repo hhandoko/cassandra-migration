@@ -16,7 +16,16 @@ Ensure the following prerequisites are met:
  * **Apache Cassandra 3.0.x:**<br />The library is release-tested (Travis CI) on embedded Cassandra, Apache Cassandra, and DataStax Enterprise Community Edition (on Oracle JDK 1.8)
  * **Pre-existing Keyspace:**<br />Cassandra's Keyspace should be managed outside the migration tool by sysadmins (e.g. tune replication factor, etc)
 
-Add the Sonatype Nexus OSS repo, and...
+Import this library as a dependency:
+``` xml
+<dependency>
+    <groupId>com.builtamont</groupId>
+    <artifactId>cassandra-migration</artifactId>
+    <version>0.9</version>
+</dependency>
+```
+
+`SNAPSHOT` builds are available by adding the Sonatype Nexus OSS repository:
 ``` xml
 <repositories>
     <repository>
@@ -28,15 +37,6 @@ Add the Sonatype Nexus OSS repo, and...
         </snapshots>
     </repository>
 </repositories>
-```
-
-import this library as a dependency:
-``` xml
-<dependency>
-    <groupId>com.builtamont</groupId>
-    <artifactId>cassandra-migration</artifactId>
-    <version>0.9-SNAPSHOT</version>
-</dependency>
 ```
 
 ***NOTE:** A Vagrant script is provided to enable quick integration testing against different or older Cassandra distributions.* 
@@ -220,12 +220,6 @@ Please read [CONTRIBUTING] for more details.
 ## Releases
 
 https://github.com/builtamont/cassandra-migration/releases
-
-## Version 0.9 Release Pending Actions
-
- * ~~Replace `config.Cluster.java` and `config.Keyspace.java` to the one provided by DataStax Cassandra driver~~<br />*NOTE: The classes are merely configuration objects, and has been updated for clarity.*
- * ~~Add additional features from upstream open PRs~~<br />*DONE: as per 8 September 2016 PRs.*
- * ~~Add standalone Cassandra (DataStax Community Edition) integration test~~<br />*DONE: Uses Travis' provided DataStax Enterprise Community distribution.*
  
 ## Non-Critical Pending Actions
 

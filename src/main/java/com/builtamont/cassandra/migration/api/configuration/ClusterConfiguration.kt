@@ -18,6 +18,8 @@
  */
 package com.builtamont.cassandra.migration.api.configuration
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import com.builtamont.cassandra.migration.internal.util.StringUtils
 
 /**
@@ -52,6 +54,30 @@ class ClusterConfiguration {
       get set
 
     /**
+     * The path to the truststore.
+     */
+    var truststore: Path? = null
+      get set
+
+    /**
+     * The password for the truststore.
+     */
+    var truststorePassword: String? = null
+      get set
+
+    /**
+     * The path to the keystore.
+     */
+    var keystore: Path? = null
+        get set
+
+    /**
+     * The password for the keystore.
+     */
+    var keystorePassword: String? = null
+        get set
+
+    /**
      * ClusterConfiguration initialization.
      */
     init {
@@ -66,6 +92,18 @@ class ClusterConfiguration {
 
         val passwordProp = System.getProperty(ConfigurationProperty.PASSWORD.namespace)
         if (!passwordProp.isNullOrBlank()) this.password = passwordProp.trim()
+
+        val truststoreProp = System.getProperty(ConfigurationProperty.TRUSTSTORE.namespace)
+        if (!truststoreProp.isNullOrBlank()) this.truststore = Paths.get(truststoreProp.trim())
+
+        val truststorePasswordProp = System.getProperty(ConfigurationProperty.TRUSTSTORE_PASSWORD.namespace)
+        if (!truststorePasswordProp.isNullOrBlank()) this.truststorePassword = truststorePasswordProp.trim()
+
+        val keystoreProp = System.getProperty(ConfigurationProperty.KEYSTORE.namespace)
+        if (!keystoreProp.isNullOrBlank()) this.keystore = Paths.get(keystoreProp.trim())
+
+        val keystorePasswordProp = System.getProperty(ConfigurationProperty.KEYSTORE_PASSWORD.namespace)
+        if (!keystorePasswordProp.isNullOrBlank()) this.keystorePassword = keystorePasswordProp.trim()
     }
 
 }

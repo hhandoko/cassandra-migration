@@ -77,6 +77,26 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
             "Password for password authenticator"
     ),
 
+    TRUSTSTORE(
+            "cassandra.migration.cluster.truststore",
+            "Path to the truststore for client SSL"
+    ),
+
+    TRUSTSTORE_PASSWORD(
+            "cassandra.migration.cluster.truststore_password",
+            "Password for the truststore"
+    ),
+
+    KEYSTORE(
+            "cassandra.migration.cluster.keystore",
+            "Path to the keystore for client SSL certificate authentication"
+    ),
+
+    KEYSTORE_PASSWORD(
+            "cassandra.migration.cluster.keystore_password",
+            "Password for the keystore"
+    ),
+
     // Keyspace name configuration properties
     // ~~~~~~
     KEYSPACE_NAME(

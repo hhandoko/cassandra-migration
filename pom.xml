@@ -4,7 +4,7 @@
     <groupId>com.builtamont</groupId>
     <artifactId>cassandra-migration</artifactId>
     <name>Cassandra Migration</name>
-    <version>0.9</version>
+    <version>0.10-SNAPSHOT</version>
     <description>
         Database migration tool for Cassandra
     </description>
@@ -39,7 +39,7 @@
         <url>https://github.com/builtamont-oss/cassandra-migration</url>
         <connection>scm:git:https://github.com/builtamont-oss/cassandra-migration.git</connection>
         <developerConnection>scm:git:https://github.com/builtamont-oss/cassandra-migration.git</developerConnection>
-      <tag>cassandra-migration-0.9</tag>
+      <tag>HEAD</tag>
   </scm>
 
     <developers>

@@ -5,8 +5,7 @@ import com.builtamont.cassandra.migration.api.configuration.ConfigurationPropert
 import org.junit.Test;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.nullValue;
+import static org.hamcrest.Matchers.*;
 
 public class ClusterConfigurationTest {
 
@@ -19,22 +18,22 @@ public class ClusterConfigurationTest {
         //       It should be OK as Travis' test matrix should cover these different conditions (e.g. where System
         //       properties are provided, and where default values should be used instead).
 
-        if (hasProperty("cassandra.migration.keyspace.name"))
-            assertThat(clusterConfig.getContactpoints()[0], is("localhost"));
+        if (hasProperty(ConfigurationProperty.CONTACT_POINTS.getNamespace()))
+            assertThat(clusterConfig.getContactpoints()[0], either(is("localhost")).or(is("127.0.0.1")));
 
-        if (hasProperty("cassandra.migration.cluster.port"))
+        if (hasProperty(ConfigurationProperty.PORT.getNamespace()))
             assertThat(clusterConfig.getPort(), is(9042));
 
-        if (hasProperty("cassandra.migration.cluster.username"))
+        if (hasProperty(ConfigurationProperty.USERNAME.getNamespace()))
             assertThat(clusterConfig.getUsername(), is(nullValue()));
 
-        if (hasProperty("cassandra.migration.cluster.password"))
+        if (hasProperty(ConfigurationProperty.PASSWORD.getNamespace()))
             assertThat(clusterConfig.getPassword(), is(nullValue()));
     }
 
     @Test
     public void systemPropsShouldOverrideDefaultConfigValues() {
-        System.setProperty(ConfigurationProperty.CONTACT_POINTS.getNamespace(), "192.168.0.1,192.168.0.2, 192.168.0.3");
+        System.setProperty(ConfigurationProperty.CONTACT_POINTS.getNamespace(), "192.168.0.1,192.168.0.2,192.168.0.3");
         System.setProperty(ConfigurationProperty.PORT.getNamespace(), "9144");
         System.setProperty(ConfigurationProperty.USERNAME.getNamespace(), "user");
         System.setProperty(ConfigurationProperty.PASSWORD.getNamespace(), "pass");

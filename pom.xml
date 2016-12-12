@@ -108,6 +108,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.nhaarman</groupId>
+            <artifactId>mockito-kotlin</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-junit</artifactId>
             <version>2.0.0.0</version>

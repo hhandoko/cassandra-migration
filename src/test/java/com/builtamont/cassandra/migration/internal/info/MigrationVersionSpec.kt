@@ -32,7 +32,6 @@ import org.junit.platform.runner.JUnitPlatform
 import org.junit.runner.RunWith
 import kotlin.test.assertFailsWith
 
-
 /**
  * MigrationVersionSpec unit tests.
  */

@@ -4,6 +4,8 @@ import com.builtamont.cassandra.migration.api.configuration.ClusterConfiguration
 import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty;
 import org.junit.Test;
 
+import java.nio.file.Paths;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.*;
 
@@ -29,6 +31,18 @@ public class ClusterConfigurationTest {
 
         if (hasProperty(ConfigurationProperty.PASSWORD.getNamespace()))
             assertThat(clusterConfig.getPassword(), is(nullValue()));
+
+        if (hasProperty("cassandra.migration.cluster.truststore"))
+            assertThat(clusterConfig.getTruststore(), is(nullValue()));
+
+        if (hasProperty("cassandra.migration.cluster.truststorePassword"))
+            assertThat(clusterConfig.getTruststorePassword(), is(nullValue()));
+
+        if (hasProperty("cassandra.migration.cluster.keystore"))
+            assertThat(clusterConfig.getKeystore(), is(nullValue()));
+
+        if (hasProperty("cassandra.migration.cluster.keystorePassword"))
+            assertThat(clusterConfig.getKeystorePassword(), is(nullValue()));
     }
 
     @Test
@@ -37,6 +51,10 @@ public class ClusterConfigurationTest {
         System.setProperty(ConfigurationProperty.PORT.getNamespace(), "9144");
         System.setProperty(ConfigurationProperty.USERNAME.getNamespace(), "user");
         System.setProperty(ConfigurationProperty.PASSWORD.getNamespace(), "pass");
+        System.setProperty(ConfigurationProperty.TRUSTSTORE.getNamespace(), "truststore.jks");
+        System.setProperty(ConfigurationProperty.TRUSTSTORE_PASSWORD.getNamespace(), "pass");
+        System.setProperty(ConfigurationProperty.KEYSTORE.getNamespace(), "keystore.jks");
+        System.setProperty(ConfigurationProperty.KEYSTORE_PASSWORD.getNamespace(), "pass");
 
         ClusterConfiguration clusterConfig = new ClusterConfiguration();
         assertThat(clusterConfig.getContactpoints()[0], is("192.168.0.1"));
@@ -45,6 +63,10 @@ public class ClusterConfigurationTest {
         assertThat(clusterConfig.getPort(), is(9144));
         assertThat(clusterConfig.getUsername(), is("user"));
         assertThat(clusterConfig.getPassword(), is("pass"));
+        assertThat(clusterConfig.getTruststore(), is(Paths.get("truststore.jks")));
+        assertThat(clusterConfig.getTruststorePassword(), is("pass"));
+        assertThat(clusterConfig.getKeystore(), is(Paths.get("keystore.jks")));
+        assertThat(clusterConfig.getKeystorePassword(), is("pass"));
     }
 
     /**

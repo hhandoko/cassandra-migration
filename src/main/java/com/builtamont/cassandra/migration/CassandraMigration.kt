@@ -38,7 +38,16 @@ import com.builtamont.cassandra.migration.internal.util.VersionPrinter
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.datastax.driver.core.Cluster
 import com.datastax.driver.core.Metadata
+import com.datastax.driver.core.NettySSLOptions
 import com.datastax.driver.core.Session
+import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy
+import com.datastax.driver.core.policies.TokenAwarePolicy
+import io.netty.handler.ssl.SslContextBuilder
+import io.netty.handler.ssl.SslProvider
+import java.io.FileInputStream
+import java.security.KeyStore
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.TrustManagerFactory
 
 /**
  * This is the centre point of Cassandra migration, and for most users, the only class they will ever have to deal with.
@@ -247,6 +256,10 @@ class CassandraMigration : CassandraMigrationConfiguration {
                 // Build the Cluster
                 val builder = Cluster.Builder()
                 builder.addContactPoints(*keyspaceConfig.clusterConfig.contactpoints).withPort(keyspaceConfig.clusterConfig.port)
+
+                // Use TokenAware & DCAware load balancing policies
+                builder.withLoadBalancingPolicy(TokenAwarePolicy(DCAwareRoundRobinPolicy.builder().build()))
+
                 if (!keyspaceConfig.clusterConfig.username.isNullOrBlank()) {
                     if (!keyspaceConfig.clusterConfig.password.isNullOrBlank()) {
                         builder.withCredentials(keyspaceConfig.clusterConfig.username, keyspaceConfig.clusterConfig.password)
@@ -254,6 +267,42 @@ class CassandraMigration : CassandraMigrationConfiguration {
                         throw IllegalArgumentException("Password must be provided with username.")
                     }
                 }
+
+                // Add SSL options to cluster builder
+                if (keyspaceConfig.clusterConfig.truststore != null) {
+                    FileInputStream(keyspaceConfig.clusterConfig.truststore?.toFile()).use {
+
+                        val sslCtxBuilder = SslContextBuilder.forClient()
+                                .sslProvider(SslProvider.JDK)
+                                // The Java cryptographic extensions (JCE) are required for AES 256
+                                .ciphers(listOf("TLS_RSA_WITH_AES_256_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA"))
+
+                        val truststore = KeyStore.getInstance("JKS")
+                        truststore.load(it, keyspaceConfig.clusterConfig.truststorePassword?.toCharArray() ?:
+                                throw IllegalArgumentException("Truststore password must be provided with truststore."))
+
+                        val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+                        tmf.init(truststore)
+                        sslCtxBuilder.trustManager(tmf)
+
+                        if (keyspaceConfig.clusterConfig.keystore != null) {
+                            FileInputStream(keyspaceConfig.clusterConfig.keystore?.toFile()).use {
+
+                                val keystore = KeyStore.getInstance("JKS")
+                                val keystorePass = keyspaceConfig.clusterConfig.keystorePassword?.toCharArray() ?:
+                                        throw IllegalArgumentException("Keystore password must be provided with keystore.")
+                                keystore.load(it, keystorePass)
+
+                                val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
+                                kmf.init(keystore, keystorePass)
+                                sslCtxBuilder.keyManager(kmf)
+                            }
+                        }
+                        builder.withSSL(NettySSLOptions(sslCtxBuilder.build()))
+                    }
+                }
+
+
                 cluster = builder.build()
 
                 LOG.info(getConnectionInfo(cluster.metadata))

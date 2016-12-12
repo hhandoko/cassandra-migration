@@ -148,6 +148,10 @@ Cluster:
  * `cassandra.migration.cluster.port`: CQL native transport port (default=9042)
  * `cassandra.migration.cluster.username`: Username for password authenticator (optional)
  * `cassandra.migration.cluster.password`: Password for password authenticator (optional)
+ * `cassandra.migration.cluster.truststore`: Path to truststore.jar for cassandra client SSL (optional)
+ * `cassandra.migration.cluster.truststore_password`: Password for truststore.jar (optional)
+ * `cassandra.migration.cluster.keystore`: Path to keystore.jar for cassandra client SSL with certificate authentication (optional)
+ * `cassandra.migration.cluster.keystore_password`: Password for keystore.jar (optional)
 
 Keyspace:
  * `cassandra.migration.keyspace.name`: Name of Cassandra keyspace (required)

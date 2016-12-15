@@ -18,26 +18,19 @@
  */
 package com.builtamont.cassandra.migration.config
 
+import com.builtamont.cassandra.migration.api.configuration.ClusterConfiguration
 import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty
 import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
-import com.natpryce.hamkrest.absent
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.present
-import com.natpryce.hamkrest.should.shouldMatch
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.junit.platform.runner.JUnitPlatform
-import org.junit.runner.RunWith
+import io.kotlintest.matchers.be
+import io.kotlintest.specs.FreeSpec
+import java.util.*
 
 /**
  * KeyspaceConfiguration unit tests.
  */
-@RunWith(JUnitPlatform::class)
-class KeyspaceConfigurationSpec : Spek({
+class KeyspaceConfigurationSpec : FreeSpec() {
 
-    val defaultProperties = System.getProperties()
+    val defaultProperties: Properties? = System.getProperties()
 
     /**
      * Clear test-related System properties.
@@ -46,40 +39,44 @@ class KeyspaceConfigurationSpec : Spek({
         System.clearProperty(ConfigurationProperty.KEYSPACE_NAME.namespace)
     }
 
-    beforeEach {
+    override fun beforeEach() {
         clearTestProperties()
     }
 
-    afterEach {
+    override fun afterEach() {
         clearTestProperties()
         System.setProperties(defaultProperties)
     }
 
-    describe("KeyspaceConfiguration") {
+    init {
 
-        context("default values") {
+        "KeyspaceConfiguration" - {
 
-            val keyspaceConfig = KeyspaceConfiguration()
+            "given default values" - {
 
-            it("should have no keyspace name as the default") {
-                keyspaceConfig.name shouldMatch absent()
+                val keyspaceConfig = KeyspaceConfiguration()
+
+                "should have no keyspace name as the default" {
+                    keyspaceConfig.name shouldBe null
+                }
+
+                "should have default cluster object" {
+                    keyspaceConfig.clusterConfig should be a ClusterConfiguration::class
+                }
+
             }
 
-            it("should have default cluster object") {
-                keyspaceConfig.clusterConfig shouldMatch present()
-            }
+            "provided System properties values" - {
 
-        }
+                "should allow keyspace name override" {
+                    System.setProperty(ConfigurationProperty.KEYSPACE_NAME.namespace, "myspace")
+                    KeyspaceConfiguration().name shouldBe "myspace"
+                }
 
-        context("provided System properties values") {
-
-            it("should allow keyspace name override") {
-                System.setProperty(ConfigurationProperty.KEYSPACE_NAME.namespace, "myspace")
-                KeyspaceConfiguration().name shouldMatch equalTo("myspace")
             }
 
         }
 
     }
 
-})
+}

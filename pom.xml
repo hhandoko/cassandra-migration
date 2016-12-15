@@ -58,8 +58,11 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <kotlin.version>1.0.5</kotlin.version>
+        <kotlin-test.version>1.3.5</kotlin-test.version>
         <spek.version>1.0.89</spek.version>
         <slf4j.version>1.7.21</slf4j.version>
+        <junit-platform.version>1.0.0-M2</junit-platform.version>
+        <junit-vintage.version>4.12.0-M2</junit-vintage.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
@@ -162,6 +165,12 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>io.kotlintest</groupId>
+            <artifactId>kotlintest</artifactId>
+            <version>${kotlin-test.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit</artifactId>
             <version>${kotlin.version}</version>
@@ -187,13 +196,13 @@
         <dependency>
             <groupId>org.junit.platform</groupId>
             <artifactId>junit-platform-runner</artifactId>
-            <version>1.0.0-M2</version>
+            <version>${junit-platform.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.junit.vintage</groupId>
             <artifactId>junit-vintage-engine</artifactId>
-            <version>4.12.0-M2</version>
+            <version>${junit-vintage.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -218,13 +227,17 @@
                     <execution>
                         <id>compile</id>
                         <phase>process-sources</phase>
-                        <goals> <goal>compile</goal> </goals>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
                     </execution>
 
                     <execution>
                         <id>test-compile</id>
                         <phase>process-test-sources</phase>
-                        <goals> <goal>test-compile</goal> </goals>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -289,12 +302,12 @@
                     <dependency>
                         <groupId>org.junit.platform</groupId>
                         <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>1.0.0-M3</version>
+                        <version>${junit-platform.version}</version>
                     </dependency>
                     <dependency>
                         <groupId>org.junit.vintage</groupId>
                         <artifactId>junit-vintage-engine</artifactId>
-                        <version>4.12.0-M3</version>
+                        <version>${junit-vintage.version}</version>
                     </dependency>
                 </dependencies>
             </plugin>

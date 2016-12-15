@@ -20,25 +20,16 @@ package com.builtamont.cassandra.migration.config
 
 import com.builtamont.cassandra.migration.api.configuration.ClusterConfiguration
 import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty
-import com.natpryce.hamkrest.absent
-import com.natpryce.hamkrest.anyElement
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.should.shouldMatch
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.junit.platform.runner.JUnitPlatform
-import org.junit.runner.RunWith
+import io.kotlintest.specs.FreeSpec
 import java.nio.file.Paths
+import java.util.*
 
 /**
  * ClusterConfiguration unit tests.
  */
-@RunWith(JUnitPlatform::class)
-class ClusterConfigurationSpec : Spek({
+class ClusterConfigurationSpec : FreeSpec() {
 
-    val defaultProperties = System.getProperties()
+    val defaultProperties: Properties? = System.getProperties()
 
     /**
      * Clear test-related System properties.
@@ -54,116 +45,120 @@ class ClusterConfigurationSpec : Spek({
         System.clearProperty(ConfigurationProperty.KEYSTORE_PASSWORD.namespace)
     }
 
-    beforeEach {
+    override fun beforeEach() {
         clearTestProperties()
     }
 
-    afterEach {
+    override fun afterEach() {
         clearTestProperties()
         System.setProperties(defaultProperties)
     }
 
-    describe("ClusterConfiguration") {
+    init {
 
-        context("default values") {
+        "ClusterConfiguration" - {
 
-            val clusterConfig = ClusterConfiguration()
+            "given default values" - {
 
-            it("should have default contact points") {
-                clusterConfig.contactpoints.toList() shouldMatch anyElement(equalTo("localhost"))
-            }
-
-            it("should have default port") {
-                clusterConfig.port shouldMatch equalTo(9042)
-            }
-
-            it("should have no default username") {
-                clusterConfig.username shouldMatch absent()
-            }
-
-            it("should have no default password") {
-                clusterConfig.password shouldMatch absent()
-            }
-
-            it("should have no default truststore") {
-                clusterConfig.truststore shouldMatch absent()
-            }
-
-            it("should have no default truststore password") {
-                clusterConfig.truststorePassword shouldMatch absent()
-            }
-
-            it("should have no default keystore") {
-                clusterConfig.keystore shouldMatch absent()
-            }
-
-            it("should have no default keystore password") {
-                clusterConfig.keystorePassword shouldMatch absent()
-            }
-        }
-
-        context("provided System properties values") {
-
-            val contactPoints = arrayOf("192.168.0.1", "192.168.0.2", "192.168.0.3")
-            val port = 9144
-            val username = "user"
-            val password = "pass"
-            val truststore = "truststore.jks"
-            val truststorePassword = "pass"
-            val keystore = "keystore.jks"
-            val keystorePassword = "pass"
-
-            it("should allow contact points override") {
-                System.setProperty(ConfigurationProperty.CONTACT_POINTS.namespace, contactPoints.joinToString())
                 val clusterConfig = ClusterConfiguration()
-                clusterConfig.contactpoints.size shouldMatch equalTo(contactPoints.size)
-                clusterConfig.contactpoints.toSet() shouldMatch equalTo(contactPoints.toSet())
+
+                "should have default contact points" {
+                    clusterConfig.contactpoints.toList() should contain("localhost")
+                }
+
+                "should have default port" {
+                    clusterConfig.port shouldBe 9042
+                }
+
+                "should have no default username" {
+                    clusterConfig.username shouldBe null
+                }
+
+                "should have no default password" {
+                    clusterConfig.password shouldBe null
+                }
+
+                "should have no default truststore" {
+                    clusterConfig.truststore shouldBe null
+                }
+
+                "should have no default truststore password" {
+                    clusterConfig.truststorePassword shouldBe null
+                }
+
+                "should have no default keystore" {
+                    clusterConfig.keystore shouldBe null
+                }
+
+                "should have no default keystore password" {
+                    clusterConfig.keystorePassword shouldBe null
+                }
             }
 
-            it("should allow port override") {
-                System.setProperty(ConfigurationProperty.PORT.namespace, port.toString())
-                val clusterConfig = ClusterConfiguration()
-                clusterConfig.port shouldMatch equalTo(port)
-            }
+            "provided System properties values" - {
 
-            it("should allow username override") {
-                System.setProperty(ConfigurationProperty.USERNAME.namespace, username)
-                val clusterConfig = ClusterConfiguration()
-                clusterConfig.username shouldMatch equalTo(username)
-            }
+                val contactPoints = arrayOf("192.168.0.1", "192.168.0.2", "192.168.0.3")
+                val port = 9144
+                val username = "user"
+                val password = "pass"
+                val truststore = "truststore.jks"
+                val truststorePassword = "pass"
+                val keystore = "keystore.jks"
+                val keystorePassword = "pass"
 
-            it("should allow password override") {
-                System.setProperty(ConfigurationProperty.PASSWORD.namespace, password)
-                val clusterConfig = ClusterConfiguration()
-                clusterConfig.password shouldMatch equalTo(password)
-            }
+                "should allow contact points override" {
+                    System.setProperty(ConfigurationProperty.CONTACT_POINTS.namespace, contactPoints.joinToString())
+                    val clusterConfig = ClusterConfiguration()
+                    clusterConfig.contactpoints.size shouldBe contactPoints.size
+                    clusterConfig.contactpoints.toSet() shouldBe contactPoints.toSet()
+                }
 
-            it("should allow truststore override") {
-                System.setProperty(ConfigurationProperty.TRUSTSTORE.namespace, truststore)
-                val clusterConfig = ClusterConfiguration()
-                clusterConfig.truststore shouldMatch equalTo(Paths.get(truststore))
-            }
+                "should allow port override" {
+                    System.setProperty(ConfigurationProperty.PORT.namespace, port.toString())
+                    val clusterConfig = ClusterConfiguration()
+                    clusterConfig.port shouldBe port
+                }
 
-            it("should allow truststore password override") {
-                System.setProperty(ConfigurationProperty.TRUSTSTORE_PASSWORD.namespace, truststorePassword)
-                val clusterConfig = ClusterConfiguration()
-                clusterConfig.truststorePassword shouldMatch equalTo(truststorePassword)
-            }
+                "should allow username override" {
+                    System.setProperty(ConfigurationProperty.USERNAME.namespace, username)
+                    val clusterConfig = ClusterConfiguration()
+                    clusterConfig.username shouldBe username
+                }
 
-            it("should allow keystore override") {
-                System.setProperty(ConfigurationProperty.KEYSTORE.namespace, keystore)
-                val clusterConfig = ClusterConfiguration()
-                clusterConfig.keystore shouldMatch equalTo(Paths.get(keystore))
-            }
+                "should allow password override" {
+                    System.setProperty(ConfigurationProperty.PASSWORD.namespace, password)
+                    val clusterConfig = ClusterConfiguration()
+                    clusterConfig.password shouldBe password
+                }
 
-            it("should allow keystore password override") {
-                System.setProperty(ConfigurationProperty.KEYSTORE_PASSWORD.namespace, keystorePassword)
-                val clusterConfig = ClusterConfiguration()
-                clusterConfig.keystorePassword shouldMatch equalTo(keystorePassword)
+                "should allow truststore override" {
+                    System.setProperty(ConfigurationProperty.TRUSTSTORE.namespace, truststore)
+                    val clusterConfig = ClusterConfiguration()
+                    clusterConfig.truststore shouldBe Paths.get(truststore)
+                }
+
+                "should allow truststore password override" {
+                    System.setProperty(ConfigurationProperty.TRUSTSTORE_PASSWORD.namespace, truststorePassword)
+                    val clusterConfig = ClusterConfiguration()
+                    clusterConfig.truststorePassword shouldBe truststorePassword
+                }
+
+                "should allow keystore override" {
+                    System.setProperty(ConfigurationProperty.KEYSTORE.namespace, keystore)
+                    val clusterConfig = ClusterConfiguration()
+                    clusterConfig.keystore shouldBe Paths.get(keystore)
+                }
+
+                "should allow keystore password override" {
+                    System.setProperty(ConfigurationProperty.KEYSTORE_PASSWORD.namespace, keystorePassword)
+                    val clusterConfig = ClusterConfiguration()
+                    clusterConfig.keystorePassword shouldBe keystorePassword
+                }
+
             }
 
         }
 
     }
 
-})
+}

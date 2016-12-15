@@ -22,21 +22,12 @@ import com.builtamont.cassandra.migration.api.CassandraMigrationException
 import com.builtamont.cassandra.migration.internal.resolver.java.dummy.V2__InterfaceBasedMigration
 import com.builtamont.cassandra.migration.internal.resolver.java.dummy.Version3dot5
 import com.builtamont.cassandra.migration.internal.util.ScriptsLocation
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.should.shouldMatch
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.junit.platform.runner.JUnitPlatform
-import org.junit.runner.RunWith
-import kotlin.test.assertFailsWith
+import io.kotlintest.specs.FreeSpec
 
 /**
  * JavaMigrationResolverSpec unit tests.
  */
-@RunWith(JUnitPlatform::class)
-class JavaMigrationResolverSpec : Spek({
+class JavaMigrationResolverSpec : FreeSpec() {
 
     /**
      * Create the Java migration resolver given its location.
@@ -51,61 +42,65 @@ class JavaMigrationResolverSpec : Spek({
         )
     }
 
-    describe("JavaMigrationResolver") {
+    init {
 
-        context("provided valid migration classes") {
+        "JavaMigrationResolver" - {
 
-            it("should resolve migrations") {
-                val resolver = createMigrationResolver("com/builtamont/cassandra/migration/internal/resolver/java/dummy")
-                val migrations = resolver.resolveMigrations()
+            "provided valid migration classes" - {
 
-                migrations.size shouldMatch equalTo(3)
+                "should resolve migrations" {
+                    val resolver = createMigrationResolver("com/builtamont/cassandra/migration/internal/resolver/java/dummy")
+                    val migrations = resolver.resolveMigrations()
 
-                migrations[0].version.toString() shouldMatch equalTo("2")
-                migrations[1].version.toString() shouldMatch equalTo("3.5")
-                migrations[2].version.toString() shouldMatch equalTo("4")
+                    migrations.size shouldBe 3
 
-                migrations[0].description shouldMatch equalTo("InterfaceBasedMigration")
-                migrations[1].description shouldMatch equalTo("Three Dot Five")
+                    migrations[0].version.toString() shouldBe "2"
+                    migrations[1].version.toString() shouldBe "3.5"
+                    migrations[2].version.toString() shouldBe "4"
 
-                migrations[0].checksum shouldMatch equalTo(0)
-                migrations[1].checksum shouldMatch equalTo(35)
-            }
+                    migrations[0].description shouldBe "InterfaceBasedMigration"
+                    migrations[1].description shouldBe "Three Dot Five"
 
-        }
-
-        context("provided migration info as input argument(s)") {
-
-            it("should extract migration info on classes directly inheriting from JavaMigration interface") {
-                val resolver = JavaMigrationResolver(Thread.currentThread().contextClassLoader, null)
-                val migration = resolver.extractMigrationInfo(V2__InterfaceBasedMigration())
-
-                migration.version.toString() shouldMatch equalTo("2")
-                migration.description shouldMatch equalTo("InterfaceBasedMigration")
-                migration.checksum shouldMatch equalTo(0)
-            }
-
-            it("should extract migration info on classes inheriting JavaMigration through abstract classes") {
-                val resolver = JavaMigrationResolver(Thread.currentThread().contextClassLoader, null)
-                val migration = resolver.extractMigrationInfo(Version3dot5())
-
-                migration.version.toString() shouldMatch equalTo("3.5")
-                migration.description shouldMatch equalTo("Three Dot Five")
-                migration.checksum shouldMatch equalTo(35)
-            }
-        }
-
-        context("provided a migration class with broken functionality") {
-
-            it("should throw exception") {
-                assertFailsWith<CassandraMigrationException> {
-                    val resolver = createMigrationResolver("com/builtamont/cassandra/migration/internal/resolver/java/error")
-                    resolver.resolveMigrations()
+                    migrations[0].checksum shouldBe 0
+                    migrations[1].checksum shouldBe 35
                 }
+
+            }
+
+            "provided migration info as input argument(s)" - {
+
+                "should extract migration info on classes directly inheriting from JavaMigration interface" {
+                    val resolver = JavaMigrationResolver(Thread.currentThread().contextClassLoader, null)
+                    val migration = resolver.extractMigrationInfo(V2__InterfaceBasedMigration())
+
+                    migration.version.toString() shouldBe "2"
+                    migration.description shouldBe "InterfaceBasedMigration"
+                    migration.checksum shouldBe 0
+                }
+
+                "should extract migration info on classes inheriting JavaMigration through abstract classes" {
+                    val resolver = JavaMigrationResolver(Thread.currentThread().contextClassLoader, null)
+                    val migration = resolver.extractMigrationInfo(Version3dot5())
+
+                    migration.version.toString() shouldBe "3.5"
+                    migration.description shouldBe "Three Dot Five"
+                    migration.checksum shouldBe 35
+                }
+            }
+
+            "provided a migration class with broken functionality" - {
+
+                "should throw exception" {
+                    shouldThrow<CassandraMigrationException> {
+                        val resolver = createMigrationResolver("com/builtamont/cassandra/migration/internal/resolver/java/error")
+                        resolver.resolveMigrations()
+                    }
+                }
+
             }
 
         }
 
     }
 
-})
+}

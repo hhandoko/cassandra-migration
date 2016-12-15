@@ -19,86 +19,81 @@
 package com.builtamont.cassandra.migration.internal.resolver
 
 import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.should.shouldMatch
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.junit.platform.runner.JUnitPlatform
-import org.junit.runner.RunWith
-import kotlin.test.assertFailsWith
+import io.kotlintest.specs.FreeSpec
 
 /**
  * MigrationInfoHelperSpec unit tests.
  */
-@RunWith(JUnitPlatform::class)
-class MigrationInfoHelperSpec : Spek({
+class MigrationInfoHelperSpec : FreeSpec() {
 
-    describe("MigrationInfoHelper") {
+    init {
 
-        context("provided valid helper object") {
+        "MigrationInfoHelper" - {
 
-            it("should extract schema version and description with defaults config") {
-                val info = MigrationInfoHelper.extractVersionAndDescription("V9_4__EmailDev.cql", "V", "__", ".cql")
-                info.left.version shouldMatch equalTo("9.4")
-                info.right shouldMatch equalTo("EmailDev")
-            }
+            "provided valid helper object" - {
 
-            it("should extract schema version and description with spaces in description") {
-                val info = MigrationInfoHelper.extractVersionAndDescription("V9_4__Email_Dev.cql", "V", "__", ".cql")
-                info.left.version shouldMatch equalTo("9.4")
-                info.right shouldMatch equalTo("Email Dev")
-            }
-
-            it("should extract schema version and description with custom separator") {
-                val info = MigrationInfoHelper.extractVersionAndDescription("V9_4-EmailDev.cql", "V", "-", ".cql")
-                info.left.version shouldMatch equalTo("9.4")
-                info.right shouldMatch equalTo("EmailDev")
-            }
-
-            it("should extract schema version and description with custom prefix") {
-                val info = MigrationInfoHelper.extractVersionAndDescription("V_9_4__EmailDev.cql", "V_", "__", ".cql")
-                info.left.version shouldMatch equalTo("9.4")
-                info.right shouldMatch equalTo("EmailDev")
-            }
-
-            it("should extract schema version and description with custom suffix") {
-                val info = MigrationInfoHelper.extractVersionAndDescription("V9_4__EmailDev", "V", "__", "")
-                info.left.version shouldMatch equalTo("9.4")
-                info.right shouldMatch equalTo("EmailDev")
-            }
-
-            it("should extract schema version and description with leading zero in version") {
-                val info = MigrationInfoHelper.extractVersionAndDescription("V009_4__EmailDev.cql", "V", "__", ".cql")
-                info.left.version shouldMatch equalTo("009.4")
-                info.right shouldMatch equalTo("EmailDev")
-            }
-
-        }
-
-        context("provided invalid helper object") {
-
-            it("should throw exception with missing description") {
-                assertFailsWith<CassandraMigrationException> {
-                    MigrationInfoHelper.extractVersionAndDescription("9_4", "", "__", "")
+                "should extract schema version and description with defaults config" {
+                    val info = MigrationInfoHelper.extractVersionAndDescription("V9_4__EmailDev.cql", "V", "__", ".cql")
+                    info.left.version shouldBe "9.4"
+                    info.right shouldBe "EmailDev"
                 }
+
+                "should extract schema version and description with spaces in description" {
+                    val info = MigrationInfoHelper.extractVersionAndDescription("V9_4__Email_Dev.cql", "V", "__", ".cql")
+                    info.left.version shouldBe "9.4"
+                    info.right shouldBe "Email Dev"
+                }
+
+                "should extract schema version and description with custom separator" {
+                    val info = MigrationInfoHelper.extractVersionAndDescription("V9_4-EmailDev.cql", "V", "-", ".cql")
+                    info.left.version shouldBe "9.4"
+                    info.right shouldBe "EmailDev"
+                }
+
+                "should extract schema version and description with custom prefix" {
+                    val info = MigrationInfoHelper.extractVersionAndDescription("V_9_4__EmailDev.cql", "V_", "__", ".cql")
+                    info.left.version shouldBe "9.4"
+                    info.right shouldBe "EmailDev"
+                }
+
+                "should extract schema version and description with custom suffix" {
+                    val info = MigrationInfoHelper.extractVersionAndDescription("V9_4__EmailDev", "V", "__", "")
+                    info.left.version shouldBe "9.4"
+                    info.right shouldBe "EmailDev"
+                }
+
+                "should extract schema version and description with leading zero in version" {
+                    val info = MigrationInfoHelper.extractVersionAndDescription("V009_4__EmailDev.cql", "V", "__", ".cql")
+                    info.left.version shouldBe "009.4"
+                    info.right shouldBe "EmailDev"
+                }
+
             }
 
-            it("should throw exception with leading underscore") {
-                assertFailsWith<CassandraMigrationException> {
-                    MigrationInfoHelper.extractVersionAndDescription("_9_4__Description", "", "__", "")
-                }
-            }
+            "provided invalid helper object" - {
 
-            it("should throw exception with leading underscore after prefix") {
-                assertFailsWith<CassandraMigrationException> {
-                    MigrationInfoHelper.extractVersionAndDescription("V_9_4__Description", "V", "__", "")
+                "should throw exception with missing description" {
+                    shouldThrow<CassandraMigrationException> {
+                        MigrationInfoHelper.extractVersionAndDescription("9_4", "", "__", "")
+                    }
                 }
+
+                "should throw exception with leading underscore" {
+                    shouldThrow<CassandraMigrationException> {
+                        MigrationInfoHelper.extractVersionAndDescription("_9_4__Description", "", "__", "")
+                    }
+                }
+
+                "should throw exception with leading underscore after prefix" {
+                    shouldThrow<CassandraMigrationException> {
+                        MigrationInfoHelper.extractVersionAndDescription("V_9_4__Description", "V", "__", "")
+                    }
+                }
+
             }
 
         }
 
     }
 
-})
+}

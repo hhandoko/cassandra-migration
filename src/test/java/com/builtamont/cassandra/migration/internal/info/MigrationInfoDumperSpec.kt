@@ -27,22 +27,14 @@ import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
 import com.builtamont.cassandra.migration.internal.util.StringUtils
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.should.shouldMatch
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.junit.platform.runner.JUnitPlatform
-import org.junit.runner.RunWith
+import io.kotlintest.specs.FreeSpec
 
 /**
  * MigrationInfoDumperSpec unit tests.
  */
-@RunWith(JUnitPlatform::class)
-class MigrationInfoDumperSpec : Spek({
+class MigrationInfoDumperSpec : FreeSpec() {
 
     /**
      * Create a new available migration with the given version.
@@ -84,47 +76,51 @@ class MigrationInfoDumperSpec : Spek({
         return daoMock
     }
 
-    describe("MigrationInfoDumper") {
+    init {
 
-        context("with no / empty migrations") {
+        "MigrationInfoDumper" - {
 
-            val table = MigrationInfoDumper.dumpToAsciiTable(arrayOf<MigrationInfo>())
-            val lines = StringUtils.tokenizeToStringArray(table, "\n")
+            "given no / empty migrations" - {
 
-            it("should print migrations ASCII table with no data rows") {
-                lines.size shouldMatch equalTo(5)
-                lines.forEach {
-                    // NOTE: Not sure if this test is necessary, checks if all lines are justified-aligned
-                    it.length shouldMatch equalTo(lines.first().length)
+                val table = MigrationInfoDumper.dumpToAsciiTable(arrayOf<MigrationInfo>())
+                val lines = StringUtils.tokenizeToStringArray(table, "\n")
+
+                "should print migrations ASCII table with no data rows" {
+                    lines.size shouldBe 5
+                    lines.forEach {
+                        // NOTE: Not sure if this test is necessary, checks if all lines are justified-aligned
+                        it.length shouldBe lines.first().length
+                    }
                 }
+
             }
 
-        }
+            "given some migrations" - {
 
-        context("with some migrations") {
+                val migrationInfoService = MigrationInfoServiceImpl(
+                        createMigrationResolver(createAvailableMigration("1"), createAvailableMigration("2.2014.09.11.55.45613")),
+                        createSchemaVersionDAO(),
+                        MigrationVersion.LATEST,
+                        outOfOrder = false,
+                        pendingOrFuture = true
+                )
+                migrationInfoService.refresh()
 
-            val migrationInfoService = MigrationInfoServiceImpl(
-                    createMigrationResolver(createAvailableMigration("1"), createAvailableMigration("2.2014.09.11.55.45613")),
-                    createSchemaVersionDAO(),
-                    MigrationVersion.LATEST,
-                    outOfOrder = false,
-                    pendingOrFuture = true
-            )
-            migrationInfoService.refresh()
+                val table = MigrationInfoDumper.dumpToAsciiTable(migrationInfoService.all())
+                val lines = StringUtils.tokenizeToStringArray(table, "\n")
 
-            val table = MigrationInfoDumper.dumpToAsciiTable(migrationInfoService.all())
-            val lines = StringUtils.tokenizeToStringArray(table, "\n")
-
-            it("should print pending migrations ASCII table") {
-                lines.size shouldMatch equalTo(6)
-                lines.forEach {
-                    // NOTE: Not sure if this test is necessary, checks if all lines are justified-aligned
-                    it.length shouldMatch equalTo(lines.first().length)
+                "should print pending migrations ASCII table" {
+                    lines.size shouldBe 6
+                    lines.forEach {
+                        // NOTE: Not sure if this test is necessary, checks if all lines are justified-aligned
+                        it.length shouldBe lines.first().length
+                    }
                 }
+
             }
 
         }
 
     }
 
-})
+}

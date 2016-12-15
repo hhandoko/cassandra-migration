@@ -23,19 +23,13 @@ import com.builtamont.cassandra.migration.api.MigrationVersion
 import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
 import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
-import com.natpryce.hamkrest.containsSubstring
-import com.natpryce.hamkrest.should.shouldMatch
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.junit.platform.runner.JUnitPlatform
-import org.junit.runner.RunWith
+import io.kotlintest.matchers.have
+import io.kotlintest.specs.FreeSpec
 
 /**
  * MigrationInfoSpec unit tests.
  */
-@RunWith(JUnitPlatform::class)
-class MigrationInfoSpec : Spek({
+class MigrationInfoSpec : FreeSpec() {
 
     val version = MigrationVersion.fromVersion("1")
     val description = "test"
@@ -64,20 +58,24 @@ class MigrationInfoSpec : Spek({
         return AppliedMigration(version, description, type, null, 123, "testUser", 0, success = true)
     }
 
-    describe("MigrationInfo") {
+    init {
 
-        it("should be able to validate migrations info") {
-            val migrationInfo = MigrationInfoImpl(
-                    createResolvedMigration(),
-                    createAppliedMigration(),
-                    MigrationInfoContext()
-            )
-            val message = migrationInfo.validate()
+        "MigrationInfo" - {
 
-            message!! shouldMatch containsSubstring("123")
-            message!! shouldMatch containsSubstring("456")
+            "should be able to validate migrations info" {
+                val migrationInfo = MigrationInfoImpl(
+                        createResolvedMigration(),
+                        createAppliedMigration(),
+                        MigrationInfoContext()
+                )
+                val message = migrationInfo.validate()
+
+                message!! should have substring "123"
+                message!! should have substring "456"
+            }
+
         }
 
     }
 
-})
+}

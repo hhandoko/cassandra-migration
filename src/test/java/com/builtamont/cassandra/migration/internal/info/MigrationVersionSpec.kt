@@ -20,18 +20,7 @@ package com.builtamont.cassandra.migration.internal.info
 
 import com.builtamont.cassandra.migration.api.CassandraMigrationException
 import com.builtamont.cassandra.migration.api.MigrationVersion
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.greaterThan
-import com.natpryce.hamkrest.lessThan
-import com.natpryce.hamkrest.should.shouldMatch
 import io.kotlintest.specs.FreeSpec
-import org.jetbrains.spek.api.Spek
-import org.jetbrains.spek.api.dsl.context
-import org.jetbrains.spek.api.dsl.describe
-import org.jetbrains.spek.api.dsl.it
-import org.junit.platform.runner.JUnitPlatform
-import org.junit.runner.RunWith
-import kotlin.test.assertFailsWith
 
 /**
  * MigrationVersionSpec unit tests.

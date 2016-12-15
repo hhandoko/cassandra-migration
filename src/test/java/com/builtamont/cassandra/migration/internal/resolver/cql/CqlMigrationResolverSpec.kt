@@ -22,8 +22,6 @@ import com.builtamont.cassandra.migration.api.CassandraMigrationException
 import com.builtamont.cassandra.migration.internal.util.ScriptsLocation
 import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ClassPathResource
 import com.builtamont.cassandra.migration.internal.util.scanner.filesystem.FileSystemResource
-import com.natpryce.hamkrest.equalTo
-import com.natpryce.hamkrest.should.shouldMatch
 import io.kotlintest.specs.FreeSpec
 
 /**
@@ -77,7 +75,7 @@ class CqlMigrationResolverSpec : FreeSpec() {
                     val resolver = createMigrationResolver("migration/subdir")
                     val migrations = resolver.resolveMigrations()
 
-                    migrations.size shouldMatch equalTo(3)
+                    migrations.size shouldBe 3
 
                     migrations[0].version.toString() shouldBe "1"
                     migrations[1].version.toString() shouldBe "1.1"

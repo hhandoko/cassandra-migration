@@ -59,7 +59,6 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <kotlin.version>1.0.5</kotlin.version>
         <kotlin-test.version>1.3.5</kotlin-test.version>
-        <spek.version>1.0.89</spek.version>
         <slf4j.version>1.7.21</slf4j.version>
         <junit-platform.version>1.0.0-M2</junit-platform.version>
         <junit-vintage.version>4.12.0-M2</junit-vintage.version>
@@ -123,12 +122,6 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.natpryce</groupId>
-            <artifactId>hamkrest</artifactId>
-            <version>1.2.3.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
             <groupId>com.github.stefanbirkner</groupId>
             <artifactId>system-rules</artifactId>
             <version>1.16.0</version>
@@ -174,35 +167,6 @@
             <groupId>org.jetbrains.kotlin</groupId>
             <artifactId>kotlin-test-junit</artifactId>
             <version>${kotlin.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.spek</groupId>
-            <artifactId>spek-api</artifactId>
-            <version>${spek.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.jetbrains.spek</groupId>
-            <artifactId>spek-junit-platform-engine</artifactId>
-            <version>${spek.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <!-- NOTE:
-          JUnit platform and vintage engine M3 (Milestone 3) versions throws exception during test run
-          for reasons still undetermined.
-          TODO: Need to revisit and fix once JUnit hits release version.
-        -->
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-runner</artifactId>
-            <version>${junit-platform.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
-            <version>${junit-vintage.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -288,7 +252,7 @@
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>2.19</version>
                 <!-- NOTE:
-                  Use `Spec` to differentiate between Spek and Java JUnit tests.
+                  Use `Spec` to differentiate between kotlintest and JUnit tests.
                   However, it means that Spec files need to be explicitly included,
                   otherwise it will be ignored.
                 -->
@@ -298,18 +262,6 @@
                         <include>**/*Test.*</include>
                     </includes>
                 </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.junit.platform</groupId>
-                        <artifactId>junit-platform-surefire-provider</artifactId>
-                        <version>${junit-platform.version}</version>
-                    </dependency>
-                    <dependency>
-                        <groupId>org.junit.vintage</groupId>
-                        <artifactId>junit-vintage-engine</artifactId>
-                        <version>${junit-vintage.version}</version>
-                    </dependency>
-                </dependencies>
             </plugin>
         </plugins>
     </build>

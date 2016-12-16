@@ -61,9 +61,15 @@ class ClusterConfigurationSpec : FreeSpec() {
             "given default values" - {
 
                 val clusterConfig = ClusterConfiguration()
+                // NOTE: Two hosts for contact points unit test, as in Travis CI the Cassandra hosts are set to
+                //       127.0.0.1 for standalone DSE Community and Apache Cassandra, and localhost for embedded
+                //       Cassandra.
+                val hosts = arrayOf("localhost", "127.0.0.1")
 
                 "should have default contact points" {
-                    clusterConfig.contactpoints.toList() should contain("localhost")
+                    forAny(hosts) { host ->
+                        clusterConfig.contactpoints.toList() should contain(host)
+                    }
                 }
 
                 "should have default port" {

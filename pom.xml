@@ -57,8 +57,11 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <kotlin.version>1.0.3</kotlin.version>
-        <slf4j.version>1.7.13</slf4j.version>
+        <kotlin.version>1.0.5</kotlin.version>
+        <kotlin-test.version>1.3.5</kotlin-test.version>
+        <slf4j.version>1.7.21</slf4j.version>
+        <junit-platform.version>1.0.0-M2</junit-platform.version>
+        <junit-vintage.version>4.12.0-M2</junit-vintage.version>
         <maven.compiler.source>1.7</maven.compiler.source>
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
@@ -92,6 +95,8 @@
             <artifactId>cassandra-driver-core</artifactId>
             <version>3.0.0</version>
         </dependency>
+
+        <!-- Test-specific dependencies -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -105,9 +110,21 @@
             <scope>test</scope>
         </dependency>
         <dependency>
+            <groupId>com.nhaarman</groupId>
+            <artifactId>mockito-kotlin</artifactId>
+            <version>1.0.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
             <groupId>org.hamcrest</groupId>
             <artifactId>hamcrest-junit</artifactId>
             <version>2.0.0.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.github.stefanbirkner</groupId>
+            <artifactId>system-rules</artifactId>
+            <version>1.16.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -130,10 +147,26 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!-- NOTE:
+          Some compatibility issues with Guava v20.
+          TODO: Need to investigate and update.
+        -->
         <dependency>
             <groupId>com.google.guava</groupId>
             <artifactId>guava</artifactId>
-            <version>18.0</version>
+            <version>19.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>io.kotlintest</groupId>
+            <artifactId>kotlintest</artifactId>
+            <version>${kotlin-test.version}</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-test-junit</artifactId>
+            <version>${kotlin.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
@@ -158,13 +191,17 @@
                     <execution>
                         <id>compile</id>
                         <phase>process-sources</phase>
-                        <goals> <goal>compile</goal> </goals>
+                        <goals>
+                            <goal>compile</goal>
+                        </goals>
                     </execution>
 
                     <execution>
                         <id>test-compile</id>
                         <phase>process-test-sources</phase>
-                        <goals> <goal>test-compile</goal> </goals>
+                        <goals>
+                            <goal>test-compile</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>
@@ -194,7 +231,9 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>2.19.1</version>
-                <!-- NOTE: Configuration as per http://stackoverflow.com/a/33757854 -->
+                <!-- NOTE:
+                  Configuration as per http://stackoverflow.com/a/33757854
+                -->
                 <configuration>
                     <forkCount>1</forkCount>
                     <reuseForks>true</reuseForks>
@@ -208,6 +247,21 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19</version>
+                <!-- NOTE:
+                  Use `Spec` to differentiate between kotlintest and JUnit tests.
+                  However, it means that Spec files need to be explicitly included,
+                  otherwise it will be ignored.
+                -->
+                <configuration>
+                    <includes>
+                        <include>**/*Spec.*</include>
+                        <include>**/*Test.*</include>
+                    </includes>
+                </configuration>
             </plugin>
         </plugins>
     </build>

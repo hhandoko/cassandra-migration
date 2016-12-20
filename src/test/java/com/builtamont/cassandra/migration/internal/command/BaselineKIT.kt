@@ -1,5 +1,5 @@
 /**
- * File     : ApiBaselineCommandKIT.kt
+ * File     : BaselineKIT.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -16,16 +16,18 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration
+package com.builtamont.cassandra.migration.internal.command
 
+import com.builtamont.cassandra.migration.BaseKIT
+import com.builtamont.cassandra.migration.CassandraMigration
 import com.builtamont.cassandra.migration.api.CassandraMigrationException
 import com.builtamont.cassandra.migration.api.MigrationVersion
 import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 
 /**
- * Validate command unit tests.
+ * Baseline command unit tests.
  */
-class ApiBaselineCommandKIT : BaseKIT() {
+class BaselineKIT : BaseKIT() {
 
     init {
 

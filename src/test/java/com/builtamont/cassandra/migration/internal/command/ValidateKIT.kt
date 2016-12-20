@@ -1,5 +1,5 @@
 /**
- * File     : ApiValidateCommandKIT.kt
+ * File     : ValidateKIT.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -16,14 +16,16 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration
+package com.builtamont.cassandra.migration.internal.command
 
+import com.builtamont.cassandra.migration.BaseKIT
+import com.builtamont.cassandra.migration.CassandraMigration
 import com.builtamont.cassandra.migration.api.CassandraMigrationException
 
 /**
  * Validate command unit tests.
  */
-class ApiValidateCommandKIT : BaseKIT() {
+class ValidateKIT : BaseKIT() {
 
     init {
 

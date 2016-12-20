@@ -1,5 +1,5 @@
 /**
- * File     : ApiMigrationKIT.kt
+ * File     : CassandraMigrationApiKIT.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -29,7 +29,7 @@ import java.util.*
 /**
  * API-based migration integration tests.
  */
-class ApiMigrationKIT : BaseKIT() {
+class CassandraMigrationApiKIT : BaseKIT() {
 
     init {
 

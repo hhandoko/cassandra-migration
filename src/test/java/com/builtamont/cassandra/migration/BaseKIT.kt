@@ -132,7 +132,7 @@ open class BaseKIT : FreeSpec() {
     override fun afterEach() {
         super.afterEach()
 
-        val cql = """DROP KEYSPACE ${CASSANDRA_KEYSPACE}"""
+        val cql = """DROP KEYSPACE ${CASSANDRA_KEYSPACE};"""
         val statement = SimpleStatement(cql)
         getSession(getKeyspace()).execute(statement)
     }

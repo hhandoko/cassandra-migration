@@ -1,5 +1,5 @@
 /**
- * File     : StringLogCreator.java
+ * File     : FileSystemScannerMediumTest.java
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -16,19 +16,17 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.logging;
+package com.builtamont.cassandra.migration.internal.util.scanner.filesystem;
+
+import com.builtamont.cassandra.migration.internal.util.Location;
+import org.junit.Test;
 
 /**
- * Log creator for capturing the output as a string.
+ * Test for FileSystemScanner.
  */
-public class StringLogCreator implements LogCreator {
-    private final StringBuilder output = new StringBuilder();
-
-    public Log createLogger(Class<?> clazz) {
-        return new StringLog(output, false);
-    }
-
-    public String getOutput() {
-        return output.toString();
+public class FileSystemScannerMediumTest {
+    @Test
+    public void nonExistentDirectory() throws Exception {
+        new FileSystemScanner().scanForResources(new Location("filesystem:/invalid-path"), "", "");
     }
 }

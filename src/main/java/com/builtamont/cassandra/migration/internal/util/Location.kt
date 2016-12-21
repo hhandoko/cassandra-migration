@@ -1,5 +1,5 @@
 /**
- * File     : ScriptsLocation.kt
+ * File     : Location.kt
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -25,7 +25,7 @@ import com.builtamont.cassandra.migration.api.CassandraMigrationException
  *
  * @param descriptor The location descriptor.
  */
-class ScriptsLocation(descriptor: String) : Comparable<ScriptsLocation> {
+class Location(descriptor: String) : Comparable<Location> {
 
     /**
      * The prefix part of the location. Can be either classpath: or filesystem:.
@@ -94,7 +94,7 @@ class ScriptsLocation(descriptor: String) : Comparable<ScriptsLocation> {
      *
      * @return {@code true} if it is a parent of the other location.
      */
-    fun isParentOf(other: ScriptsLocation): Boolean {
+    fun isParentOf(other: Location): Boolean {
         return (other.descriptor + "/").startsWith(descriptor + "/")
     }
 
@@ -127,7 +127,7 @@ class ScriptsLocation(descriptor: String) : Comparable<ScriptsLocation> {
         return when {
             this === other -> true
             isNotSame()    -> false
-            else           -> descriptor == (other as ScriptsLocation?)!!.descriptor
+            else           -> descriptor == (other as Location?)!!.descriptor
         }
     }
 
@@ -135,7 +135,7 @@ class ScriptsLocation(descriptor: String) : Comparable<ScriptsLocation> {
      * @return {@code true} if this location instance is comparable to the given object.
      */
     @SuppressWarnings("NullableProblems")
-    override fun compareTo(other: ScriptsLocation): Int {
+    override fun compareTo(other: Location): Int {
         return descriptor.compareTo(other.descriptor)
     }
 

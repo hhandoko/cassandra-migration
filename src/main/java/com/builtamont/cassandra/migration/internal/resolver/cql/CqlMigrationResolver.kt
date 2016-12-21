@@ -25,7 +25,7 @@ import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
 import com.builtamont.cassandra.migration.internal.resolver.MigrationInfoHelper
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationComparator
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation
+import com.builtamont.cassandra.migration.internal.util.Location
 import com.builtamont.cassandra.migration.internal.util.scanner.Resource
 import com.builtamont.cassandra.migration.internal.util.scanner.Scanner
 import java.io.BufferedReader
@@ -43,7 +43,7 @@ import java.util.zip.CRC32
  */
 class CqlMigrationResolver(
     classLoader: ClassLoader,
-    private val location: ScriptsLocation,
+    private val location: Location,
     private val encoding: String
 ) : MigrationResolver {
 

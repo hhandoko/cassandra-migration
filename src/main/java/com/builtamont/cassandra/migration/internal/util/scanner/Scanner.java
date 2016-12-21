@@ -1,33 +1,42 @@
 /**
- * Copyright 2010-2016 Boxfuse GmbH
+ * File     : Scanner.java
+ * License  :
+ *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
+ *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *           http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
 package com.builtamont.cassandra.migration.internal.util.scanner;
 
 import com.builtamont.cassandra.migration.api.CassandraMigrationException;
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation;
+import com.builtamont.cassandra.migration.internal.util.Location;
 import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ClassPathScanner;
+import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ResourceAndClassScanner;
 import com.builtamont.cassandra.migration.internal.util.scanner.filesystem.FileSystemScanner;
 
 /**
  * Scanner for Resources and Classes.
  */
 public class Scanner {
+    private final ResourceAndClassScanner resourceAndClassScanner;
+
     private final ClassLoader classLoader;
+
+    private final FileSystemScanner fileSystemScanner = new FileSystemScanner();
 
     public Scanner(ClassLoader classLoader) {
         this.classLoader = classLoader;
+        this.resourceAndClassScanner = new ClassPathScanner(classLoader);
     }
 
     /**
@@ -38,18 +47,17 @@ public class Scanner {
      * @param suffix   The suffix of the resource names to match.
      * @return The resources that were found.
      */
-    public Resource[] scanForResources(ScriptsLocation location, String prefix, String suffix) {
+    public Resource[] scanForResources(Location location, String prefix, String suffix) {
         try {
             if (location.isFileSystem()) {
-                return new FileSystemScanner().scanForResources(location.getPath(), prefix, suffix);
+                return fileSystemScanner.scanForResources(location, prefix, suffix);
             }
 
-            return new ClassPathScanner(classLoader).scanForResources(location.getPath(), prefix, suffix);
+            return resourceAndClassScanner.scanForResources(location, prefix, suffix);
         } catch (Exception e) {
             throw new CassandraMigrationException("Unable to scan for CQL migrations in location: " + location, e);
         }
     }
-
 
     /**
      * Scans the classpath for concrete classes under the specified package implementing this interface.
@@ -61,7 +69,14 @@ public class Scanner {
      * @return The non-abstract classes that were found.
      * @throws Exception when the location could not be scanned.
      */
-    public Class<?>[] scanForClasses(ScriptsLocation location, Class<?> implementedInterface) throws Exception {
-        return new ClassPathScanner(classLoader).scanForClasses(location.getPath(), implementedInterface);
+    public Class<?>[] scanForClasses(Location location, Class<?> implementedInterface) throws Exception {
+        return resourceAndClassScanner.scanForClasses(location, implementedInterface);
+    }
+
+    /**
+     * @return The class loader used for scanning.
+     */
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

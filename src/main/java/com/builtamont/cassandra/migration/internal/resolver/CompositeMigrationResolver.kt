@@ -23,7 +23,7 @@ import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
 import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
 import com.builtamont.cassandra.migration.internal.resolver.cql.CqlMigrationResolver
 import com.builtamont.cassandra.migration.internal.resolver.java.JavaMigrationResolver
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocations
+import com.builtamont.cassandra.migration.internal.util.Locations
 import java.util.*
 
 /**
@@ -37,7 +37,7 @@ import java.util.*
  */
 class CompositeMigrationResolver(
     classLoader: ClassLoader,
-    locations: ScriptsLocations,
+    locations: Locations,
     encoding: String,
     vararg customMigrationResolvers: MigrationResolver
 ) : MigrationResolver {

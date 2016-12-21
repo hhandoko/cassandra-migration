@@ -1,5 +1,5 @@
 /**
- * File     : StopWatch.java
+ * File     : TimeFormatSmallTest.java
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -18,41 +18,23 @@
  */
 package com.builtamont.cassandra.migration.internal.util;
 
-import java.util.concurrent.TimeUnit;
+import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 /**
- * Stop watch, inspired by the implementation in the Spring framework.
+ * Small test for TimeFormat
  */
-public class StopWatch {
-
-    /**
-     * The timestamp at which the stopwatch was started.
-     */
-    private long start;
-
-    /**
-     * The timestamp at which the stopwatch was stopped.
-     */
-    private long stop;
-
-    /**
-     * Starts the stop watch.
-     */
-    public void start() {
-        start = System.nanoTime();
-    }
-
-    /**
-     * Stop the sto watch.
-     */
-    public void stop() {
-        stop = System.nanoTime();
-    }
-
-    /**
-     * @return The total run time in millis of the stop watch between start and stop calls.
-     */
-    public long getTotalTimeMillis() {
-        return TimeUnit.NANOSECONDS.toMillis(stop - start);
+public class TimeFormatSmallTest {
+    @Test
+    public void format() {
+        assertEquals("00:00.001s", TimeFormat.format(1));
+        assertEquals("00:00.012s", TimeFormat.format(12));
+        assertEquals("00:00.123s", TimeFormat.format(123));
+        assertEquals("00:01.234s", TimeFormat.format(1234));
+        assertEquals("00:12.345s", TimeFormat.format(12345));
+        assertEquals("01:23.456s", TimeFormat.format(60000 + 23456));
+        assertEquals("12:34.567s", TimeFormat.format((60000 * 12) + 34567));
+        assertEquals("123:45.678s", TimeFormat.format((60000 * 123) + 45678));
     }
 }

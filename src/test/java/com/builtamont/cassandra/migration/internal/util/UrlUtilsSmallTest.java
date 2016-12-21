@@ -1,5 +1,5 @@
 /**
- * File     : StringLogCreator.java
+ * File     : UriUtilsSmallTest.java
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -16,19 +16,19 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.logging;
+package com.builtamont.cassandra.migration.internal.util;
 
-/**
- * Log creator for capturing the output as a string.
- */
-public class StringLogCreator implements LogCreator {
-    private final StringBuilder output = new StringBuilder();
+import org.junit.Test;
 
-    public Log createLogger(Class<?> clazz) {
-        return new StringLog(output, false);
-    }
+import java.io.File;
+import java.net.MalformedURLException;
 
-    public String getOutput() {
-        return output.toString();
+import static org.junit.Assert.assertEquals;
+
+public class UrlUtilsSmallTest {
+    @Test
+    public void toFilePath() throws MalformedURLException {
+        File file = new File("/test dir/a+b");
+        assertEquals(file.getAbsolutePath(), UrlUtils.toFilePath(file.toURI().toURL()));
     }
 }

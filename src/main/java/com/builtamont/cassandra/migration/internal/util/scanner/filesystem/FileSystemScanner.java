@@ -1,21 +1,24 @@
 /**
- * Copyright 2010-2016 Boxfuse GmbH
+ * File     : FileSystemScanner.java
+ * License  :
+ *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
+ *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
  *
- *         http://www.apache.org/licenses/LICENSE-2.0
+ *           http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
 package com.builtamont.cassandra.migration.internal.util.scanner.filesystem;
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException;
+import com.builtamont.cassandra.migration.internal.util.Location;
 import com.builtamont.cassandra.migration.internal.util.logging.Log;
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory;
 import com.builtamont.cassandra.migration.internal.util.scanner.Resource;
@@ -35,17 +38,20 @@ public class FileSystemScanner {
      * Scans the FileSystem for resources under the specified location, starting with the specified prefix and ending with
      * the specified suffix.
      *
-     * @param path   The path in the filesystem to start searching. Subdirectories are also searched.
-     * @param prefix The prefix of the resource names to match.
-     * @param suffix The suffix of the resource names to match.
+     * @param location The location in the filesystem to start searching. Subdirectories are also searched.
+     * @param prefix   The prefix of the resource names to match.
+     * @param suffix   The suffix of the resource names to match.
      * @return The resources that were found.
      * @throws IOException when the location could not be scanned.
      */
-    public Resource[] scanForResources(String path, String prefix, String suffix) throws IOException {
+    public Resource[] scanForResources(Location location, String prefix, String suffix) throws IOException {
+        String path = location.getPath();
         LOG.debug("Scanning for filesystem resources at '" + path + "' (Prefix: '" + prefix + "', Suffix: '" + suffix + "')");
 
-        if (!new File(path).isDirectory()) {
-            throw new CassandraMigrationException("Invalid filesystem path: " + path);
+        File dir = new File(path);
+        if (!dir.isDirectory() || !dir.canRead()) {
+            LOG.warn("Unable to resolve location filesystem:" + path);
+            return new Resource[0];
         }
 
         Set<Resource> resources = new TreeSet<Resource>();
@@ -57,6 +63,21 @@ public class FileSystemScanner {
         }
 
         return resources.toArray(new Resource[resources.size()]);
+    }
+
+    /**
+     * Scans the FileSystem for resources under the specified location, starting with the specified prefix and ending with
+     * the specified suffix.
+     *
+     * @param path   The path in the filesystem to start searching. Subdirectories are also searched.
+     * @param prefix The prefix of the resource names to match.
+     * @param suffix The suffix of the resource names to match.
+     * @return The resources that were found.
+     * @throws IOException when the location could not be scanned.
+     */
+    @Deprecated
+    public Resource[] scanForResources(String path, String prefix, String suffix) throws IOException {
+        return scanForResources(new Location(path), prefix, suffix);
     }
 
     /**

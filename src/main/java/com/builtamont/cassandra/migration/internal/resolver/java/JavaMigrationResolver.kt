@@ -30,7 +30,7 @@ import com.builtamont.cassandra.migration.internal.resolver.MigrationInfoHelper
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationComparator
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
 import com.builtamont.cassandra.migration.internal.util.ClassUtils
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation
+import com.builtamont.cassandra.migration.internal.util.Location
 import com.builtamont.cassandra.migration.internal.util.StringUtils
 import com.builtamont.cassandra.migration.internal.util.scanner.Scanner
 import java.util.*
@@ -44,7 +44,7 @@ import java.util.*
  */
 class JavaMigrationResolver(
     private val classLoader: ClassLoader,
-    private val location: ScriptsLocation?
+    private val location: Location?
 ) : MigrationResolver {
 
     /**

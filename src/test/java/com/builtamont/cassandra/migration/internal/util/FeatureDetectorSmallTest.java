@@ -1,5 +1,5 @@
 /**
- * File     : StringLogCreator.java
+ * File     : FeatureDetectorSmallTest.java
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -16,19 +16,21 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.logging;
+package com.builtamont.cassandra.migration.internal.util;
 
-/**
- * Log creator for capturing the output as a string.
- */
-public class StringLogCreator implements LogCreator {
-    private final StringBuilder output = new StringBuilder();
+import org.junit.Test;
 
-    public Log createLogger(Class<?> clazz) {
-        return new StringLog(output, false);
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+
+public class FeatureDetectorSmallTest {
+    @Test
+    public void shouldDetectSlf4j() {
+        assertThat(new FeatureDetector(Thread.currentThread().getContextClassLoader()).isSlf4jAvailable(), is(true));
     }
 
-    public String getOutput() {
-        return output.toString();
+    @Test
+    public void shouldDetectCommonsLogging() {
+        assertThat(new FeatureDetector(Thread.currentThread().getContextClassLoader()).isApacheCommonsLoggingAvailable(), is(true));
     }
 }

@@ -18,7 +18,7 @@
  */
 package com.builtamont.cassandra.migration.internal.util.scanner.filesystem;
 
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation;
+import com.builtamont.cassandra.migration.internal.util.Location;
 import com.builtamont.cassandra.migration.internal.util.logging.Log;
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory;
 import com.builtamont.cassandra.migration.internal.util.scanner.Resource;
@@ -44,7 +44,7 @@ public class FileSystemScanner {
      * @return The resources that were found.
      * @throws IOException when the location could not be scanned.
      */
-    public Resource[] scanForResources(ScriptsLocation location, String prefix, String suffix) throws IOException {
+    public Resource[] scanForResources(Location location, String prefix, String suffix) throws IOException {
         String path = location.getPath();
         LOG.debug("Scanning for filesystem resources at '" + path + "' (Prefix: '" + prefix + "', Suffix: '" + suffix + "')");
 
@@ -77,7 +77,7 @@ public class FileSystemScanner {
      */
     @Deprecated
     public Resource[] scanForResources(String path, String prefix, String suffix) throws IOException {
-        return scanForResources(new ScriptsLocation(path), prefix, suffix);
+        return scanForResources(new Location(path), prefix, suffix);
     }
 
     /**

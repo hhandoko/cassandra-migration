@@ -21,7 +21,7 @@ package com.builtamont.cassandra.migration.internal.resolver.java
 import com.builtamont.cassandra.migration.api.CassandraMigrationException
 import com.builtamont.cassandra.migration.internal.resolver.java.dummy.V2__InterfaceBasedMigration
 import com.builtamont.cassandra.migration.internal.resolver.java.dummy.Version3dot5
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation
+import com.builtamont.cassandra.migration.internal.util.Location
 import io.kotlintest.specs.FreeSpec
 
 /**
@@ -38,7 +38,7 @@ class JavaMigrationResolverSpec : FreeSpec() {
     fun createMigrationResolver(location: String): JavaMigrationResolver {
         return JavaMigrationResolver(
                 Thread.currentThread().contextClassLoader,
-                ScriptsLocation(location)
+                Location(location)
         )
     }
 

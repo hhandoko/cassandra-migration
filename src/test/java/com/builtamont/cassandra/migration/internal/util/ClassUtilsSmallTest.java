@@ -77,7 +77,7 @@ public class ClassUtilsSmallTest {
 
         assertTrue(new ClassPathResource("pkg/runtime.conf", getClassLoader()).exists());
 
-        Resource[] resources = new ClassPathScanner(getClassLoader()).scanForResources(new ScriptsLocation("classpath:pkg"), "run", ".conf");
+        Resource[] resources = new ClassPathScanner(getClassLoader()).scanForResources(new Location("classpath:pkg"), "run", ".conf");
         assertEquals("pkg/runtime.conf", resources[0].getLocation());
     }
 
@@ -93,7 +93,7 @@ public class ClassUtilsSmallTest {
 
         assertTrue(new ClassPathResource("funtime.properties", getClassLoader()).exists());
 
-        Resource[] resources = new ClassPathScanner(getClassLoader()).scanForResources(new ScriptsLocation("classpath:"), "fun", ".properties");
+        Resource[] resources = new ClassPathScanner(getClassLoader()).scanForResources(new Location("classpath:"), "fun", ".properties");
         assertEquals("funtime.properties", resources[1].getLocation());
     }
 }

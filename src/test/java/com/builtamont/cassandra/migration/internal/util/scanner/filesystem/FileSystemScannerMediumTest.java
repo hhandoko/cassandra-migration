@@ -18,7 +18,7 @@
  */
 package com.builtamont.cassandra.migration.internal.util.scanner.filesystem;
 
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation;
+import com.builtamont.cassandra.migration.internal.util.Location;
 import org.junit.Test;
 
 /**
@@ -27,6 +27,6 @@ import org.junit.Test;
 public class FileSystemScannerMediumTest {
     @Test
     public void nonExistentDirectory() throws Exception {
-        new FileSystemScanner().scanForResources(new ScriptsLocation("filesystem:/invalid-path"), "", "");
+        new FileSystemScanner().scanForResources(new Location("filesystem:/invalid-path"), "", "");
     }
 }

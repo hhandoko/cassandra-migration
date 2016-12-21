@@ -19,7 +19,7 @@
 package com.builtamont.cassandra.migration.internal.util.scanner;
 
 import com.builtamont.cassandra.migration.api.CassandraMigrationException;
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation;
+import com.builtamont.cassandra.migration.internal.util.Location;
 import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ClassPathScanner;
 import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ResourceAndClassScanner;
 import com.builtamont.cassandra.migration.internal.util.scanner.filesystem.FileSystemScanner;
@@ -47,7 +47,7 @@ public class Scanner {
      * @param suffix   The suffix of the resource names to match.
      * @return The resources that were found.
      */
-    public Resource[] scanForResources(ScriptsLocation location, String prefix, String suffix) {
+    public Resource[] scanForResources(Location location, String prefix, String suffix) {
         try {
             if (location.isFileSystem()) {
                 return fileSystemScanner.scanForResources(location, prefix, suffix);
@@ -69,7 +69,7 @@ public class Scanner {
      * @return The non-abstract classes that were found.
      * @throws Exception when the location could not be scanned.
      */
-    public Class<?>[] scanForClasses(ScriptsLocation location, Class<?> implementedInterface) throws Exception {
+    public Class<?>[] scanForClasses(Location location, Class<?> implementedInterface) throws Exception {
         return resourceAndClassScanner.scanForClasses(location, implementedInterface);
     }
 

@@ -25,10 +25,10 @@ import static org.junit.Assert.*;
 /**
  * Test for location.
  */
-public class ScriptsLocationSmallTest {
+public class LocationSmallTest {
     @Test
     public void defaultPrefix() {
-        ScriptsLocation location = new ScriptsLocation("db/migration");
+        Location location = new Location("db/migration");
         assertEquals("classpath:", location.getPrefix());
         assertTrue(location.isClassPath());
         assertEquals("db/migration", location.getPath());
@@ -37,7 +37,7 @@ public class ScriptsLocationSmallTest {
 
     @Test
     public void classpathPrefix() {
-        ScriptsLocation location = new ScriptsLocation("classpath:db/migration");
+        Location location = new Location("classpath:db/migration");
         assertEquals("classpath:", location.getPrefix());
         assertTrue(location.isClassPath());
         assertEquals("db/migration", location.getPath());
@@ -46,7 +46,7 @@ public class ScriptsLocationSmallTest {
 
     @Test
     public void filesystemPrefix() {
-        ScriptsLocation location = new ScriptsLocation("filesystem:db/migration");
+        Location location = new Location("filesystem:db/migration");
         assertEquals("filesystem:", location.getPrefix());
         assertFalse(location.isClassPath());
         assertEquals("db/migration", location.getPath());
@@ -55,7 +55,7 @@ public class ScriptsLocationSmallTest {
 
     @Test
     public void filesystemPrefixAbsolutePath() {
-        ScriptsLocation location = new ScriptsLocation("filesystem:/db/migration");
+        Location location = new Location("filesystem:/db/migration");
         assertEquals("filesystem:", location.getPrefix());
         assertFalse(location.isClassPath());
         assertEquals("/db/migration", location.getPath());
@@ -64,7 +64,7 @@ public class ScriptsLocationSmallTest {
 
     @Test
     public void filesystemPrefixWithDotsInPath() {
-        ScriptsLocation location = new ScriptsLocation("filesystem:util-2.0.4/db/migration");
+        Location location = new Location("filesystem:util-2.0.4/db/migration");
         assertEquals("filesystem:", location.getPrefix());
         assertFalse(location.isClassPath());
         assertEquals("util-2.0.4/db/migration", location.getPath());

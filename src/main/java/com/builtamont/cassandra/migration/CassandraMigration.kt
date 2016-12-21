@@ -32,7 +32,7 @@ import com.builtamont.cassandra.migration.internal.command.Validate
 import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.builtamont.cassandra.migration.internal.info.MigrationInfoServiceImpl
 import com.builtamont.cassandra.migration.internal.resolver.CompositeMigrationResolver
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocations
+import com.builtamont.cassandra.migration.internal.util.Locations
 import com.builtamont.cassandra.migration.internal.util.StringUtils
 import com.builtamont.cassandra.migration.internal.util.VersionPrinter
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
@@ -369,7 +369,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @return A new, fully configured, MigrationResolver instance.
      */
     private fun createMigrationResolver(): MigrationResolver {
-        return CompositeMigrationResolver(classLoader, ScriptsLocations(*locations), encoding)
+        return CompositeMigrationResolver(classLoader, Locations(*locations), encoding)
     }
 
     private fun migrationTableName(): String{

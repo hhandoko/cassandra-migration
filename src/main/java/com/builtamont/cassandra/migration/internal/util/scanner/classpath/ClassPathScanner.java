@@ -21,7 +21,7 @@ package com.builtamont.cassandra.migration.internal.util.scanner.classpath;
 import com.builtamont.cassandra.migration.api.CassandraMigrationException;
 import com.builtamont.cassandra.migration.internal.util.ClassUtils;
 import com.builtamont.cassandra.migration.internal.util.FeatureDetector;
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation;
+import com.builtamont.cassandra.migration.internal.util.Location;
 import com.builtamont.cassandra.migration.internal.util.UrlUtils;
 import com.builtamont.cassandra.migration.internal.util.logging.Log;
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory;
@@ -55,7 +55,7 @@ public class ClassPathScanner implements ResourceAndClassScanner {
     /**
      * Cache location lookups.
      */
-    private final Map<ScriptsLocation, List<URL>> locationUrlCache = new HashMap<ScriptsLocation, List<URL>>();
+    private final Map<Location, List<URL>> locationUrlCache = new HashMap<Location, List<URL>>();
 
     /**
      * Cache location scanners.
@@ -87,7 +87,7 @@ public class ClassPathScanner implements ResourceAndClassScanner {
      * @throws IOException when the location could not be scanned.
      */
     @Override
-    public Resource[] scanForResources(ScriptsLocation location, String prefix, String suffix) throws IOException {
+    public Resource[] scanForResources(Location location, String prefix, String suffix) throws IOException {
         LOG.debug("Scanning for classpath resources at '" + location + "' (Prefix: '" + prefix + "', Suffix: '" + suffix + "')");
 
         Set<Resource> resources = new TreeSet<Resource>();
@@ -113,7 +113,7 @@ public class ClassPathScanner implements ResourceAndClassScanner {
      */
     @Deprecated
     public Resource[] scanForResources(String path, String prefix, String suffix) throws IOException {
-        return scanForResources(new ScriptsLocation(path), prefix, suffix);
+        return scanForResources(new Location(path), prefix, suffix);
     }
 
     /**
@@ -127,7 +127,7 @@ public class ClassPathScanner implements ResourceAndClassScanner {
      * @throws Exception when the location could not be scanned.
      */
     @Override
-    public Class<?>[] scanForClasses(ScriptsLocation location, Class<?> implementedInterface) throws Exception {
+    public Class<?>[] scanForClasses(Location location, Class<?> implementedInterface) throws Exception {
         LOG.debug("Scanning for classes at '" + location + "' (Implementing: '" + implementedInterface.getName() + "')");
 
         List<Class<?>> classes = new ArrayList<Class<?>>();
@@ -182,7 +182,7 @@ public class ClassPathScanner implements ResourceAndClassScanner {
      */
     @Deprecated
     public Class<?>[] scanForClasses(String path, Class<?> implementedInterface) throws Exception {
-        return scanForClasses(new ScriptsLocation(path), implementedInterface);
+        return scanForClasses(new Location(path), implementedInterface);
     }
 
     /**
@@ -206,7 +206,7 @@ public class ClassPathScanner implements ResourceAndClassScanner {
      * @return The resource names.
      * @throws IOException when scanning this location failed.
      */
-    private Set<String> findResourceNames(ScriptsLocation location, String prefix, String suffix) throws IOException {
+    private Set<String> findResourceNames(Location location, String prefix, String suffix) throws IOException {
         Set<String> resourceNames = new TreeSet<String>();
 
         List<URL> locationUrls = getLocationUrlsForPath(location);
@@ -295,7 +295,7 @@ public class ClassPathScanner implements ResourceAndClassScanner {
      * @throws IOException when scanning this location failed.
      */
     private Set<String> findResourceNames(String path, String prefix, String suffix) throws IOException {
-        return findResourceNames(new ScriptsLocation(path), prefix, suffix);
+        return findResourceNames(new Location(path), prefix, suffix);
     }
 
     /**
@@ -305,7 +305,7 @@ public class ClassPathScanner implements ResourceAndClassScanner {
      * @return The underlying physical URLs.
      * @throws IOException when the lookup fails.
      */
-    private List<URL> getLocationUrlsForPath(ScriptsLocation location) throws IOException {
+    private List<URL> getLocationUrlsForPath(Location location) throws IOException {
         if (locationUrlCache.containsKey(location)) {
             return locationUrlCache.get(location);
         }

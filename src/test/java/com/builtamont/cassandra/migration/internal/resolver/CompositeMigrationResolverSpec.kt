@@ -23,7 +23,7 @@ import com.builtamont.cassandra.migration.api.MigrationType
 import com.builtamont.cassandra.migration.api.MigrationVersion
 import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
 import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocations
+import com.builtamont.cassandra.migration.internal.util.Locations
 import io.kotlintest.matchers.have
 import io.kotlintest.specs.FreeSpec
 
@@ -59,7 +59,7 @@ class CompositeMigrationResolverSpec : FreeSpec() {
             "should resolve migrations in multiple locations" {
                 val resolver = CompositeMigrationResolver(
                         Thread.currentThread().contextClassLoader,
-                        ScriptsLocations("migration/subdir/dir2", "migration.outoforder", "migration/subdir/dir1"),
+                        Locations("migration/subdir/dir2", "migration.outoforder", "migration/subdir/dir1"),
                         "UTF-8"
                 )
                 val migrations = resolver.resolveMigrations()

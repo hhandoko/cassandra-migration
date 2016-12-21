@@ -19,7 +19,7 @@
 package com.builtamont.cassandra.migration.internal.util.scanner.classpath;
 
 
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation;
+import com.builtamont.cassandra.migration.internal.util.Location;
 import com.builtamont.cassandra.migration.internal.util.scanner.Resource;
 
 /**
@@ -36,7 +36,7 @@ public interface ResourceAndClassScanner {
      * @return The resources that were found.
      * @throws Exception when the location could not be scanned.
      */
-    Resource[] scanForResources(ScriptsLocation location, String prefix, String suffix) throws Exception;
+    Resource[] scanForResources(Location location, String prefix, String suffix) throws Exception;
 
     /**
      * Scans the classpath for concrete classes under the specified package implementing this interface.
@@ -48,5 +48,5 @@ public interface ResourceAndClassScanner {
      * @return The non-abstract classes that were found.
      * @throws Exception when the location could not be scanned.
      */
-    Class<?>[] scanForClasses(ScriptsLocation location, Class<?> implementedInterface) throws Exception;
+    Class<?>[] scanForClasses(Location location, Class<?> implementedInterface) throws Exception;
 }

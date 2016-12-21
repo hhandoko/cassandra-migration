@@ -19,7 +19,7 @@
 package com.builtamont.cassandra.migration.internal.resolver.cql
 
 import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.builtamont.cassandra.migration.internal.util.ScriptsLocation
+import com.builtamont.cassandra.migration.internal.util.Location
 import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ClassPathResource
 import com.builtamont.cassandra.migration.internal.util.scanner.filesystem.FileSystemResource
 import io.kotlintest.specs.FreeSpec
@@ -38,7 +38,7 @@ class CqlMigrationResolverSpec : FreeSpec() {
     fun createMigrationResolver(location: String): CqlMigrationResolver {
         return CqlMigrationResolver(
                 Thread.currentThread().contextClassLoader,
-                ScriptsLocation(location),
+                Location(location),
                 "UTF-8"
         )
     }

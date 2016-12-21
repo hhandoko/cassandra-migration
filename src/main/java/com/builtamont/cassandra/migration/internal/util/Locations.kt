@@ -1,5 +1,5 @@
 /**
- * File     : ScriptsLocations.kt
+ * File     : Locations.kt
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
  *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
@@ -33,18 +33,18 @@ import java.util.*
  * @param rawLocations The raw locations to process.
  *                     (default: db/migration)
  */
-class ScriptsLocations(vararg rawLocations: String) {
+class Locations(vararg rawLocations: String) {
 
     /**
      * The backing list.
      */
-    private val locations = ArrayList<ScriptsLocation>()
+    private val locations = ArrayList<Location>()
 
     /**
      * ScriptsLocations initialization.
      */
     init {
-        for (location in rawLocations.map(::ScriptsLocation).sorted()) {
+        for (location in rawLocations.map(::Location).sorted()) {
             if (locations.contains(location)) {
                 LOG.warn("Discarding duplicate location '$location'")
                 continue
@@ -63,7 +63,7 @@ class ScriptsLocations(vararg rawLocations: String) {
     /**
      * @return The locations.
      */
-    fun getLocations(): List<ScriptsLocation> {
+    fun getLocations(): List<Location> {
         return locations
     }
 
@@ -74,7 +74,7 @@ class ScriptsLocations(vararg rawLocations: String) {
      * @param finalLocations The list to search.
      * @return The parent location. `null` if none.
      */
-    private fun getParentLocationIfExists(location: ScriptsLocation, finalLocations: List<ScriptsLocation>): ScriptsLocation? {
+    private fun getParentLocationIfExists(location: Location, finalLocations: List<Location>): Location? {
         for (finalLocation in finalLocations) {
             if (finalLocation.isParentOf(location)) {
                 return finalLocation
@@ -89,7 +89,7 @@ class ScriptsLocations(vararg rawLocations: String) {
     companion object {
 
         /** Logger instance */
-        private val LOG = LogFactory.getLog(ScriptsLocations::class.java)
+        private val LOG = LogFactory.getLog(Locations::class.java)
 
     }
 

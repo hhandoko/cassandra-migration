@@ -44,7 +44,7 @@ class ScriptsLocations(vararg rawLocations: String) {
      * ScriptsLocations initialization.
      */
     init {
-        for (location in rawLocations.map { ScriptsLocation(it) }.sorted()) {
+        for (location in rawLocations.map(::ScriptsLocation).sorted()) {
             if (locations.contains(location)) {
                 LOG.warn("Discarding duplicate location '$location'")
                 continue
@@ -87,7 +87,10 @@ class ScriptsLocations(vararg rawLocations: String) {
      * ScriptLocations companion object.
      */
     companion object {
+
+        /** Logger instance */
         private val LOG = LogFactory.getLog(ScriptsLocations::class.java)
+
     }
 
 }

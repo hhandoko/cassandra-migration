@@ -1,23 +1,33 @@
 /**
- * Copyright 2010-2015 Axel Fontaine
- * <p/>
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- * <p/>
- * http://www.apache.org/licenses/LICENSE-2.0
- * <p/>
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * File     : ClassUtils.java
+ * License  :
+ *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
+ *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *
+ *   Licensed under the Apache License, Version 2.0 (the "License");
+ *   you may not use this file except in compliance with the License.
+ *   You may obtain a copy of the License at
+ *
+ *           http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *   Unless required by applicable law or agreed to in writing, software
+ *   distributed under the License is distributed on an "AS IS" BASIS,
+ *   WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *   See the License for the specific language governing permissions and
+ *   limitations under the License.
  */
 package com.builtamont.cassandra.migration.internal.util;
 
 import com.builtamont.cassandra.migration.api.CassandraMigrationException;
+import com.builtamont.cassandra.migration.internal.util.logging.Log;
+import com.builtamont.cassandra.migration.internal.util.logging.LogFactory;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 import java.net.URLDecoder;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
@@ -28,6 +38,11 @@ import java.util.List;
  */
 public class ClassUtils {
     /**
+     * Logger instance.
+     */
+    private static final Log LOG = LogFactory.INSTANCE.getLog(ClassUtils.class);
+
+    /**
      * Prevents instantiation.
      */
     private ClassUtils() {
@@ -37,9 +52,9 @@ public class ClassUtils {
     /**
      * Creates a new instance of this class.
      *
-     * @param className   The fully qualified name of the class to instantiate.
+     * @param className The fully qualified name of the class to instantiate.
      * @param classLoader The ClassLoader to use.
-     * @param <T>         The type of the new instance.
+     * @param <T> The type of the new instance.
      * @return The new instance.
      * @throws Exception Thrown when the instantiation failed.
      */
@@ -76,7 +91,7 @@ public class ClassUtils {
      * and can be loaded. Will return {@code false} if either the class or
      * one of its dependencies is not present or cannot be loaded.
      *
-     * @param className   the name of the class to check
+     * @param className The name of the class to check
      * @param classLoader The ClassLoader to use.
      * @return whether the specified class is present
      */
@@ -111,14 +126,34 @@ public class ClassUtils {
         try {
             ProtectionDomain protectionDomain = aClass.getProtectionDomain();
             if (protectionDomain == null) {
-                //Android
+                // Android
                 return null;
             }
             String url = protectionDomain.getCodeSource().getLocation().getPath();
             return URLDecoder.decode(url, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            //Can never happen.
+            // Can never happen.
             return null;
+        }
+    }
+
+    /**
+     * Adds a jar or a directory with this name to the classpath.
+     *
+     * @param name The name of the jar or directory to add.
+     * @throws IOException when the jar or directory could not be found.
+     */
+    public static void addJarOrDirectoryToClasspath(String name) throws IOException {
+        LOG.debug("Adding location to classpath: " + name);
+
+        try {
+            URL url = new File(name).toURI().toURL();
+            URLClassLoader sysloader = (URLClassLoader) ClassLoader.getSystemClassLoader();
+            Method method = URLClassLoader.class.getDeclaredMethod("addURL", URL.class);
+            method.setAccessible(true);
+            method.invoke(sysloader, url);
+        } catch (Exception e) {
+            throw new CassandraMigrationException("Unable to load " + name, e);
         }
     }
 }

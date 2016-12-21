@@ -26,7 +26,7 @@ import static org.junit.Assert.assertTrue;
 /**
  * Small Test for Locations.
  */
-public class ScriptsLocationsTest {
+public class ScriptsLocationsSmallTest {
     @Test
     public void mergeLocations() {
         ScriptsLocations locations = new ScriptsLocations("db/locations", "db/files", "db/classes");

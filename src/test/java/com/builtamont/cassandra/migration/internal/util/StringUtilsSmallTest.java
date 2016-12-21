@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 /**
  * Testcase for StringUtils.
  */
-public class StringUtilsTest {
+public class StringUtilsSmallTest {
     @Test
     public void trimOrPad() {
         assertEquals("Hello World    ", StringUtils.trimOrPad("Hello World", 15));

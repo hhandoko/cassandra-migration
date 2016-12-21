@@ -22,7 +22,7 @@ import java.net.MalformedURLException;
 
 import static org.junit.Assert.assertEquals;
 
-public class UrlUtilsTest {
+public class UrlUtilsSmallTest {
     @Test
     public void toFilePath() throws MalformedURLException {
         File file = new File("/test dir/a+b");

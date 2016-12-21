@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 /**
  * Test for location.
  */
-public class ScriptsLocationTest {
+public class ScriptsLocationSmallTest {
     @Test
     public void defaultPrefix() {
         ScriptsLocation location = new ScriptsLocation("db/migration");

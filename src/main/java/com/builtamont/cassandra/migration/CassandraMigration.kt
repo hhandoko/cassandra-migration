@@ -235,7 +235,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
     internal fun <T> execute(action: Action<T>, extSession: Session? = null): T {
         val result: T
 
-        VersionPrinter.printVersion(classLoader)
+        VersionPrinter.printVersion()
 
         val useExternalSession = extSession != null
         var cluster: Cluster? = null

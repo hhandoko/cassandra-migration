@@ -44,7 +44,7 @@ public class Scanner {
                 return new FileSystemScanner().scanForResources(location.getPath(), prefix, suffix);
             }
 
-            return new ClassPathScanner(classLoader).scanForResources(location.getPath(), prefix, suffix);
+            return new ClassPathScanner(classLoader).scanForResources(location, prefix, suffix);
         } catch (Exception e) {
             throw new CassandraMigrationException("Unable to scan for CQL migrations in location: " + location, e);
         }
@@ -62,6 +62,6 @@ public class Scanner {
      * @throws Exception when the location could not be scanned.
      */
     public Class<?>[] scanForClasses(ScriptsLocation location, Class<?> implementedInterface) throws Exception {
-        return new ClassPathScanner(classLoader).scanForClasses(location.getPath(), implementedInterface);
+        return new ClassPathScanner(classLoader).scanForClasses(location, implementedInterface);
     }
 }

@@ -17,20 +17,17 @@ package com.builtamont.cassandra.migration.internal.util;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 
-/**
- * Test for ClassUtils.
- */
-public class ClassUtilsTest {
+public class FeatureDetectorSmallTest {
     @Test
-    public void isPresent() {
-        assertTrue(ClassUtils.isPresent("com.builtamont.cassandra.migration.CassandraMigration", Thread.currentThread().getContextClassLoader()));
+    public void shouldDetectSlf4j() {
+        assertThat(new FeatureDetector(Thread.currentThread().getContextClassLoader()).isSlf4jAvailable(), is(true));
     }
 
     @Test
-    public void isPresentNot() {
-        assertFalse(ClassUtils.isPresent("com.example.FakeClass", Thread.currentThread().getContextClassLoader()));
+    public void shouldDetectCommonsLogging() {
+        assertThat(new FeatureDetector(Thread.currentThread().getContextClassLoader()).isApacheCommonsLoggingAvailable(), is(true));
     }
 }

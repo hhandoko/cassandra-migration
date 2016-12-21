@@ -15,6 +15,9 @@
  */
 package com.builtamont.cassandra.migration.internal.util.scanner;
 
+/**
+ * A loadable resource.
+ */
 public interface Resource {
     /**
      * @return The location of the resource on the classpath (path and filename).

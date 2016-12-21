@@ -22,7 +22,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Tests for ClassPathResource.
  */
-public class ClassPathResourceTest {
+public class ClassPathResourceSmallTest {
     @Test
     public void getFilename() throws Exception {
         assertEquals("Mig777__Test.cql", new ClassPathResource("Mig777__Test.cql", Thread.currentThread().getContextClassLoader()).getFilename());

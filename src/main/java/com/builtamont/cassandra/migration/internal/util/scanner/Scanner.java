@@ -18,16 +18,22 @@ package com.builtamont.cassandra.migration.internal.util.scanner;
 import com.builtamont.cassandra.migration.api.CassandraMigrationException;
 import com.builtamont.cassandra.migration.internal.util.ScriptsLocation;
 import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ClassPathScanner;
+import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ResourceAndClassScanner;
 import com.builtamont.cassandra.migration.internal.util.scanner.filesystem.FileSystemScanner;
 
 /**
  * Scanner for Resources and Classes.
  */
 public class Scanner {
+    private final ResourceAndClassScanner resourceAndClassScanner;
+
     private final ClassLoader classLoader;
+
+    private final FileSystemScanner fileSystemScanner = new FileSystemScanner();
 
     public Scanner(ClassLoader classLoader) {
         this.classLoader = classLoader;
+        this.resourceAndClassScanner = new ClassPathScanner(classLoader);
     }
 
     /**
@@ -41,15 +47,14 @@ public class Scanner {
     public Resource[] scanForResources(ScriptsLocation location, String prefix, String suffix) {
         try {
             if (location.isFileSystem()) {
-                return new FileSystemScanner().scanForResources(location.getPath(), prefix, suffix);
+                return fileSystemScanner.scanForResources(location, prefix, suffix);
             }
 
-            return new ClassPathScanner(classLoader).scanForResources(location, prefix, suffix);
+            return resourceAndClassScanner.scanForResources(location, prefix, suffix);
         } catch (Exception e) {
             throw new CassandraMigrationException("Unable to scan for CQL migrations in location: " + location, e);
         }
     }
-
 
     /**
      * Scans the classpath for concrete classes under the specified package implementing this interface.
@@ -62,6 +67,13 @@ public class Scanner {
      * @throws Exception when the location could not be scanned.
      */
     public Class<?>[] scanForClasses(ScriptsLocation location, Class<?> implementedInterface) throws Exception {
-        return new ClassPathScanner(classLoader).scanForClasses(location, implementedInterface);
+        return resourceAndClassScanner.scanForClasses(location, implementedInterface);
+    }
+
+    /**
+     * @return The class loader used for scanning.
+     */
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

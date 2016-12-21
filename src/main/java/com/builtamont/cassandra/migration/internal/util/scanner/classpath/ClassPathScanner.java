@@ -38,7 +38,7 @@ import java.util.regex.Pattern;
 /**
  * ClassPath scanner.
  */
-public class ClassPathScanner {
+public class ClassPathScanner implements ResourceAndClassScanner {
     /**
      * The logger instance.
      */
@@ -83,6 +83,7 @@ public class ClassPathScanner {
      * @return The resources that were found.
      * @throws IOException when the location could not be scanned.
      */
+    @Override
     public Resource[] scanForResources(ScriptsLocation location, String prefix, String suffix) throws IOException {
         LOG.debug("Scanning for classpath resources at '" + location + "' (Prefix: '" + prefix + "', Suffix: '" + suffix + "')");
 
@@ -122,6 +123,7 @@ public class ClassPathScanner {
      * @return The non-abstract classes that were found.
      * @throws Exception when the location could not be scanned.
      */
+    @Override
     public Class<?>[] scanForClasses(ScriptsLocation location, Class<?> implementedInterface) throws Exception {
         LOG.debug("Scanning for classes at '" + location + "' (Implementing: '" + implementedInterface.getName() + "')");
 
@@ -311,7 +313,7 @@ public class ClassPathScanner {
 
         if (classLoader.getClass().getName().startsWith("com.ibm")) {
             // WebSphere
-            Enumeration<URL> urls = classLoader.getResources(location + "/cassandra-migration.location");
+            Enumeration<URL> urls = classLoader.getResources(location.getPath() + "/cassandra-migration.location");
             if (!urls.hasMoreElements()) {
                 throw new CassandraMigrationException("Unable to determine URL for classpath location: " + location + " (ClassLoader: " + classLoader + ")"
                         + " On WebSphere an empty file named cassandra-migration.location must be present on the classpath location for WebSphere to find it!");

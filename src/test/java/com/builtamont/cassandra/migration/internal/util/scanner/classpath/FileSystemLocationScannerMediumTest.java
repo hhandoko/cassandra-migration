@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 /**
  * Test for FileSystemClassPathLocationScanner.
  */
-public class FileSystemLocationScannerTest {
+public class FileSystemLocationScannerMediumTest {
     @Test
     public void findResourceNamesFromFileSystem() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();

@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import java.io.File;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -34,7 +35,19 @@ public class FileSystemLocationScannerMediumTest {
     @Test
     public void findResourceNamesFromFileSystem() throws Exception {
         ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        String path = UrlUtils.toFilePath(classLoader.getResources("migration").nextElement()) + File.separator;
+        Enumeration<URL> paths = classLoader.getResources("migration");
+
+        // NOTE: Gradle builds classes and resources in different target dirs,
+        //       thus the test code was updated to select migration directory
+        //       from `resources` only.
+        String path = null;
+        while (paths.hasMoreElements()) {
+            URL current = paths.nextElement();
+            if (current.toString().contains("resources")) {
+                path = UrlUtils.toFilePath(current) + File.separator;
+                break;
+            }
+        }
 
         Set<String> resourceNames =
                 new FileSystemClassPathLocationScanner().findResourceNamesFromFileSystem(path, "cql", new File(path, "cql"));

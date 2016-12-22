@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###
-# File     : verify-embedded.sh
+# File     : install.sh
 # License  :
 #   Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
 #
@@ -19,4 +19,5 @@
 ###
 
 echo $JAVA_HOME
-./gradlew check -Dorg.gradle.java.home=$JAVA_HOME --info
+./gradlew clean
+./gradlew assemble -Dorg.gradle.java.home=$JAVA_HOME --info

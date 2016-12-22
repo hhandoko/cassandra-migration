@@ -28,6 +28,7 @@ cache:
   directories:
     - $HOME/.gradle/caches/
     - $HOME/.gradle/wrapper/
+install: ./scripts/install.sh
 deploy:
   provider: script
   script: ./scripts/deploy.sh

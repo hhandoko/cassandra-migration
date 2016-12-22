@@ -18,5 +18,4 @@
 #   limitations under the License.
 ###
 
-gradle clean
-gradle uploadArchives -x test -x itest
+./gradlew uploadArchives -x test -x itest

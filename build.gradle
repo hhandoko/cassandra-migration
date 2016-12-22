@@ -66,7 +66,6 @@ task itest(type: Test) {
 task javadocJar(type: Jar) {
     classifier = 'javadoc'
     from javadoc
-    dependsOn dokkaJavadoc
 }
 
 task sourcesJar(type: Jar) {

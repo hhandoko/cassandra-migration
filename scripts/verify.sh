@@ -21,7 +21,7 @@
 echo $JAVA_HOME
 ./gradlew check \
   -Dorg.gradle.java.home=$JAVA_HOME \
-  -Dorg.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError \
+  -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
   -Dcassandra.migration.cluster.contactpoints=127.0.0.1 \
   -Dcassandra.migration.cluster.port=9042 \
   -Dcassandra.migration.disable_embedded=true \

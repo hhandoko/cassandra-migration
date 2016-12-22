@@ -21,5 +21,5 @@
 echo $JAVA_HOME
 ./gradlew check \
   -Dorg.gradle.java.home=$JAVA_HOME \
-  -Dorg.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError \
+  -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
   --info

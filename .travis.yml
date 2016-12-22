@@ -21,6 +21,13 @@ matrix:
       script: ./scripts/verify.sh
     - jdk: oraclejdk8
       script: ./scripts/verify-embedded.sh
+before_cache:
+  - rm -f  $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
 deploy:
   provider: script
   script: ./scripts/deploy.sh

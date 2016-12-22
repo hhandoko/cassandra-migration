@@ -18,4 +18,5 @@
 #   limitations under the License.
 ###
 
-./gradlew check
+./gradlew clean
+./gradlew check -Porg.gradle.java.home=$JAVA_HOME

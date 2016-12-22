@@ -19,4 +19,4 @@
 ###
 
 ./gradlew clean
-./gradlew check -Porg.gradle.java.home=$JAVA_HOME -Dcassandra.migration.cluster.contactpoints=127.0.0.1 -Dcassandra.migration.cluster.port=9042 -Dcassandra.migration.disable_embedded=true
+./gradlew check -Porg.gradle.java.home=$JAVA_HOME -Dcassandra.migration.cluster.contactpoints=127.0.0.1 -Dcassandra.migration.cluster.port=9042 -Dcassandra.migration.disable_embedded=true --info

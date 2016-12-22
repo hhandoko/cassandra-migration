@@ -19,4 +19,4 @@
 ###
 
 ./gradlew clean
-./gradlew check -Porg.gradle.java.home=$JAVA_HOME
+./gradlew check -Porg.gradle.java.home=$JAVA_HOME --info

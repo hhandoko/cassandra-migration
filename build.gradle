@@ -17,6 +17,7 @@ plugins {
 
 group = 'com.builtamont'
 version = '0.10-SNAPSHOT'
+ext.isReleaseVersion = !version.endsWith("SNAPSHOT")
 
 description = """Cassandra Migration"""
 
@@ -36,10 +37,6 @@ idea {
   }
 }
 
-repositories {
-    mavenCentral()
-}
-
 sourceSets {
     itest {
         compileClasspath += main.output + test.output
@@ -52,8 +49,8 @@ sourceSets {
 }
 
 configurations {
-  itestCompile.extendsFrom testCompile
-  itestRuntime.extendsFrom testRuntime
+    itestCompile.extendsFrom testCompile
+    itestRuntime.extendsFrom testRuntime
 }
 
 task itest(type: Test) {
@@ -83,22 +80,8 @@ task sourcesJar(type: Jar) {
     from sourceSets.main.allSource
 }
 
-check.dependsOn itest
-
-artifacts {
-    archives javadocJar, sourcesJar
-}
-
-//signing {
-//    sign configurations.archives
-//}
-
-build {
-    afterReleaseBuild.dependsOn uploadArchives
-}
-
-release {
-    failOnPublishNeeded = false
+repositories {
+    mavenCentral()
 }
 
 dependencies {
@@ -128,9 +111,20 @@ dependencies {
     itestRuntime configurations.testRuntime
 }
 
+check {
+    dependsOn itest
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+
 uploadArchives {
     repositories {
         mavenDeployer {
+            def ossrhUsername = System.getenv('SONATYPE_USERNAME')
+            def ossrhPassword = System.getenv('SONATYPE_PASSWORD')
+
             beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
 
             repository(url: "https://oss.sonatype.org/service/local/staging/deploy/maven2/") {
@@ -170,4 +164,17 @@ uploadArchives {
             }
         }
     }
+}
+
+build {
+    afterReleaseBuild.dependsOn uploadArchives
+}
+
+signing {
+    required { isReleaseVersion && gradle.taskGraph.hasTask("uploadArchives") }
+    sign configurations.archives
+}
+
+release {
+    failOnPublishNeeded = false
 }

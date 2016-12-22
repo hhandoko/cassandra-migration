@@ -18,4 +18,4 @@
 #   limitations under the License.
 ###
 
-mvn source:jar javadoc:jar deploy --settings settings.xml -DskipTests=true -B
+./gradlew uploadArchives -x test -x itest

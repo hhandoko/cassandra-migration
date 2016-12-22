@@ -20,4 +20,7 @@
 
 echo $JAVA_HOME
 ./gradlew clean
-./gradlew assemble -Dorg.gradle.java.home=$JAVA_HOME --info
+./gradlew assemble \
+  -Dorg.gradle.java.home=$JAVA_HOME \
+  -Dorg.gradle.jvmargs=-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError \
+  --info

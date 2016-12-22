@@ -29,6 +29,8 @@ apply plugin: 'signing'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
+compileJava.options.fork = false
+
 idea {
   module {
     downloadJavadoc = true

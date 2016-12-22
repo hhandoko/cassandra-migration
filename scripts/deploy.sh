@@ -18,5 +18,5 @@
 #   limitations under the License.
 ###
 
-./gradlew clean
-./gradlew uploadArchives -Porg.gradle.java.home=$JAVA_HOME -x test -x itest
+gradle clean
+gradle uploadArchives -x test -x itest

@@ -1,10 +1,12 @@
 buildscript {
     repositories {
+        jcenter()
         mavenCentral()
     }
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.5"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.11"
     }
 }
 
@@ -20,6 +22,7 @@ description = """Cassandra Migration"""
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'org.jetbrains.dokka'
 apply plugin: 'maven'
 apply plugin: 'signing'
 
@@ -57,38 +60,46 @@ task itest(type: Test) {
     testClassesDir = sourceSets.itest.output.classesDir
     classpath = sourceSets.itest.runtimeClasspath
 
+    // NOTE: Not needed, but shows which test has run
+    //       as each integration test case run can be slow
     testLogging {
         events "passed", "skipped", "failed"
     }
 }
 
-// task javadocJar(type: Jar) {
-//     classifier = 'javadoc'
-//     from javadoc
-// }
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+}
 
-// task sourcesJar(type: Jar) {
-//     classifier = 'sources'
-//     from sourceSets.main.allSource
-// }
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+    dependsOn dokkaJavadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
 
 check.dependsOn itest
 
-// artifacts {
-//     archives javadocJar, sourcesJar
-// }
+artifacts {
+    archives javadocJar, sourcesJar
+}
 
-// signing {
-//     sign configurations.archives
-// }
+//signing {
+//    sign configurations.archives
+//}
 
-// build {
-//     afterReleaseBuild.dependsOn uploadArchives
-// }
+build {
+    afterReleaseBuild.dependsOn uploadArchives
+}
 
-// release {
-//     failOnPublishNeeded = false
-// }
+release {
+    failOnPublishNeeded = false
+}
 
 dependencies {
     compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version:'1.0.5'

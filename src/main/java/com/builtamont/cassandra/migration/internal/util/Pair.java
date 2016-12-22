@@ -20,6 +20,9 @@ package com.builtamont.cassandra.migration.internal.util;
 
 /**
  * A simple pair of values.
+ *
+ * @param <L> The left side pair type.
+ * @param <R> The right side pair type.
  */
 public class Pair<L, R> {
     /**
@@ -37,6 +40,8 @@ public class Pair<L, R> {
      *
      * @param left  The left side of the pair.
      * @param right The right side of the pair.
+     * @param <L> The left side pair type.
+     * @param <R> The right side pair type.
      * @return The pair.
      */
     public static <L, R> Pair<L, R> of(L left, R right) {

@@ -94,7 +94,7 @@ public class StringUtils {
     }
 
     /**
-     * Replaces all sequences of whitespace by a single blank. Ex.: "&nbsp;&nbsp;&nbsp;&nbsp;" -> " "
+     * Replaces all sequences of whitespace by a single blank. Ex.: "&nbsp;&nbsp;&nbsp;&nbsp;" to " "
      *
      * @param str The string to analyse.
      * @return The input string, with all whitespace collapsed.

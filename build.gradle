@@ -170,6 +170,7 @@ test {
 
 itest {
     systemProperties System.getProperties()
+    dependsOn test
 }
 
 signing {

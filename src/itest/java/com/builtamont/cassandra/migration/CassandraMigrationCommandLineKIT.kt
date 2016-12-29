@@ -70,7 +70,7 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
                          | -Dcassandra.migration.cluster.username=${BaseIT.CASSANDRA_USERNAME}
                          | -Dcassandra.migration.cluster.password=${BaseIT.CASSANDRA_PASSWORD}
                          | -Dcassandra.migration.keyspace.name=${BaseIT.CASSANDRA_KEYSPACE}
-                         | target/*-jar-with-dependencies.jar
+                         | build/libs/*-jar-with-dependencies.jar
                          | migrate
                         """.trimMargin().replace("\n", "").replace("  ", " ")
                 println(shell)

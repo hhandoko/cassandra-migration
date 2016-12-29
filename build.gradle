@@ -165,21 +165,11 @@ build {
 }
 
 test {
-    systemProperty "cassandra.migration.keyspace.name", System.getProperty("cassandra.migration.keyspace.name")
-    systemProperty "cassandra.migration.cluster.contactpoints", System.getProperty("cassandra.migration.cluster.contactpoints")
-    systemProperty "cassandra.migration.cluster.port", System.getProperty("cassandra.migration.cluster.port")
-    systemProperty "cassandra.migration.cluster.username", System.getProperty("cassandra.migration.cluster.username")
-    systemProperty "cassandra.migration.cluster.password", System.getProperty("cassandra.migration.cluster.password")
-    systemProperty "cassandra.migration.disable_embedded", System.getProperty("cassandra.migration.disable_embedded")
+    systemProperties System.getProperties()
 }
 
 itest {
-    systemProperty "cassandra.migration.keyspace.name", System.getProperty("cassandra.migration.keyspace.name")
-    systemProperty "cassandra.migration.cluster.contactpoints", System.getProperty("cassandra.migration.cluster.contactpoints")
-    systemProperty "cassandra.migration.cluster.port", System.getProperty("cassandra.migration.cluster.port")
-    systemProperty "cassandra.migration.cluster.username", System.getProperty("cassandra.migration.cluster.username")
-    systemProperty "cassandra.migration.cluster.password", System.getProperty("cassandra.migration.cluster.password")
-    systemProperty "cassandra.migration.disable_embedded", System.getProperty("cassandra.migration.disable_embedded")
+    systemProperties System.getProperties()
 }
 
 signing {

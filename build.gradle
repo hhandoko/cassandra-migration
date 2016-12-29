@@ -6,7 +6,6 @@ buildscript {
 
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.5"
-        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.11"
     }
 }
 
@@ -163,6 +162,24 @@ uploadArchives {
 
 build {
     afterReleaseBuild.dependsOn uploadArchives
+}
+
+test {
+    systemProperty "cassandra.migration.keyspace.name", System.getProperty("cassandra.migration.keyspace.name")
+    systemProperty "cassandra.migration.cluster.contactpoints", System.getProperty("cassandra.migration.cluster.contactpoints")
+    systemProperty "cassandra.migration.cluster.port", System.getProperty("cassandra.migration.cluster.port")
+    systemProperty "cassandra.migration.cluster.username", System.getProperty("cassandra.migration.cluster.username")
+    systemProperty "cassandra.migration.cluster.password", System.getProperty("cassandra.migration.cluster.password")
+    systemProperty "cassandra.migration.disable_embedded", System.getProperty("cassandra.migration.disable_embedded")
+}
+
+itest {
+    systemProperty "cassandra.migration.keyspace.name", System.getProperty("cassandra.migration.keyspace.name")
+    systemProperty "cassandra.migration.cluster.contactpoints", System.getProperty("cassandra.migration.cluster.contactpoints")
+    systemProperty "cassandra.migration.cluster.port", System.getProperty("cassandra.migration.cluster.port")
+    systemProperty "cassandra.migration.cluster.username", System.getProperty("cassandra.migration.cluster.username")
+    systemProperty "cassandra.migration.cluster.password", System.getProperty("cassandra.migration.cluster.password")
+    systemProperty "cassandra.migration.disable_embedded", System.getProperty("cassandra.migration.disable_embedded")
 }
 
 signing {

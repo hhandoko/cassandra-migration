@@ -128,6 +128,12 @@ class CassandraMigration : CassandraMigrationConfiguration {
 
         val allowOutOfOrderProp = System.getProperty(ConfigurationProperty.ALLOW_OUT_OF_ORDER.namespace)
         if (!allowOutOfOrderProp.isNullOrBlank()) allowOutOfOrder = allowOutOfOrderProp.toBoolean()
+
+        val baselineVersionProp = System.getProperty(ConfigurationProperty.BASELINE_VERSION.namespace)
+        if (!baselineVersionProp.isNullOrBlank()) baselineVersion = MigrationVersion.fromVersion(baselineVersionProp.trim())
+
+        val baselineDescriptionProp = System.getProperty(ConfigurationProperty.BASELINE_DESCRIPTION.namespace)
+        if (!baselineDescriptionProp.isNullOrBlank()) baselineDescription = baselineDescriptionProp.trim()
     }
 
     /**

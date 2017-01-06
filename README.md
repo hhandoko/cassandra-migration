@@ -142,6 +142,8 @@ Migration:
  * `cassandra.migration.scripts.allowoutoforder`: Allow out of order migration (default=false)
  * `cassandra.migration.version.target`: The target version. Migrations with a higher version number will be ignored. (default=latest)
  * `cassandra.migration.table.prefix`: The prefix to be prepended to `cassandra_migration_version*` table names.
+ * `cassandra.migration.baseline.version`: The version to apply for an existing schema when baseline is run.
+ * `cassandra.migration.baseline.description`: The description to apply for an existing schema when baseline is run
 
 Cluster:
  * `cassandra.migration.cluster.contactpoints`: Comma separated values of node IP addresses (default=localhost)

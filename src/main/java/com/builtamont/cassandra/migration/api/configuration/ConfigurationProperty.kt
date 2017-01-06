@@ -48,6 +48,16 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
             "Allow out of order migration"
     ),
 
+    BASELINE_VERSION(
+            "cassandra.migration.baseline.version",
+            "Version to apply for an existing schema when baseline is run"
+    ),
+
+    BASELINE_DESCRIPTION(
+            "cassandra.migration.baseline.description",
+            "Description to apply to an existing schema when baseline is run"
+    ),
+
     // Version target configuration properties
     // ~~~~~~
     TARGET_VERSION(

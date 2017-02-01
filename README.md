@@ -1,4 +1,6 @@
-[![License](https://img.shields.io/badge/license-Apache%202-brightgreen.svg)](LICENSE) [![Master Build Status](https://travis-ci.org/builtamont-oss/cassandra-migration.svg?branch=master)](https://travis-ci.org/builtamont-oss/cassandra-migration)
+[![License](https://img.shields.io/badge/license-Apache%202-brightgreen.svg)](LICENSE)
+[![Master Build Status](https://travis-ci.org/builtamont-oss/cassandra-migration.svg?branch=master)](https://travis-ci.org/builtamont-oss/cassandra-migration)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration)
 
 # Cassandra Migration
 
@@ -21,7 +23,7 @@ Import this library as a dependency:
 <dependency>
     <groupId>com.builtamont</groupId>
     <artifactId>cassandra-migration</artifactId>
-    <version>0.9</version>
+    <version>0.10</version>
 </dependency>
 ```
 
@@ -223,7 +225,7 @@ Please read [CONTRIBUTING] for more details.
 
 [Flyway] project is released under the Apache 2 license. See [Flyway's project license page] for further details.
 
-## Releases
+## Release Notes
 
 https://github.com/builtamont/cassandra-migration/releases
  

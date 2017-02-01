@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ###
-# File     : deploy.sh
+# File     : release.sh
 # License  :
 #   Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
 #
@@ -18,4 +18,4 @@
 #   limitations under the License.
 ###
 
-mvn source:jar javadoc:jar deploy -B -DskipTests --settings settings.xml
+mvn -P release release:clean release:prepare release:perform -B -e -Darguments="-DskipTests -Dgpg.passphrase=${GPG_PASSPHRASE}" -DskipTests --settings settings.xml

@@ -29,7 +29,8 @@ interface ResolvedMigration {
     /**
      * The target version of this migration.
      */
-    var version: MigrationVersion? get
+    var version: MigrationVersion?
+        get
 
     /**
      * The description of the migration.

@@ -47,7 +47,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                     "for session and keyspace, version and description setup via configuration" {
@@ -62,7 +62,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("0.0.1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("0.0.1")
                     }
 
                     "for external session, but keyspace setup via configuration" {
@@ -76,7 +76,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                     "for external session and defaulted keyspace" {
@@ -89,7 +89,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                 }
@@ -107,7 +107,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), cm.tablePrefix + MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                     "for session and keyspace, version and description setup via configuration" {
@@ -123,7 +123,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), cm.tablePrefix + MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("0.0.1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("0.0.1")
                     }
 
                     "for external session, but keyspace setup via configuration" {
@@ -138,7 +138,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), cm.tablePrefix + MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                     "for external session and defaulted keyspace" {
@@ -152,7 +152,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), cm.tablePrefix + MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                 }

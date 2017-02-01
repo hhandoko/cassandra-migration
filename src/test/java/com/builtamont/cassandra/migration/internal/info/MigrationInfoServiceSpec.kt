@@ -26,6 +26,7 @@ import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
 import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
+import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.kotlintest.specs.FreeSpec
@@ -137,14 +138,14 @@ class MigrationInfoServiceSpec : FreeSpec() {
      * @return The mocked SchemaVersionDAO.
      */
     fun createSchemaVersionDAO(vararg appliedMigrations: AppliedMigration): SchemaVersionDAO {
-        val daoMock = mock<SchemaVersionDAO>()
         val migrations = if (appliedMigrations.isEmpty()) {
             arrayListOf<AppliedMigration>()
         } else {
             appliedMigrations.toList()
         }
-        whenever(daoMock.findAppliedMigrations()).thenReturn(migrations)
-        return daoMock
+        return mock {
+            on { findAppliedMigrations() } doReturn migrations
+        }
     }
 
     init {

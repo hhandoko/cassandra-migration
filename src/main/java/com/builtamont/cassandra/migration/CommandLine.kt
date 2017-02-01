@@ -54,7 +54,8 @@ object CommandLine {
      *
      * @param args The command line arguments.
      */
-    @JvmStatic fun main(args: Array<String>) {
+    @JvmStatic
+    fun main(args: Array<String>) {
         val logLevel = getLogLevel(args)
         initLogging(logLevel)
 

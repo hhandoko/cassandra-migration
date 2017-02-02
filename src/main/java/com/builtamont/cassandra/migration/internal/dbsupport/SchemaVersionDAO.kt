@@ -23,16 +23,13 @@ import com.builtamont.cassandra.migration.api.MigrationVersion
 import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
 import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
 import com.builtamont.cassandra.migration.internal.util.CachePrepareStatement
-import com.builtamont.cassandra.migration.internal.util.logging.Log
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.datastax.driver.core.*
 import com.datastax.driver.core.exceptions.InvalidQueryException
 import com.datastax.driver.core.querybuilder.QueryBuilder
-import com.datastax.driver.core.querybuilder.Select
-
-import java.util.*
-
 import com.datastax.driver.core.querybuilder.QueryBuilder.eq
+import com.datastax.driver.core.querybuilder.Select
+import java.util.*
 
 /**
  * Schema migrations table Data Access Object.
@@ -46,6 +43,22 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
     private val cachePs: CachePrepareStatement
     private val consistencyLevel: ConsistencyLevel
 
+    // TODO: Break SchemaVersionDAO into service and table-specific mappings.
+    // NOTE: SchemaVersionDAO might be able to be broken down further into service (i.e. logic) and actual data access /
+    //       persistence. Right now it seems to be doing too much.
+    //       Once it is refactored, the query and statements build methods can be kept inside the lazy val bodies rather
+    //       than separate private methods.
+    private val createSchemaMigrationTableStmt: SimpleStatement by lazy { buildCreateSchemaMigrationTableStmt() }
+    private val createSchemaMigrationCounterTableStmt: SimpleStatement by lazy { buildCreateSchemaMigrationCounterTableStmt() }
+    private val countSchemaMigrationTableQuery: Select by lazy { buildCountSchemaMigrationTableQuery() }
+    private val countSchemaMigrationCounterTableQuery: Select by lazy { buildCountSchemaMigrationCounterTableQuery() }
+    private val insertSchemaMigrationTableStmt: PreparedStatement by lazy { buildInsertSchemaMigrationRecordStmt() }
+    private val findAppliedMigrationsQuery: Select by lazy { buildFindAppliedMigrationsQuery() }
+    private val incrementInstalledRankStmt: SimpleStatement by lazy { buildIncrementInstalledRankStmt() }
+    private val findInstalledRankCountColQuery: Select by lazy { buildFindInstalledRankCountColQuery() }
+    private val findVersionRankQuery: Select by lazy { buildFindVersionRankQuery() }
+    private val updateVersionRankStmt: PreparedStatement by lazy { buildUpdateVersionRankStmt() }
+
     init {
         this.cachePs = CachePrepareStatement(session)
 
@@ -58,36 +71,11 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
      * Create schema migration version table if it does not exists.
      */
     fun createTablesIfNotExist() {
-        if (tablesExist()) {
-            return
-        }
+        // GUARD: Skip table creation if already exists
+        if (tablesExist()) return
 
-        var statement: Statement = SimpleStatement(
-                "CREATE TABLE IF NOT EXISTS " + keyspaceConfig.name + "." + tableName + "(" +
-                        "  version_rank int," +
-                        "  installed_rank int," +
-                        "  version text," +
-                        "  description text," +
-                        "  script text," +
-                        "  checksum int," +
-                        "  type text," +
-                        "  installed_by text," +
-                        "  installed_on timestamp," +
-                        "  execution_time int," +
-                        "  success boolean," +
-                        "  PRIMARY KEY (version)" +
-                        ");")
-        statement.consistencyLevel = this.consistencyLevel
-        session.execute(statement)
-
-        statement = SimpleStatement(
-                "CREATE TABLE IF NOT EXISTS " + keyspaceConfig.name + "." + tableName + COUNTS_TABLE_NAME_SUFFIX + " (" +
-                        "  name text," +
-                        "  count counter," +
-                        "  PRIMARY KEY (name)" +
-                        ");")
-        statement.setConsistencyLevel(this.consistencyLevel)
-        session.execute(statement)
+        session.execute(createSchemaMigrationTableStmt)
+        session.execute(createSchemaMigrationCounterTableStmt)
     }
 
     /**
@@ -99,33 +87,8 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
         var schemaVersionTableExists = false
         var schemaVersionCountsTableExists = false
 
-        // ISSUE #17
-        // ~~~~~~
-        // Ref    : https://github.com/builtamont-oss/cassandra-migration/issues/17
-        // Summary:
-        //   Table check query fails following a `DROP TABLE` statement when run against embedded Cassandra and Apache
-        //   Cassandra 3.7 and earlier.
-        // Fix    :
-        //   Use `SELECT *` rather than `SELECT count(*)` as a workaround, less efficient but universal.
-        // Notes  :
-        //   Can be reverted (to use count) once the affected Cassandra version has been superseded by another major
-        //   version (e.g. 4.x).
-        // ~~~~~~
-        val schemaVersionStatement = QueryBuilder
-                .select()
-                //.countAll()
-                .from(keyspaceConfig.name, tableName)
-
-        val schemaVersionCountsStatement = QueryBuilder
-                .select()
-                //.countAll()
-                .from(keyspaceConfig.name, tableName + COUNTS_TABLE_NAME_SUFFIX)
-
-        schemaVersionStatement.consistencyLevel = this.consistencyLevel
-        schemaVersionCountsStatement.consistencyLevel = this.consistencyLevel
-
         try {
-            val resultsSchemaVersion = session.execute(schemaVersionStatement)
+            val resultsSchemaVersion = session.execute(countSchemaMigrationTableQuery)
             if (resultsSchemaVersion.one() != null) {
                 schemaVersionTableExists = true
             }
@@ -134,7 +97,7 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
         }
 
         try {
-            val resultsSchemaVersionCounts = session.execute(schemaVersionCountsStatement)
+            val resultsSchemaVersionCounts = session.execute(countSchemaMigrationCounterTableQuery)
             if (resultsSchemaVersionCounts.one() != null) {
                 schemaVersionCountsTableExists = true
             }
@@ -153,36 +116,13 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
     fun addAppliedMigration(appliedMigration: AppliedMigration) {
         createTablesIfNotExist()
 
-        val version = appliedMigration.version
+        val versionRank = calculateVersionRank(appliedMigration.version!!)
+        val installedRank = calculateInstalledRank()
 
-        val versionRank = calculateVersionRank(version!!)
-        val statement = cachePs.prepare(
-                "INSERT INTO " + keyspaceConfig.name + "." + tableName + "(" +
-                        "  version_rank, installed_rank, version," +
-                        "  description, type, script," +
-                        "  checksum, installed_on, installed_by," +
-                        "  execution_time, success" +
-                        ") VALUES (" +
-                        "  ?, ?, ?," +
-                        "  ?, ?, ?," +
-                        "  ?, dateOf(now()), ?," +
-                        "  ?, ?" +
-                        ");"
-        )
+        val statement = boundInsertSchemaMigrationRecordStmt(versionRank, installedRank, appliedMigration)
 
-        statement.consistencyLevel = this.consistencyLevel
-        session.execute(statement.bind(
-                versionRank,
-                calculateInstalledRank(),
-                version.toString(),
-                appliedMigration.description,
-                appliedMigration.type!!.name,
-                appliedMigration.script,
-                appliedMigration.checksum,
-                appliedMigration.installedBy,
-                appliedMigration.executionTime,
-                appliedMigration.isSuccess
-        ))
+        session.execute(statement)
+
         LOG.debug("Schema version table $tableName successfully updated to reflect changes")
     }
 
@@ -192,42 +132,28 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
      * @return The applied migrations.
      */
     open fun findAppliedMigrations(): List<AppliedMigration> {
-        if (!tablesExist()) {
-            return ArrayList()
-        }
+        // GUARD: Return empty array if tables does not exists
+        if (!tablesExist()) return ArrayList()
 
-        val select = QueryBuilder
-                .select()
-                .column("version_rank")
-                .column("installed_rank")
-                .column("version")
-                .column("description")
-                .column("type")
-                .column("script")
-                .column("checksum")
-                .column("installed_on")
-                .column("installed_by")
-                .column("execution_time")
-                .column("success")
-                .from(keyspaceConfig.name, tableName)
-
-        select.consistencyLevel = this.consistencyLevel
-        val results = session.execute(select)
+        val results = session.execute(findAppliedMigrationsQuery)
+        // TODO: Refactor to idiomatic Kotlin collections method
         val resultsList = ArrayList<AppliedMigration>()
         for (row in results) {
-            resultsList.add(AppliedMigration(
-                    row.getInt("version_rank"),
-                    row.getInt("installed_rank"),
-                    MigrationVersion.fromVersion(row.getString("version")),
-                    row.getString("description"),
-                    MigrationType.valueOf(row.getString("type")),
-                    row.getString("script"),
-                    if (row.isNull("checksum")) null else row.getInt("checksum"),
-                    row.getTimestamp("installed_on"),
-                    row.getString("installed_by"),
-                    row.getInt("execution_time"),
-                    row.getBool("success")
-            ))
+            resultsList.add(
+                    AppliedMigration(
+                            row.getInt("version_rank"),
+                            row.getInt("installed_rank"),
+                            MigrationVersion.fromVersion(row.getString("version")),
+                            row.getString("description"),
+                            MigrationType.valueOf(row.getString("type")),
+                            row.getString("script"),
+                            if (row.isNull("checksum")) null else row.getInt("checksum"),
+                            row.getTimestamp("installed_on"),
+                            row.getString("installed_by"),
+                            row.getInt("execution_time"),
+                            row.getBool("success")
+                    )
+            )
         }
 
         // NOTE: Order by `version_rank` not necessary here, as it eventually gets saved in TreeMap
@@ -242,45 +168,31 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
      * @return The applied migrations.
      */
     open fun findAppliedMigrations(vararg migrationTypes: MigrationType): List<AppliedMigration> {
-        if (!tablesExist()) {
-            return ArrayList()
-        }
+        // GUARD: Return empty array if tables does not exists
+        if (!tablesExist()) return ArrayList()
 
-        val select = QueryBuilder
-                .select()
-                .column("version_rank")
-                .column("installed_rank")
-                .column("version")
-                .column("description")
-                .column("type")
-                .column("script")
-                .column("checksum")
-                .column("installed_on")
-                .column("installed_by")
-                .column("execution_time")
-                .column("success")
-                .from(keyspaceConfig.name, tableName)
-
-        select.consistencyLevel = ConsistencyLevel.ALL
-        val results = session.execute(select)
+        val results = session.execute(findAppliedMigrationsQuery)
+        // TODO: Refactor to idiomatic Kotlin collections method
         val resultsList = ArrayList<AppliedMigration>()
         val migTypeList = Arrays.asList(*migrationTypes)
         for (row in results) {
             val migType = MigrationType.valueOf(row.getString("type"))
             if (migTypeList.contains(migType)) {
-                resultsList.add(AppliedMigration(
-                        row.getInt("version_rank"),
-                        row.getInt("installed_rank"),
-                        MigrationVersion.fromVersion(row.getString("version")),
-                        row.getString("description"),
-                        migType,
-                        row.getString("script"),
-                        row.getInt("checksum"),
-                        row.getTimestamp("installed_on"),
-                        row.getString("installed_by"),
-                        row.getInt("execution_time"),
-                        row.getBool("success")
-                ))
+                resultsList.add(
+                        AppliedMigration(
+                                row.getInt("version_rank"),
+                                row.getInt("installed_rank"),
+                                MigrationVersion.fromVersion(row.getString("version")),
+                                row.getString("description"),
+                                migType,
+                                row.getString("script"),
+                                row.getInt("checksum"),
+                                row.getTimestamp("installed_on"),
+                                row.getString("installed_by"),
+                                row.getInt("execution_time"),
+                                row.getBool("success")
+                        )
+                )
             }
         }
 
@@ -295,11 +207,12 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
      * @return `true` if the keyspace has applied migrations.
      */
     open fun hasAppliedMigrations(): Boolean {
-        if (!tablesExist()) {
-            return false
-        }
+        // GUARD: Mark as no migrations if tables don't exists
+        if (!tablesExist()) return false
 
         createTablesIfNotExist()
+
+        // TODO: Refactor to idiomatic Kotlin collections method
         val filteredMigrations = ArrayList<AppliedMigration>()
         val appliedMigrations = findAppliedMigrations()
         for (appliedMigration in appliedMigrations) {
@@ -307,7 +220,7 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
                 filteredMigrations.add(appliedMigration)
             }
         }
-        return !filteredMigrations.isEmpty()
+        return filteredMigrations.isNotEmpty()
     }
 
     /**
@@ -324,10 +237,10 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
                         baselineDescription,
                         MigrationType.BASELINE,
                         baselineDescription,
-                        0,
-                        user,
-                        0,
-                        true
+                        checksum = 0,
+                        installedBy = user,
+                        executionTime = 0,
+                        success = true
                 )
         )
     }
@@ -349,13 +262,12 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
      * @return `true` if the schema migration version table has a baseline marker.
      */
     open fun hasBaselineMarker(): Boolean {
-        if (!tablesExist()) {
-            return false
-        }
+        // GUARD: Mark as no baseline marker if tables don't exists
+        if (!tablesExist()) return false
 
         createTablesIfNotExist()
 
-        return !findAppliedMigrations(MigrationType.BASELINE).isEmpty()
+        return findAppliedMigrations(MigrationType.BASELINE).isNotEmpty()
     }
 
     /**
@@ -364,21 +276,8 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
      * @return The installed rank.
      */
     private fun calculateInstalledRank(): Int {
-        val statement = SimpleStatement(
-                "UPDATE " + keyspaceConfig.name + "." + tableName + COUNTS_TABLE_NAME_SUFFIX +
-                        " SET count = count + 1" +
-                        " WHERE name = 'installed_rank'" +
-                        ";")
-
-        session.execute(statement)
-
-        val select = QueryBuilder
-                .select("count")
-                .from(keyspaceConfig.name, tableName + COUNTS_TABLE_NAME_SUFFIX)
-        select.where(eq("name", "installed_rank"))
-
-        select.consistencyLevel = this.consistencyLevel
-        val result = session.execute(select)
+        session.execute(incrementInstalledRankStmt)
+        val result = session.execute(findInstalledRankCountColQuery)
 
         return result.one().getLong("count").toInt()
     }
@@ -390,41 +289,34 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
      * @return The rank.
      */
     private fun calculateVersionRank(version: MigrationVersion): Int {
-        val statement = QueryBuilder
-                .select()
-                .column("version")
-                .column("version_rank")
-                .from(keyspaceConfig.name, tableName)
+        val versionRows = session.execute(findVersionRankQuery)
 
-        statement.consistencyLevel = this.consistencyLevel
-        val versionRows = session.execute(statement)
-
+        // TODO: Refactor to idiomatic Kotlin collections method
         val migrationVersions = ArrayList<MigrationVersion>()
         val migrationMetaHolders = HashMap<String, MigrationMetaHolder>()
         for (versionRow in versionRows) {
             migrationVersions.add(MigrationVersion.fromVersion(versionRow.getString("version")))
-            migrationMetaHolders.put(versionRow.getString("version"), MigrationMetaHolder(
-                    versionRow.getInt("version_rank")
-            ))
+            migrationMetaHolders.put(
+                    versionRow.getString("version"),
+                    MigrationMetaHolder(versionRow.getInt("version_rank"))
+            )
         }
 
         Collections.sort(migrationVersions)
 
         val batchStatement = BatchStatement()
-        val preparedStatement = cachePs.prepare(
-                "UPDATE " + keyspaceConfig.name + "." + tableName +
-                        " SET version_rank = ?" +
-                        " WHERE version = ?" +
-                        ";")
 
+        // TODO: Refactor for loop with idiomatic Kotlin collection methods
         for (i in migrationVersions.indices) {
             if (version.compareTo(migrationVersions[i]) < 0) {
                 for (z in i..migrationVersions.size - 1) {
                     val migrationVersionStr = migrationVersions[z].version
-                    batchStatement.add(preparedStatement.bind(
-                            migrationMetaHolders[migrationVersionStr]!!.versionRank + 1,
-                            migrationVersionStr))
-                    batchStatement.consistencyLevel = this.consistencyLevel
+                    batchStatement.add(
+                            boundUpdateVersionRankStmt(
+                                    migrationMetaHolders[migrationVersionStr]!!.versionRank + 1,
+                                    migrationVersionStr
+                            )
+                    )
                 }
                 return i + 1
             }
@@ -435,7 +327,249 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
     }
 
     /**
+     * Schema Migration table CQL statement builder.
+     *
+     * @return Schema Migration table create statement.
+     */
+    private fun buildCreateSchemaMigrationTableStmt(): SimpleStatement {
+        val stmt = SimpleStatement(
+                """
+                 | CREATE TABLE IF NOT EXISTS "${keyspaceConfig.name}"."${tableName}"
+                 | (
+                 |   version_rank   INT,
+                 |   installed_rank INT,
+                 |   version        TEXT,
+                 |   description    TEXT,
+                 |   script         TEXT,
+                 |   checksum       INT,
+                 |   type           TEXT,
+                 |   installed_by   TEXT,
+                 |   installed_on   TIMESTAMP,
+                 |   execution_time INT,
+                 |   success        BOOLEAN,
+                 |   PRIMARY KEY (version)
+                 | );
+                """.trimMargin()
+        )
+        stmt.consistencyLevel = this.consistencyLevel
+        return stmt
+    }
+
+    /**
+     * Schema Migration Counter table CQL statement builder.
+     *
+     * @return Schema Migration Counter table create statement.
+     */
+    private fun buildCreateSchemaMigrationCounterTableStmt(): SimpleStatement {
+        val stmt = SimpleStatement(
+                """
+                 | CREATE TABLE IF NOT EXISTS "${keyspaceConfig.name}"."${tableName}${COUNTS_TABLE_NAME_SUFFIX}"
+                 | (
+                 |   name  TEXT,
+                 |   count COUNTER,
+                 |   PRIMARY KEY (name)
+                 | );
+                """.trimMargin()
+        )
+        stmt.consistencyLevel = this.consistencyLevel
+        return stmt
+    }
+
+    // ISSUE #17
+    // ~~~~~~
+    // Ref    : https://github.com/builtamont-oss/cassandra-migration/issues/17
+    // Summary:
+    //   Table check query fails following a `DROP TABLE` statement when run against embedded Cassandra and Apache
+    //   Cassandra 3.7 and earlier.
+    // Fix    :
+    //   Use `SELECT *` rather than `SELECT count(*)` as a workaround, less efficient but universal.
+    // Notes  :
+    //   Can be reverted (to use count) once the affected Cassandra version has been superseded by another major
+    //   version (e.g. 4.x).
+    // ~~~~~~
+
+    /**
+     * Schema Migration table count / exist CQL query builder.
+     *
+     * @return Schema Migration table count query.
+     */
+    private fun buildCountSchemaMigrationTableQuery(): Select {
+        val query = QueryBuilder
+                .select()
+                //.countAll()
+                .from(keyspaceConfig.name, tableName)
+        query.consistencyLevel = this.consistencyLevel
+        return query
+    }
+
+    /**
+     * Schema Migration Counter table count / exist CQL query builder.
+     *
+     * @return Schema Migration Counter table count query.
+     */
+    private fun buildCountSchemaMigrationCounterTableQuery(): Select {
+        val query = QueryBuilder
+                .select()
+                //.countAll()
+                .from(keyspaceConfig.name, tableName + COUNTS_TABLE_NAME_SUFFIX)
+        query.consistencyLevel = this.consistencyLevel
+        return query
+    }
+
+    /**
+     * Insert Schema Migration record CQL statement builder.
+     *
+     * @return Schema Migration record insert statement.
+     */
+    private fun buildInsertSchemaMigrationRecordStmt(): PreparedStatement {
+        val stmt = this.cachePs.prepare(
+                """
+                 | INSERT INTO "${keyspaceConfig.name}"."${tableName}"
+                 | (
+                 |   version_rank, installed_rank, version,
+                 |   description, type, script,
+                 |   checksum, installed_on, installed_by,
+                 |   execution_time, success
+                 | ) VALUES (
+                 |   ?, ?, ?,
+                 |   ?, ?, ?,
+                 |   ?, dateOf(now()), ?,
+                 |   ?, ?
+                 | );
+                """.trimMargin()
+        )
+        stmt.consistencyLevel = this.consistencyLevel
+        return stmt
+    }
+
+    /**
+     * Bind Schema Migration table insert CQL statement with the given params.
+     *
+     * @param versionRank The current version rank.
+     * @param installedRank The current installed rank.
+     * @param appliedMigration The current applied migration.
+     * @return Bound Schema Migration record insert statement.
+     */
+    private fun boundInsertSchemaMigrationRecordStmt(versionRank: Int, installedRank: Int, appliedMigration: AppliedMigration): BoundStatement {
+        return insertSchemaMigrationTableStmt.bind(
+                versionRank,
+                installedRank,
+                appliedMigration.version.toString(),
+                appliedMigration.description,
+                appliedMigration.type!!.name,
+                appliedMigration.script,
+                appliedMigration.checksum,
+                appliedMigration.installedBy,
+                appliedMigration.executionTime,
+                appliedMigration.isSuccess
+        )
+    }
+
+    /**
+     * Find Schema Migration table applied migrations CQL query.
+     *
+     * @return Schema Migration table applied migrations select query.
+     */
+    private fun buildFindAppliedMigrationsQuery(): Select {
+        val query = QueryBuilder
+                .select()
+                .column("version_rank")
+                .column("installed_rank")
+                .column("version")
+                .column("description")
+                .column("type")
+                .column("script")
+                .column("checksum")
+                .column("installed_on")
+                .column("installed_by")
+                .column("execution_time")
+                .column("success")
+                .from(keyspaceConfig.name, tableName)
+
+        query.consistencyLevel = this.consistencyLevel
+        return query
+    }
+
+    /**
+     * Increment Schema Migration table installed rank CQL statement.
+     *
+     * @return Schema Migration table increment installed rank update statement.
+     */
+    private fun buildIncrementInstalledRankStmt(): SimpleStatement {
+        val stmt = SimpleStatement(
+                """
+                 | UPDATE "${keyspaceConfig.name}"."${tableName}${COUNTS_TABLE_NAME_SUFFIX}"
+                 |    SET count = count + 1
+                 |  WHERE name = 'installed_rank';
+                """.trimMargin()
+        )
+        stmt.consistencyLevel = this.consistencyLevel
+        return stmt
+    }
+
+    /**
+     * Find Schema Migration table installed rank count CQL query.
+     *
+     * @return Schema Migration table installed rank count select query.
+     */
+    private fun buildFindInstalledRankCountColQuery(): Select {
+        val query = QueryBuilder
+                .select("count")
+                .from(keyspaceConfig.name, tableName + COUNTS_TABLE_NAME_SUFFIX)
+        query.where(eq("name", "installed_rank"))
+
+        query.consistencyLevel = this.consistencyLevel
+        return query
+    }
+
+    /**
+     * Find Schema Migration table version rank CQL query.
+     *
+     * @return Schema Migration table version rank select query.
+     */
+    private fun buildFindVersionRankQuery(): Select {
+        val query = QueryBuilder
+                .select()
+                .column("version")
+                .column("version_rank")
+                .from(keyspaceConfig.name, tableName)
+
+        query.consistencyLevel = this.consistencyLevel
+        return query
+    }
+
+    /**
+     * Update Schema Migration table version rank CQL query.
+     *
+     * @return Schema Migration table version rank update query.
+     */
+    private fun buildUpdateVersionRankStmt(): PreparedStatement {
+        val stmt = this.cachePs.prepare(
+                """
+                 | UPDATE "${keyspaceConfig.name}"."${tableName}"
+                 |    SET version_rank = ?
+                 |  WHERE version = ?;
+                """.trimMargin()
+        )
+        stmt.consistencyLevel = this.consistencyLevel
+        return stmt
+    }
+
+    /**
+     * Bind Schema Migration table version update CQL statement with the given params.
+     *
+     * @param versionRank The current version rank.
+     * @param version The current version.
+     * @return Bound Schema Migration version record update statement.
+     */
+    private fun boundUpdateVersionRankStmt(versionRank: Int, version: String?): BoundStatement {
+        return updateVersionRankStmt.bind(versionRank, version)
+    }
+
+    /**
      * Schema migration (transient) metadata.
+     *
+     * @param versionRank The applied migrations version rank.
      */
     internal inner class MigrationMetaHolder(val versionRank: Int)
 

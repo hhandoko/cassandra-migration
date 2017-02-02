@@ -55,11 +55,11 @@ class Baseline(
         }
 
         if (schemaVersionDAO.hasBaselineMarker()) {
-            val isNotBaselineByVersion = !(baselineMigration.version?.equals(baselineVersion) ?: false)
-            val isNotBaselineByDescription = !baselineMigration.description.equals(baselineDescription)
+            val isNotBaselineByVersion = !(baselineMigration?.version?.equals(baselineVersion) ?: false)
+            val isNotBaselineByDescription = !baselineMigration?.description.equals(baselineDescription)
             if (isNotBaselineByVersion || isNotBaselineByDescription) {
                 val msg = "Unable to baseline metadata table ${schemaVersionDAO.tableName} with ($baselineVersion, $baselineDescription)" +
-                        " as it has already been initialized with (${baselineMigration.version}, ${baselineMigration.description})"
+                        " as it has already been initialized with (${baselineMigration?.version}, ${baselineMigration?.description})"
                 throw CassandraMigrationException(msg)
             }
         } else {

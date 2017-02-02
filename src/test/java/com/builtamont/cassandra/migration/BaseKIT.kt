@@ -31,46 +31,51 @@ import org.cassandraunit.utils.EmbeddedCassandraServerHelper
 open class BaseKIT : FreeSpec() {
 
     /** Keyspace name from configuration */
-    val CASSANDRA_KEYSPACE =
-        if (System.getProperty("cassandra.migration.keyspace.name") != null)
+    val CASSANDRA_KEYSPACE: String =
+        if (System.getProperty("cassandra.migration.keyspace.name") != null) {
             System.getProperty("cassandra.migration.keyspace.name")
-        else
+        } else {
             "cassandra_migration_test"
+        }
 
     /** Cluster contact point(s) from configuration */
-    val CASSANDRA_CONTACT_POINT =
-        if (System.getProperty("cassandra.migration.cluster.contactpoints") != null)
+    val CASSANDRA_CONTACT_POINT: String =
+        if (System.getProperty("cassandra.migration.cluster.contactpoints") != null) {
             System.getProperty("cassandra.migration.cluster.contactpoints")
-        else
+        } else {
             "localhost"
+        }
 
     /** Cluster connection port from configuration */
-    val CASSANDRA_PORT =
-        if (System.getProperty("cassandra.migration.cluster.port") != null)
+    val CASSANDRA_PORT: Int =
+        if (System.getProperty("cassandra.migration.cluster.port") != null) {
             Integer.parseInt(System.getProperty("cassandra.migration.cluster.port"))
-        else
+        } else {
             9147
+        }
 
     /** Cluster credentials username */
-    val CASSANDRA_USERNAME =
-        if (System.getProperty("cassandra.migration.cluster.username") != null)
+    val CASSANDRA_USERNAME: String =
+        if (System.getProperty("cassandra.migration.cluster.username") != null) {
             System.getProperty("cassandra.migration.cluster.username")
-        else
+        } else {
             "cassandra"
+        }
 
     /** Cluster credentials password */
-    val CASSANDRA_PASSWORD =
-        if (System.getProperty("cassandra.migration.cluster.password") != null)
+    val CASSANDRA_PASSWORD: String =
+        if (System.getProperty("cassandra.migration.cluster.password") != null) {
             System.getProperty("cassandra.migration.cluster.password")
-        else
+        } else {
             "cassandra"
+        }
 
     /**
      * Flag to disable embedded Cassandra.
      *
      * Used when running integration tests against DSE Community or Apache Cassandra instances.
      */
-    val DISABLE_EMBEDDED =
+    val DISABLE_EMBEDDED: Boolean =
         System.getProperty("cassandra.migration.disable_embedded") != null &&
                 java.lang.Boolean.parseBoolean(System.getProperty("cassandra.migration.disable_embedded"))
 
@@ -154,7 +159,7 @@ open class BaseKIT : FreeSpec() {
      * Get the active connection session.
      */
     protected fun getSession(keyspaceConfig: KeyspaceConfiguration): Session {
-        if (session != null && !session!!.isClosed())
+        if (session != null && !session!!.isClosed)
             return session!!
 
         val username = keyspaceConfig.clusterConfig.username

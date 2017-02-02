@@ -65,11 +65,11 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
                 val shell =
                         """java -jar
                          | -Dcassandra.migration.scripts.locations=filesystem:target/test-classes/migration/integ
-                         | -Dcassandra.migration.cluster.contactpoints=${BaseIT.CASSANDRA_CONTACT_POINT}
-                         | -Dcassandra.migration.cluster.port=${BaseIT.CASSANDRA_PORT}
-                         | -Dcassandra.migration.cluster.username=${BaseIT.CASSANDRA_USERNAME}
-                         | -Dcassandra.migration.cluster.password=${BaseIT.CASSANDRA_PASSWORD}
-                         | -Dcassandra.migration.keyspace.name=${BaseIT.CASSANDRA_KEYSPACE}
+                         | -Dcassandra.migration.cluster.contactpoints=${this.CASSANDRA_CONTACT_POINT}
+                         | -Dcassandra.migration.cluster.port=${this.CASSANDRA_PORT}
+                         | -Dcassandra.migration.cluster.username=${this.CASSANDRA_USERNAME}
+                         | -Dcassandra.migration.cluster.password=${this.CASSANDRA_PASSWORD}
+                         | -Dcassandra.migration.keyspace.name=${this.CASSANDRA_KEYSPACE}
                          | target/*-jar-with-dependencies.jar
                          | migrate
                         """.trimMargin().replace("\n", "").replace("  ", " ")

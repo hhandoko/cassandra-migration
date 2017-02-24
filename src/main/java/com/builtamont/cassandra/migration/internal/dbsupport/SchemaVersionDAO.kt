@@ -64,7 +64,20 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
 
         // If running on a single host, don't force ConsistencyLevel.ALL
         val isClustered = session.cluster.metadata.allHosts.size > 1
-        this.consistencyLevel = if (isClustered) ConsistencyLevel.ALL else ConsistencyLevel.ONE
+
+        val clusterConsistencyLevel = if (isClustered) {
+            ConsistencyLevel.ALL
+        } else {
+            ConsistencyLevel.ONE
+        }
+
+        val noClusterConsistencyLevel = if (keyspaceConfig.consistency != null) {
+            keyspaceConfig.consistency
+        } else {
+            clusterConsistencyLevel
+        }
+
+        this.consistencyLevel = if (isClustered) clusterConsistencyLevel else noClusterConsistencyLevel!!
     }
 
     /**

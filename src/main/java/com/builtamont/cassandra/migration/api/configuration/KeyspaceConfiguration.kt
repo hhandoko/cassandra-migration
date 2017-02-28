@@ -18,6 +18,8 @@
  */
 package com.builtamont.cassandra.migration.api.configuration
 
+import com.datastax.driver.core.ConsistencyLevel
+
 /**
  * Keyspace configuration.
  */
@@ -32,6 +34,9 @@ class KeyspaceConfiguration {
      * Cassandra keyspace name.
      */
     var name: String? = null
+      get set
+
+    var consistency: ConsistencyLevel? = null
       get set
 
     /**

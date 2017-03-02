@@ -30,10 +30,12 @@ import com.datastax.driver.core.Session
  *                          The complete CQL script is not held as a member field here because this would use the total
  *                          size of all CQL migrations files in heap space during db migration.
  * @param encoding The encoding of this CQL migration.
-*/
+ * @param timeout The timout duration of this CQL migration.
+ */
 class CqlMigrationExecutor(
     private val cqlScriptResource: Resource,
-    private val encoding: String
+    private val encoding: String,
+    private val timeout: Int
 ) : MigrationExecutor {
 
     /**
@@ -42,7 +44,7 @@ class CqlMigrationExecutor(
      * @param session The Cassandra session connection to use to execute the migration.
      */
     override fun execute(session: Session) {
-        val cqlScript = CqlScript(cqlScriptResource, encoding)
+        val cqlScript = CqlScript(cqlScriptResource, encoding, timeout)
         cqlScript.execute(session)
     }
 

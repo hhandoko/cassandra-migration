@@ -47,6 +47,11 @@ class CqlScript {
     val resource: Resource?
 
     /**
+     * The CQL script read timeout in milliseconds.
+     */
+    val timeout: Int
+
+    /**
      * Creates a new CQL script from this source.
      *
      * @param cqlScriptSource The cql script as a text block with all placeholders already replaced.
@@ -54,6 +59,7 @@ class CqlScript {
     constructor(cqlScriptSource: String) {
         this.cqlStatements = parse(cqlScriptSource)
         this.resource = null
+        this.timeout = 0
     }
 
     /**
@@ -61,11 +67,13 @@ class CqlScript {
      *
      * @param cqlScriptResource The resource containing the statements.
      * @param encoding The encoding to use.
+     * @param timeout The script read timeout in seconds.
      */
-    constructor(cqlScriptResource: Resource, encoding: String) {
+    constructor(cqlScriptResource: Resource, encoding: String, timeout: Int) {
         val cqlScriptSource = cqlScriptResource.loadAsString(encoding)
         this.cqlStatements = parse(cqlScriptSource)
         this.resource = cqlScriptResource
+        this.timeout = timeout * 1000 // Convert from seconds to milliseconds
     }
 
     /**
@@ -76,7 +84,10 @@ class CqlScript {
     fun execute(session: Session) {
         cqlStatements.forEach {
             LOG.debug("Executing CQL: $it")
-            session.execute(SimpleStatement(it).setReadTimeoutMillis(60000))
+            when {
+                timeout > 0 -> session.execute(SimpleStatement(it).setReadTimeoutMillis(timeout))
+                else        -> session.execute(it)
+            }
         }
     }
 

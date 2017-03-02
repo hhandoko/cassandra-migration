@@ -60,7 +60,8 @@ class CompositeMigrationResolverSpec : FreeSpec() {
                 val resolver = CompositeMigrationResolver(
                         Thread.currentThread().contextClassLoader,
                         Locations("migration/subdir/dir2", "migration.outoforder", "migration/subdir/dir1"),
-                        "UTF-8"
+                        "UTF-8",
+                        timeout = 0
                 )
                 val migrations = resolver.resolveMigrations()
 

@@ -38,9 +38,9 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
             "Locations of the migration scripts in CSV format"
     ),
 
-    TABLE_PREFIX(
-            "cassandra.migration.table.prefix",
-            "Prefix to be prepended to cassandra_migration_version* table names"
+    SCRIPTS_TIMEOUT(
+            "cassandra.migration.scripts.timeout",
+            "CQL scripts timeout in seconds"
     ),
 
     ALLOW_OUT_OF_ORDER(
@@ -48,6 +48,15 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
             "Allow out of order migration"
     ),
 
+    // Table configuration properties
+    // ~~~~~~
+    TABLE_PREFIX(
+            "cassandra.migration.table.prefix",
+            "Prefix to be prepended to cassandra_migration_version* table names"
+    ),
+
+    // Baseline version configuration properties
+    // ~~~~~~
     BASELINE_VERSION(
             "cassandra.migration.baseline.version",
             "Version to apply for an existing schema when baseline is run"

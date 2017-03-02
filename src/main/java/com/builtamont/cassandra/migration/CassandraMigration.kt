@@ -97,6 +97,12 @@ class CassandraMigration : CassandraMigrationConfiguration {
     override var locations = arrayOf("db/migration")
 
     /**
+     * Migration script execution timeout in seconds.
+     * (default: 60)
+     */
+    override var timeout = 60
+
+    /**
      * The prefix to be prepended to `cassandra_migration_version*` table names.
      * (default: "")
      */
@@ -117,23 +123,26 @@ class CassandraMigration : CassandraMigrationConfiguration {
         val targetVersionProp = System.getProperty(ConfigurationProperty.TARGET_VERSION.namespace)
         if (!targetVersionProp.isNullOrBlank()) target = MigrationVersion.fromVersion(targetVersionProp)
 
+        val baselineVersionProp = System.getProperty(ConfigurationProperty.BASELINE_VERSION.namespace)
+        if (!baselineVersionProp.isNullOrBlank()) baselineVersion = MigrationVersion.fromVersion(baselineVersionProp.trim())
+
+        val baselineDescriptionProp = System.getProperty(ConfigurationProperty.BASELINE_DESCRIPTION.namespace)
+        if (!baselineDescriptionProp.isNullOrBlank()) baselineDescription = baselineDescriptionProp.trim()
+
         val encodingProp = System.getProperty(ConfigurationProperty.SCRIPTS_ENCODING.namespace)
         if (!encodingProp.isNullOrBlank()) encoding = encodingProp.trim()
 
         val locationsProp = System.getProperty(ConfigurationProperty.SCRIPTS_LOCATIONS.namespace)
         if (!locationsProp.isNullOrBlank()) locations = StringUtils.tokenizeToStringArray(locationsProp, ",")
 
-        val tablePrefixProp = System.getProperty(ConfigurationProperty.TABLE_PREFIX.namespace)
-        if (!tablePrefixProp.isNullOrBlank()) tablePrefix = tablePrefixProp.trim()
+        val timeoutProp = System.getProperty(ConfigurationProperty.SCRIPTS_TIMEOUT.namespace)
+        if (!timeoutProp.isNullOrBlank() && Regex("""^\d+$""").matches(timeoutProp)) timeout = timeoutProp.toInt()
 
         val allowOutOfOrderProp = System.getProperty(ConfigurationProperty.ALLOW_OUT_OF_ORDER.namespace)
         if (!allowOutOfOrderProp.isNullOrBlank()) allowOutOfOrder = allowOutOfOrderProp.toBoolean()
 
-        val baselineVersionProp = System.getProperty(ConfigurationProperty.BASELINE_VERSION.namespace)
-        if (!baselineVersionProp.isNullOrBlank()) baselineVersion = MigrationVersion.fromVersion(baselineVersionProp.trim())
-
-        val baselineDescriptionProp = System.getProperty(ConfigurationProperty.BASELINE_DESCRIPTION.namespace)
-        if (!baselineDescriptionProp.isNullOrBlank()) baselineDescription = baselineDescriptionProp.trim()
+        val tablePrefixProp = System.getProperty(ConfigurationProperty.TABLE_PREFIX.namespace)
+        if (!tablePrefixProp.isNullOrBlank()) tablePrefix = tablePrefixProp.trim()
     }
 
     /**
@@ -375,7 +384,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @return A new, fully configured, MigrationResolver instance.
      */
     private fun createMigrationResolver(): MigrationResolver {
-        return CompositeMigrationResolver(classLoader, Locations(*locations), encoding)
+        return CompositeMigrationResolver(classLoader, Locations(*locations), encoding, timeout)
     }
 
     private fun migrationTableName(): String{

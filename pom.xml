@@ -4,7 +4,7 @@
     <groupId>com.builtamont</groupId>
     <artifactId>cassandra-migration</artifactId>
     <name>Cassandra Migration</name>
-    <version>0.10.2-SNAPSHOT</version>
+    <version>0.11-SNAPSHOT</version>
     <description>
         Database migration tool for Cassandra
     </description>

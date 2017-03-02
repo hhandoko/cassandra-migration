@@ -112,6 +112,11 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
     KEYSPACE_NAME(
             "cassandra.migration.keyspace.name",
             "Name of Cassandra keyspace"
+    ),
+
+    CONSISTENCY_LEVEL(
+            "cassandra.migration.keyspace.consistency",
+            "Keyspace write consistency levels for migrations schema tracking"
     )
 
 }

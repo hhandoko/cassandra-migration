@@ -106,6 +106,7 @@ String[] scriptsLocations = {"migration/cassandra"};
 
 KeyspaceConfiguration keyspaceConfig = new KeyspaceConfiguration();
 keyspaceConfig.setName(CASSANDRA_KEYSPACE);
+keyspaceConfig.setConsistency(ConsistencyLevel.QUORUM);
 keyspaceConfig.getClusterConfig().setContactpoints(CASSANDRA_CONTACT_POINT);
 keyspaceConfig.getClusterConfig().setPort(CASSANDRA_PORT);
 keyspaceConfig.getClusterConfig().setUsername(CASSANDRA_USERNAME);
@@ -129,6 +130,7 @@ java -jar \
 -Dcassandra.migration.cluster.username=cassandra \
 -Dcassandra.migration.cluster.password=cassandra \
 -Dcassandra.migration.keyspace.name=cassandra_migration_test \
+-Dcassandra.migration.keyspace.consistency=QUORUM \
 target/*-jar-with-dependencies.jar migrate
 ```
 
@@ -142,31 +144,32 @@ Logging level can be set by passing the following arguments:
 Options can be set either programmatically with API or via Java VM options.
 
 Migration:
- * `cassandra.migration.scripts.locations`: Locations of the migration scripts in CSV format. Scripts are scanned in the specified folder recursively. (default=db/migration)
- * `cassandra.migration.scripts.encoding`: The encoding of CQL scripts (default=UTF-8)
- * `cassandra.migration.scripts.allowoutoforder`: Allow out of order migration (default=false)
- * `cassandra.migration.version.target`: The target version. Migrations with a higher version number will be ignored. (default=latest)
+ * `cassandra.migration.scripts.locations`: Locations of the migration scripts in CSV format. Scripts are scanned in the specified folder recursively. (default=`db/migration`)
+ * `cassandra.migration.scripts.encoding`: The encoding of CQL scripts. (default=`UTF-8`)
+ * `cassandra.migration.scripts.allowoutoforder`: Allow out of order migration. (default=`false`)
+ * `cassandra.migration.version.target`: The target version. Migrations with a higher version number will be ignored. (default=`latest`)
  * `cassandra.migration.table.prefix`: The prefix to be prepended to `cassandra_migration_version*` table names.
  * `cassandra.migration.baseline.version`: The version to apply for an existing schema when baseline is run.
- * `cassandra.migration.baseline.description`: The description to apply for an existing schema when baseline is run
+ * `cassandra.migration.baseline.description`: The description to apply for an existing schema when baseline is run.
 
 Cluster:
- * `cassandra.migration.cluster.contactpoints`: Comma separated values of node IP addresses (default=localhost)
- * `cassandra.migration.cluster.port`: CQL native transport port (default=9042)
- * `cassandra.migration.cluster.username`: Username for password authenticator (optional)
- * `cassandra.migration.cluster.password`: Password for password authenticator (optional)
- * `cassandra.migration.cluster.truststore`: Path to truststore.jar for cassandra client SSL (optional)
- * `cassandra.migration.cluster.truststore_password`: Password for truststore.jar (optional)
- * `cassandra.migration.cluster.keystore`: Path to keystore.jar for cassandra client SSL with certificate authentication (optional)
- * `cassandra.migration.cluster.keystore_password`: Password for keystore.jar (optional)
+ * `cassandra.migration.cluster.contactpoints`: Comma separated values of node IP addresses. (default=`localhost`)
+ * `cassandra.migration.cluster.port`: CQL native transport port. (default=`9042`)
+ * `cassandra.migration.cluster.username`: Username for password authenticator. (optional)
+ * `cassandra.migration.cluster.password`: Password for password authenticator. (optional)
+ * `cassandra.migration.cluster.truststore`: Path to `truststore.jar` for Cassandra client SSL. (optional)
+ * `cassandra.migration.cluster.truststore_password`: Password for `truststore.jar`. (optional)
+ * `cassandra.migration.cluster.keystore`: Path to keystore.jar for Cassandra client SSL with certificate authentication. (optional)
+ * `cassandra.migration.cluster.keystore_password`: Password for `keystore.jar`. (optional)
 
 Keyspace:
- * `cassandra.migration.keyspace.name`: Name of Cassandra keyspace (required)
+ * `cassandra.migration.keyspace.name`: Name of Cassandra keyspace. (required)
+ * `cassandra.migration.keyspace.consistency`: Keyspace write consistency levels for migrations schema tracking. (optional)
 
 ### Cluster Coordination
 
- * Schema version tracking statements use `ConsistencyLevel.ALL`
- * Users should manage their own consistency level in the migration scripts
+ * Schema version tracking statements use `ConsistencyLevel.ALL` for clustered hosts, otherwise `ConsistencyLevel.ONE` for single host.
+ * Users should manage their own consistency level in the migration scripts.
 
 ### Limitations
 

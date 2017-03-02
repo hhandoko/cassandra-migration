@@ -21,6 +21,7 @@ package com.builtamont.cassandra.migration.config
 import com.builtamont.cassandra.migration.api.configuration.ClusterConfiguration
 import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty
 import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
+import com.datastax.driver.core.ConsistencyLevel
 import io.kotlintest.matchers.be
 import io.kotlintest.specs.FreeSpec
 import java.util.*
@@ -37,6 +38,7 @@ class KeyspaceConfigurationSpec : FreeSpec() {
      */
     fun clearTestProperties() {
         System.clearProperty(ConfigurationProperty.KEYSPACE_NAME.namespace)
+        System.clearProperty(ConfigurationProperty.CONSISTENCY_LEVEL.namespace)
     }
 
     override fun beforeEach() {
@@ -60,6 +62,10 @@ class KeyspaceConfigurationSpec : FreeSpec() {
                     keyspaceConfig.name shouldBe null
                 }
 
+                "should have no consistency level as the default" {
+                    keyspaceConfig.consistency shouldBe null
+                }
+
                 "should have default cluster object" {
                     keyspaceConfig.clusterConfig should be a ClusterConfiguration::class
                 }
@@ -71,6 +77,11 @@ class KeyspaceConfigurationSpec : FreeSpec() {
                 "should allow keyspace name override" {
                     System.setProperty(ConfigurationProperty.KEYSPACE_NAME.namespace, "myspace")
                     KeyspaceConfiguration().name shouldBe "myspace"
+                }
+
+                "should allow consistency level override" {
+                    System.setProperty(ConfigurationProperty.CONSISTENCY_LEVEL.namespace, "QUORUM")
+                    KeyspaceConfiguration().consistency shouldBe ConsistencyLevel.QUORUM
                 }
 
             }

@@ -28,7 +28,7 @@ class KeyspaceConfiguration {
     /**
      * Cluster configuration.
      */
-    lateinit var clusterConfig: ClusterConfiguration
+    var clusterConfig: ClusterConfiguration = ClusterConfiguration()
 
     /**
      * Cassandra keyspace name.
@@ -36,6 +36,9 @@ class KeyspaceConfiguration {
     var name: String? = null
       get set
 
+    /**
+     * Keyspace consistency level.
+     */
     var consistency: ConsistencyLevel? = null
       get set
 
@@ -43,10 +46,11 @@ class KeyspaceConfiguration {
      * KeyspaceConfiguration initialization.
      */
     init {
-        clusterConfig = ClusterConfiguration()
-
         val keyspaceProp = System.getProperty(ConfigurationProperty.KEYSPACE_NAME.namespace)
         if (!keyspaceProp.isNullOrBlank()) this.name = keyspaceProp.trim()
+
+        val consistencyProp = System.getProperty(ConfigurationProperty.CONSISTENCY_LEVEL.namespace)
+        if (!consistencyProp.isNullOrBlank()) this.consistency = ConsistencyLevel.valueOf(consistencyProp.trim().toUpperCase())
     }
 
 }

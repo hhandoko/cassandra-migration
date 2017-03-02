@@ -98,9 +98,11 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
             }
 
             "should run successfully provided HOCON configuration file" {
+                // NOTE: Workaround for Travis CI, config file location as passed-in args
+                val file = System.getProperty("config.file") ?: "src/test/resources/application.test.conf"
                 val shell =
                         """java -jar
-                         | -Dconfig.file=src/test/resources/application.test.conf
+                         | -Dconfig.file=${file}
                          | target/*-jar-with-dependencies.jar
                          | migrate
                         """.trimMargin().replace("\n", "").replace("  ", " ")

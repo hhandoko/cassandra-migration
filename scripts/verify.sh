@@ -18,4 +18,5 @@
 #   limitations under the License.
 ###
 
-mvn verify -Dcassandra.migration.cluster.contactpoints=127.0.0.1 -Dcassandra.migration.cluster.port=9042 -Dcassandra.migration.disable_embedded=true
+mvn verify -Dconfig.file=src/test/resources/application.it-test.conf
+

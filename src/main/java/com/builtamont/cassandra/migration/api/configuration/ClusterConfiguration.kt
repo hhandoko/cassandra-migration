@@ -21,6 +21,8 @@ package com.builtamont.cassandra.migration.api.configuration
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import com.builtamont.cassandra.migration.internal.util.StringUtils
+import com.typesafe.config.ConfigFactory
+import io.github.config4k.extract
 
 /**
  * Cluster configuration.
@@ -81,29 +83,40 @@ class ClusterConfiguration {
      * ClusterConfiguration initialization.
      */
     init {
-        val contactpointsProp = System.getProperty(ConfigurationProperty.CONTACT_POINTS.namespace)
-        if (!contactpointsProp.isNullOrBlank()) this.contactpoints = StringUtils.tokenizeToStringArray(contactpointsProp, ",")
+        ConfigFactory.invalidateCaches()
+        ConfigFactory.load().let {
+            it.extract<String?>(ConfigurationProperty.CONTACT_POINTS.namespace)?.let {
+                this.contactpoints = StringUtils.tokenizeToStringArray(it, ",")
+            }
 
-        val portProp = System.getProperty(ConfigurationProperty.PORT.namespace)
-        if (!portProp.isNullOrBlank()) this.port = Integer.parseInt(portProp)
+            it.extract<Int?>(ConfigurationProperty.PORT.namespace)?.let {
+                this.port = it
+            }
 
-        val usernameProp = System.getProperty(ConfigurationProperty.USERNAME.namespace)
-        if (!usernameProp.isNullOrBlank()) this.username = usernameProp.trim()
+            it.extract<String?>(ConfigurationProperty.USERNAME.namespace)?.let {
+                this.username = it.trim()
+            }
 
-        val passwordProp = System.getProperty(ConfigurationProperty.PASSWORD.namespace)
-        if (!passwordProp.isNullOrBlank()) this.password = passwordProp.trim()
+            it.extract<String?>(ConfigurationProperty.PASSWORD.namespace)?.let {
+                this.password = it.trim()
+            }
 
-        val truststoreProp = System.getProperty(ConfigurationProperty.TRUSTSTORE.namespace)
-        if (!truststoreProp.isNullOrBlank()) this.truststore = Paths.get(truststoreProp.trim())
+            it.extract<String?>(ConfigurationProperty.TRUSTSTORE.namespace)?.let {
+                this.truststore = Paths.get(it.trim())
+            }
 
-        val truststorePasswordProp = System.getProperty(ConfigurationProperty.TRUSTSTORE_PASSWORD.namespace)
-        if (!truststorePasswordProp.isNullOrBlank()) this.truststorePassword = truststorePasswordProp.trim()
+            it.extract<String?>(ConfigurationProperty.TRUSTSTORE_PASSWORD.namespace)?.let {
+                this.truststorePassword = it.trim()
+            }
 
-        val keystoreProp = System.getProperty(ConfigurationProperty.KEYSTORE.namespace)
-        if (!keystoreProp.isNullOrBlank()) this.keystore = Paths.get(keystoreProp.trim())
+            it.extract<String?>(ConfigurationProperty.KEYSTORE.namespace)?.let {
+                this.keystore = Paths.get(it.trim())
+            }
 
-        val keystorePasswordProp = System.getProperty(ConfigurationProperty.KEYSTORE_PASSWORD.namespace)
-        if (!keystorePasswordProp.isNullOrBlank()) this.keystorePassword = keystorePasswordProp.trim()
+            it.extract<String?>(ConfigurationProperty.KEYSTORE_PASSWORD.namespace)?.let {
+                this.keystorePassword = it.trim()
+            }
+        }
     }
 
 }

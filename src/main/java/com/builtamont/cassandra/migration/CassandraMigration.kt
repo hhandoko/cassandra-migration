@@ -42,6 +42,8 @@ import com.datastax.driver.core.NettySSLOptions
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy
 import com.datastax.driver.core.policies.TokenAwarePolicy
+import com.typesafe.config.ConfigFactory
+import io.github.config4k.extract
 import io.netty.handler.ssl.SslContextBuilder
 import io.netty.handler.ssl.SslProvider
 import java.io.FileInputStream
@@ -58,7 +60,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
     /**
      * The Cassandra keyspace configuration.
      */
-    lateinit var keyspaceConfig: KeyspaceConfiguration
+    var keyspaceConfig: KeyspaceConfiguration
 
     /**
      * The ClassLoader to use for resolving migrations on the classpath.
@@ -120,29 +122,40 @@ class CassandraMigration : CassandraMigrationConfiguration {
     init {
         this.keyspaceConfig = KeyspaceConfiguration()
 
-        val targetVersionProp = System.getProperty(ConfigurationProperty.TARGET_VERSION.namespace)
-        if (!targetVersionProp.isNullOrBlank()) target = MigrationVersion.fromVersion(targetVersionProp)
+        ConfigFactory.invalidateCaches()
+        ConfigFactory.load().let {
+            it.extract<String?>(ConfigurationProperty.TARGET_VERSION.namespace)?.let {
+                this.target = MigrationVersion.fromVersion(it.trim().toUpperCase())
+            }
 
-        val baselineVersionProp = System.getProperty(ConfigurationProperty.BASELINE_VERSION.namespace)
-        if (!baselineVersionProp.isNullOrBlank()) baselineVersion = MigrationVersion.fromVersion(baselineVersionProp.trim())
+            it.extract<String?>(ConfigurationProperty.BASELINE_VERSION.namespace)?.let {
+                this.baselineVersion = MigrationVersion.fromVersion(it.trim().toUpperCase())
+            }
 
-        val baselineDescriptionProp = System.getProperty(ConfigurationProperty.BASELINE_DESCRIPTION.namespace)
-        if (!baselineDescriptionProp.isNullOrBlank()) baselineDescription = baselineDescriptionProp.trim()
+            it.extract<String?>(ConfigurationProperty.BASELINE_DESCRIPTION.namespace)?.let {
+                this.baselineDescription = it.trim()
+            }
 
-        val encodingProp = System.getProperty(ConfigurationProperty.SCRIPTS_ENCODING.namespace)
-        if (!encodingProp.isNullOrBlank()) encoding = encodingProp.trim()
+            it.extract<String?>(ConfigurationProperty.SCRIPTS_ENCODING.namespace)?.let {
+                this.encoding = it.trim()
+            }
 
-        val locationsProp = System.getProperty(ConfigurationProperty.SCRIPTS_LOCATIONS.namespace)
-        if (!locationsProp.isNullOrBlank()) locations = StringUtils.tokenizeToStringArray(locationsProp, ",")
+            it.extract<String?>(ConfigurationProperty.SCRIPTS_LOCATIONS.namespace)?.let {
+                this.locations = StringUtils.tokenizeToStringArray(it, ",")
+            }
 
-        val timeoutProp = System.getProperty(ConfigurationProperty.SCRIPTS_TIMEOUT.namespace)
-        if (!timeoutProp.isNullOrBlank() && Regex("""^\d+$""").matches(timeoutProp)) timeout = timeoutProp.toInt()
+            it.extract<Int?>(ConfigurationProperty.SCRIPTS_TIMEOUT.namespace)?.let {
+                this.timeout = it
+            }
 
-        val allowOutOfOrderProp = System.getProperty(ConfigurationProperty.ALLOW_OUT_OF_ORDER.namespace)
-        if (!allowOutOfOrderProp.isNullOrBlank()) allowOutOfOrder = allowOutOfOrderProp.toBoolean()
+            it.extract<Boolean?>(ConfigurationProperty.ALLOW_OUT_OF_ORDER.namespace)?.let {
+                this.allowOutOfOrder = it
+            }
 
-        val tablePrefixProp = System.getProperty(ConfigurationProperty.TABLE_PREFIX.namespace)
-        if (!tablePrefixProp.isNullOrBlank()) tablePrefix = tablePrefixProp.trim()
+            it.extract<String?>(ConfigurationProperty.TABLE_PREFIX.namespace)?.let {
+                this.tablePrefix = it.trim()
+            }
+        }
     }
 
     /**

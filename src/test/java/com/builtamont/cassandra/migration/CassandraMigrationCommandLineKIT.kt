@@ -27,8 +27,13 @@ import java.io.InputStreamReader
  */
 class CassandraMigrationCommandLineKIT : BaseKIT() {
 
-    internal var runCmdTestCompleted = false
-    internal var runCmdTestSuccess = false
+    // Flags for command-line with system properties JVM args
+    internal var testWithArgsCompleted = false
+    internal var testWithArgsSuccess = false
+
+    // Flags for command-line with HOCON config file
+    internal var testWithConfCompleted = false
+    internal var testWithConfSuccess = false
 
     init {
 
@@ -37,20 +42,20 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
             /**
              * Watch the process.
              */
-            fun watch(process: Process) {
+            fun watch(process: Process, success: () -> Unit, completed: () -> Unit) {
                 Thread(Runnable {
                     val input = BufferedReader(InputStreamReader(process.inputStream))
                     try {
                         input.forEachLine {
                             if (it.contains("Successfully applied 4 migration(s)"))
-                                runCmdTestSuccess = true
+                                success()
                             println(it)
                         }
                     } catch (e: IOException) {
                         e.printStackTrace()
                     }
 
-                    runCmdTestCompleted = true
+                    completed()
                 }).start()
             }
 
@@ -61,7 +66,7 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
                 return System.getProperty("os.name").toLowerCase().contains("win")
             }
 
-            "should run successfully" {
+            "should run successfully provided system properties arguments" {
                 val shell =
                         """java -jar
                          | -Dcassandra.migration.scripts.locations=filesystem:target/test-classes/migration/integ
@@ -74,6 +79,7 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
                          | migrate
                         """.trimMargin().replace("\n", "").replace("  ", " ")
                 println(shell)
+
                 val builder: ProcessBuilder
                 if (isWindows()) {
                     throw IllegalStateException()
@@ -83,12 +89,38 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
                 builder.redirectErrorStream(true)
                 val process = builder.start()
 
-                watch(process)
+                watch(process, { testWithArgsSuccess = true }, { testWithArgsCompleted = true })
 
-                while (!runCmdTestCompleted)
+                while (!testWithArgsCompleted)
                     Thread.sleep(1000L)
 
-                runCmdTestSuccess shouldBe true
+                testWithArgsSuccess shouldBe true
+            }
+
+            "should run successfully provided HOCON configuration file" {
+                val shell =
+                        """java -jar
+                         | -Dconfig.file=src/test/resources/application.test.conf
+                         | target/*-jar-with-dependencies.jar
+                         | migrate
+                        """.trimMargin().replace("\n", "").replace("  ", " ")
+                println(shell)
+
+                val builder: ProcessBuilder
+                if (isWindows()) {
+                    throw IllegalStateException()
+                } else {
+                    builder = ProcessBuilder("bash", "-c", shell)
+                }
+                builder.redirectErrorStream(true)
+                val process = builder.start()
+
+                watch(process, { testWithConfSuccess = true }, { testWithConfCompleted = true })
+
+                while (!testWithConfCompleted)
+                    Thread.sleep(1000L)
+
+                testWithConfSuccess shouldBe true
             }
 
         }

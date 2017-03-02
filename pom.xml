@@ -64,6 +64,13 @@
         <maven.compiler.target>1.7</maven.compiler.target>
     </properties>
 
+    <repositories>
+        <repository>
+            <id>jcenter</id>
+            <url>https://jcenter.bintray.com/</url>
+        </repository>
+    </repositories>
+
     <dependencies>
         <dependency>
             <groupId>org.jetbrains.kotlin</groupId>
@@ -92,6 +99,16 @@
             <groupId>com.datastax.cassandra</groupId>
             <artifactId>cassandra-driver-core</artifactId>
             <version>3.0.6</version>
+        </dependency>
+        <dependency>
+            <groupId>com.typesafe</groupId>
+            <artifactId>config</artifactId>
+            <version>1.2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>io.github.config4k</groupId>
+            <artifactId>config4k</artifactId>
+            <version>0.3.0</version>
         </dependency>
 
         <!-- Test-specific dependencies -->
@@ -263,6 +280,7 @@
             </plugin>
         </plugins>
     </build>
+
     <profiles>
         <profile>
             <id>release</id>

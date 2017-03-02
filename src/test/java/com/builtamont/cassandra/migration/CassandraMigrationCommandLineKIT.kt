@@ -98,8 +98,10 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
             }
 
             "should run successfully provided HOCON configuration file" {
-                // NOTE: Workaround for Travis CI, config file location as passed-in args
-                val file = System.getProperty("config.file") ?: "src/test/resources/application.test.conf"
+                // NOTE: Workaround for Travis CI, config file location as passed-in args:
+                //       - Typical `mvn test` / `mvn integration-test` / `mvn verify` will use `appliation.test.conf` config
+                //       - In Travis CI, it will use `application.it-test.conf` for this test only
+                val file = System.getProperty("it.config.file") ?: "src/test/resources/application.test.conf"
                 val shell =
                         """java -jar
                          | -Dconfig.file=${file}

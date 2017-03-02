@@ -18,5 +18,5 @@
 #   limitations under the License.
 ###
 
-mvn verify -Dconfig.file=src/test/resources/application.it-test.conf
+mvn verify -Dit.config.file=src/test/resources/application.it-test.conf
 

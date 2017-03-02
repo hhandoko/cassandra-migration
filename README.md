@@ -44,7 +44,7 @@ Import this library as a dependency:
 </repositories>
 ```
 
-***NOTE:** A Vagrant script is provided to enable quick integration testing against different or older Cassandra distributions.* 
+*NOTE: A Vagrant script is provided to enable quick integration testing against different or older Cassandra distributions.* 
 
 ### Migration version table
 
@@ -121,6 +121,13 @@ cm.migrate();
 
 #### Command line
 
+Logging level can be set by passing the following arguments:
+ * INFO: This is the default
+ * DEBUG: `-X`
+ * WARNING: `-q`
+ 
+##### With system properties JVM args
+
 ``` shell
 java -jar \
 -Dcassandra.migration.scripts.locations=filesystem:target/test-classes/migration/integ \
@@ -134,14 +141,18 @@ java -jar \
 target/*-jar-with-dependencies.jar migrate
 ```
 
-Logging level can be set by passing the following arguments:
- * INFO: This is the default
- * DEBUG: `-X`
- * WARNING: `-q`
+##### With application configuration file
+
+``` shell
+java -jar \
+-Dconfig.file=src/test/application.test.conf \
+target/*-jar-with-dependencies.jar migrate
+```
 
 ### VM Options
 
-Options can be set either programmatically with API or via Java VM options.
+Options can be set either programmatically with API, Java VM options, or configuration file.
+Refer to [Typesafe Config] library documentation or refer to [reference.conf] for a reference configuration.
 
 Migration:
  * `cassandra.migration.scripts.locations`: Locations of the migration scripts in CSV format. Scripts are scanned in the specified folder recursively. (default=`db/migration`)
@@ -200,7 +211,7 @@ Run `mvn test` to run the unit tests.
 
 Run `mvn verify` to run the integration tests.
 
-***NOTE:** The integration test might complain about some missing SIGAR binaries, this can be safely ignored. If you wish, you can download the missing binaries and set `java.library.path` parameter to point to the containing folder (e.g. `mvn verify -Djava.library.path=lib` where `lib` is the `/lib` folder relative to the project root).*
+*NOTE: The integration test might complain about some missing SIGAR binaries, this can be safely ignored. If you wish, you can download the missing binaries and set `java.library.path` parameter to point to the containing folder (e.g. `mvn verify -Djava.library.path=lib` where `lib` is the `/lib` folder relative to the project root).*
 
 ### Travis CI Integration Test Matrix
 
@@ -251,4 +262,6 @@ https://github.com/builtamont/cassandra-migration/releases
 [Flyway's project license page]: https://github.com/flyway/flyway/blob/master/LICENSE
 [fork-and-pull]: https://help.github.com/articles/using-pull-requests
 [LICENSE]: LICENSE
+[reference.conf]: https://github.com/builtamont-oss/cassandra-migration/blob/master/src/main/resources/reference.conf
 [SIGAR]: https://support.hyperic.com/display/SIGAR/Home
+[Typesafe Config]: https://github.com/typesafehub/config

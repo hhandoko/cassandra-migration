@@ -39,7 +39,8 @@ class CqlMigrationResolverSpec : FreeSpec() {
         return CqlMigrationResolver(
                 Thread.currentThread().contextClassLoader,
                 Location(location),
-                "UTF-8"
+                "UTF-8",
+                timeout = 0
         )
     }
 

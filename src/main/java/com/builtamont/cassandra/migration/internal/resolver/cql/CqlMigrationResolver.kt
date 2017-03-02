@@ -40,11 +40,13 @@ import java.util.zip.CRC32
  * @param classLoader The ClassLoader for loading migrations on the classpath.
  * @param location The location on the classpath where the migrations are located.
  * @param encoding The encoding of the .cql file.
+ * @param timeout The read script timeout duration in seconds.
  */
 class CqlMigrationResolver(
     classLoader: ClassLoader,
     private val location: Location,
-    private val encoding: String
+    private val encoding: String,
+    private val timeout: Int
 ) : MigrationResolver {
 
     /** The scanner to use. */
@@ -68,7 +70,7 @@ class CqlMigrationResolver(
         return resources.map { resource ->
             val resolvedMigration = extractMigrationInfo(resource)
             resolvedMigration.physicalLocation = resource.locationOnDisk
-            resolvedMigration.executor = CqlMigrationExecutor(resource, encoding)
+            resolvedMigration.executor = CqlMigrationExecutor(resource, encoding, timeout)
             resolvedMigration
         }.sortedWith(ResolvedMigrationComparator())
     }

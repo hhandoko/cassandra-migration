@@ -146,6 +146,7 @@ Options can be set either programmatically with API or via Java VM options.
 Migration:
  * `cassandra.migration.scripts.locations`: Locations of the migration scripts in CSV format. Scripts are scanned in the specified folder recursively. (default=`db/migration`)
  * `cassandra.migration.scripts.encoding`: The encoding of CQL scripts. (default=`UTF-8`)
+ * `cassandra.migration.scripts.timeout`: The read script timeout duration in seconds for CQL migrations. (default=`60`)
  * `cassandra.migration.scripts.allowoutoforder`: Allow out of order migration. (default=`false`)
  * `cassandra.migration.version.target`: The target version. Migrations with a higher version number will be ignored. (default=`latest`)
  * `cassandra.migration.table.prefix`: The prefix to be prepended to `cassandra_migration_version*` table names.

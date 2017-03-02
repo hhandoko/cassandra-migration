@@ -23,6 +23,7 @@ import com.builtamont.cassandra.migration.internal.util.StringUtils
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.builtamont.cassandra.migration.internal.util.scanner.Resource
 import com.datastax.driver.core.Session
+import com.datastax.driver.core.SimpleStatement
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.Reader
@@ -75,7 +76,7 @@ class CqlScript {
     fun execute(session: Session) {
         cqlStatements.forEach {
             LOG.debug("Executing CQL: $it")
-            session.execute(it)
+            session.execute(SimpleStatement(it).setReadTimeoutMillis(60000))
         }
     }
 

@@ -22,6 +22,8 @@ matrix:
     script: "./scripts/verify.sh"
   - jdk: oraclejdk8
     script: "./scripts/verify-embedded.sh"
+after_success:
+  - mvn clean test jacoco:report coveralls:report
 deploy:
   provider: script
   script: "./scripts/deploy.sh"

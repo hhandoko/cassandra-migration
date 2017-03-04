@@ -221,9 +221,17 @@ class MigrationVersion : Comparable<MigrationVersion?> {
                 return "current".equals(version, ignoreCase = true)
             }
 
+            /**
+             * @return {@code true} if version is "LATEST".
+             */
+            fun isLatest(): Boolean {
+                return "latest".equals(version, ignoreCase = true)
+            }
+
             return when {
                 version == null           -> EMPTY
                 isCurrent()               -> CURRENT
+                isLatest()                -> LATEST
                 LATEST.version == version -> LATEST
                 else                      -> MigrationVersion(version)
             }

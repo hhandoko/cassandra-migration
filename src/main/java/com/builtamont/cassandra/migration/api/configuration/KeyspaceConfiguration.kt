@@ -19,6 +19,8 @@
 package com.builtamont.cassandra.migration.api.configuration
 
 import com.datastax.driver.core.ConsistencyLevel
+import com.typesafe.config.ConfigFactory
+import io.github.config4k.extract
 
 /**
  * Keyspace configuration.
@@ -46,11 +48,16 @@ class KeyspaceConfiguration {
      * KeyspaceConfiguration initialization.
      */
     init {
-        val keyspaceProp = System.getProperty(ConfigurationProperty.KEYSPACE_NAME.namespace)
-        if (!keyspaceProp.isNullOrBlank()) this.name = keyspaceProp.trim()
+        ConfigFactory.invalidateCaches()
+        ConfigFactory.load().let {
+            it.extract<String?>(ConfigurationProperty.KEYSPACE_NAME.namespace)?.let {
+                this.name = it.trim()
+            }
 
-        val consistencyProp = System.getProperty(ConfigurationProperty.CONSISTENCY_LEVEL.namespace)
-        if (!consistencyProp.isNullOrBlank()) this.consistency = ConsistencyLevel.valueOf(consistencyProp.trim().toUpperCase())
+            it.extract<String?>(ConfigurationProperty.CONSISTENCY_LEVEL.namespace)?.let {
+                this.consistency = ConsistencyLevel.valueOf(it.trim().toUpperCase())
+            }
+        }
     }
 
 }

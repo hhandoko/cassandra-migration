@@ -2,7 +2,7 @@
  * File     : BaselineKIT.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -47,7 +47,22 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
+                    }
+
+                    "for session and keyspace, version and description setup via configuration" {
+                        val scriptsLocations = arrayOf("migration/integ", "migration/integ/java")
+                        val cm = CassandraMigration()
+                        cm.locations = scriptsLocations
+                        cm.keyspaceConfig = getKeyspace()
+                        cm.baselineVersion = MigrationVersion.fromVersion("0.0.1")
+                        cm.baselineDescription = "Baseline test"
+                        cm.baseline()
+
+                        val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.CURRENT.table)
+                        val baselineMarker = schemaVersionDAO.baselineMarker
+
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("0.0.1")
                     }
 
                     "for external session, but keyspace setup via configuration" {
@@ -61,7 +76,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                     "for external session and defaulted keyspace" {
@@ -74,7 +89,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                 }
@@ -92,7 +107,23 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), cm.tablePrefix + MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
+                    }
+
+                    "for session and keyspace, version and description setup via configuration" {
+                        val scriptsLocations = arrayOf("migration/integ", "migration/integ/java")
+                        val cm = CassandraMigration()
+                        cm.locations = scriptsLocations
+                        cm.keyspaceConfig = getKeyspace()
+                        cm.tablePrefix = "test1_"
+                        cm.baselineVersion = MigrationVersion.fromVersion("0.0.1")
+                        cm.baselineDescription = "Baseline test"
+                        cm.baseline()
+
+                        val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), cm.tablePrefix + MigrationVersion.CURRENT.table)
+                        val baselineMarker = schemaVersionDAO.baselineMarker
+
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("0.0.1")
                     }
 
                     "for external session, but keyspace setup via configuration" {
@@ -107,7 +138,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), cm.tablePrefix + MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                     "for external session and defaulted keyspace" {
@@ -121,7 +152,7 @@ class BaselineKIT : BaseKIT() {
                         val schemaVersionDAO = SchemaVersionDAO(getSession(), getKeyspace(), cm.tablePrefix + MigrationVersion.CURRENT.table)
                         val baselineMarker = schemaVersionDAO.baselineMarker
 
-                        baselineMarker.version shouldBe MigrationVersion.fromVersion("1")
+                        baselineMarker?.version shouldBe MigrationVersion.fromVersion("1")
                     }
 
                 }
@@ -142,6 +173,22 @@ class BaselineKIT : BaseKIT() {
                         cm = CassandraMigration()
                         cm.locations = scriptsLocations
                         cm.keyspaceConfig = getKeyspace()
+
+                        shouldThrow<CassandraMigrationException> { cm.baseline() }
+                    }
+
+                    "for session and keyspace, version and description setup via configuration" {
+                        val scriptsLocations = arrayOf("migration/integ", "migration/integ/java")
+                        var cm = CassandraMigration()
+                        cm.locations = scriptsLocations
+                        cm.keyspaceConfig = getKeyspace()
+                        cm.migrate()
+
+                        cm = CassandraMigration()
+                        cm.locations = scriptsLocations
+                        cm.keyspaceConfig = getKeyspace()
+                        cm.baselineVersion = MigrationVersion.fromVersion("0.0.1")
+                        cm.baselineDescription = "Baseline test"
 
                         shouldThrow<CassandraMigrationException> { cm.baseline() }
                     }
@@ -190,6 +237,24 @@ class BaselineKIT : BaseKIT() {
                         cm.locations = scriptsLocations
                         cm.keyspaceConfig = getKeyspace()
                         cm.tablePrefix = "test1_"
+
+                        shouldThrow<CassandraMigrationException> { cm.baseline() }
+                    }
+
+                    "for session and keyspace, version and description setup via configuration" {
+                        val scriptsLocations = arrayOf("migration/integ", "migration/integ/java")
+                        var cm = CassandraMigration()
+                        cm.locations = scriptsLocations
+                        cm.keyspaceConfig = getKeyspace()
+                        cm.tablePrefix = "test1_"
+                        cm.migrate()
+
+                        cm = CassandraMigration()
+                        cm.locations = scriptsLocations
+                        cm.keyspaceConfig = getKeyspace()
+                        cm.tablePrefix = "test1_"
+                        cm.baselineVersion = MigrationVersion.fromVersion("0.0.1")
+                        cm.baselineDescription = "Baseline test"
 
                         shouldThrow<CassandraMigrationException> { cm.baseline() }
                     }

@@ -2,7 +2,7 @@
  * File     : CompositeMigrationResolver.kt
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -32,13 +32,15 @@ import java.util.*
  *
  * @param classLoader The ClassLoader for loading migrations on the classpath.
  * @param locations The locations where migrations are located.
- * @param encoding The encoding of Cql migrations.
+ * @param encoding The CQL migrations encoding.
+ * @param timeout The CQL migrations read timeout duration in seconds.
  * @param customMigrationResolvers Custom Migration Resolvers.
  */
 class CompositeMigrationResolver(
     classLoader: ClassLoader,
     locations: Locations,
     encoding: String,
+    timeout: Int,
     vararg customMigrationResolvers: MigrationResolver
 ) : MigrationResolver {
 
@@ -58,7 +60,7 @@ class CompositeMigrationResolver(
      */
     init {
         locations.getLocations().forEach {
-            migrationResolvers.add(CqlMigrationResolver(classLoader, it, encoding))
+            migrationResolvers.add(CqlMigrationResolver(classLoader, it, encoding, timeout))
             migrationResolvers.add(JavaMigrationResolver(classLoader, it))
         }
 

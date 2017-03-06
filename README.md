@@ -1,4 +1,9 @@
-[![License](https://img.shields.io/badge/license-Apache%202-brightgreen.svg)](LICENSE) [![Master Build Status](https://travis-ci.org/builtamont-oss/cassandra-migration.svg?branch=master)](https://travis-ci.org/builtamont-oss/cassandra-migration)
+[![License](https://img.shields.io/badge/license-Apache%202-brightgreen.svg)](LICENSE)
+[![Master Build Status](https://travis-ci.org/builtamont-oss/cassandra-migration.svg?branch=master)](https://travis-ci.org/builtamont-oss/cassandra-migration)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration)
+[![Downloads](https://img.shields.io/badge/downloads-jar-brightgreen.svg)](https://github.com/builtamont-oss/cassandra-migration/releases/download/cassandra-migration-0.10/cassandra-migration-0.10.jar)
+[![Downloads](https://img.shields.io/badge/downloads-jar--with--dependencies-brightgreen.svg)](https://github.com/builtamont-oss/cassandra-migration/releases/download/cassandra-migration-0.10/cassandra-migration-0.10-jar-with-dependencies.jar)
+
 
 # Cassandra Migration
 
@@ -21,7 +26,7 @@ Import this library as a dependency:
 <dependency>
     <groupId>com.builtamont</groupId>
     <artifactId>cassandra-migration</artifactId>
-    <version>0.9</version>
+    <version>0.10</version>
 </dependency>
 ```
 
@@ -39,7 +44,7 @@ Import this library as a dependency:
 </repositories>
 ```
 
-***NOTE:** A Vagrant script is provided to enable quick integration testing against different or older Cassandra distributions.* 
+*NOTE: A Vagrant script is provided to enable quick integration testing against different or older Cassandra distributions.* 
 
 ### Migration version table
 
@@ -101,6 +106,7 @@ String[] scriptsLocations = {"migration/cassandra"};
 
 KeyspaceConfiguration keyspaceConfig = new KeyspaceConfiguration();
 keyspaceConfig.setName(CASSANDRA_KEYSPACE);
+keyspaceConfig.setConsistency(ConsistencyLevel.QUORUM);
 keyspaceConfig.getClusterConfig().setContactpoints(CASSANDRA_CONTACT_POINT);
 keyspaceConfig.getClusterConfig().setPort(CASSANDRA_PORT);
 keyspaceConfig.getClusterConfig().setUsername(CASSANDRA_USERNAME);
@@ -115,6 +121,13 @@ cm.migrate();
 
 #### Command line
 
+Logging level can be set by passing the following arguments:
+ * INFO: This is the default
+ * DEBUG: `-X`
+ * WARNING: `-q`
+ 
+##### With system properties JVM args
+
 ``` shell
 java -jar \
 -Dcassandra.migration.scripts.locations=filesystem:target/test-classes/migration/integ \
@@ -124,42 +137,51 @@ java -jar \
 -Dcassandra.migration.cluster.username=cassandra \
 -Dcassandra.migration.cluster.password=cassandra \
 -Dcassandra.migration.keyspace.name=cassandra_migration_test \
+-Dcassandra.migration.keyspace.consistency=QUORUM \
 target/*-jar-with-dependencies.jar migrate
 ```
 
-Logging level can be set by passing the following arguments:
- * INFO: This is the default
- * DEBUG: `-X`
- * WARNING: `-q`
+##### With application configuration file
+
+``` shell
+java -jar \
+-Dconfig.file=src/test/application.test.conf \
+target/*-jar-with-dependencies.jar migrate
+```
 
 ### VM Options
 
-Options can be set either programmatically with API or via Java VM options.
+Options can be set either programmatically with API, Java VM options, or configuration file.
+Refer to [Typesafe Config] library documentation or refer to [reference.conf] for a reference configuration.
 
 Migration:
- * `cassandra.migration.scripts.locations`: Locations of the migration scripts in CSV format. Scripts are scanned in the specified folder recursively. (default=db/migration)
- * `cassandra.migration.scripts.encoding`: The encoding of CQL scripts (default=UTF-8)
- * `cassandra.migration.scripts.allowoutoforder`: Allow out of order migration (default=false)
- * `cassandra.migration.version.target`: The target version. Migrations with a higher version number will be ignored. (default=latest)
+ * `cassandra.migration.scripts.locations`: Locations of the migration scripts in CSV format. Scripts are scanned in the specified folder recursively. (default=`db/migration`)
+ * `cassandra.migration.scripts.encoding`: The encoding of CQL scripts. (default=`UTF-8`)
+ * `cassandra.migration.scripts.timeout`: The read script timeout duration in seconds for CQL migrations. (default=`60`)
+ * `cassandra.migration.scripts.allowoutoforder`: Allow out of order migration. (default=`false`)
+ * `cassandra.migration.version.target`: The target version. Migrations with a higher version number will be ignored. (default=`latest`)
  * `cassandra.migration.table.prefix`: The prefix to be prepended to `cassandra_migration_version*` table names.
+ * `cassandra.migration.baseline.version`: The version to apply for an existing schema when baseline is run.
+ * `cassandra.migration.baseline.description`: The description to apply for an existing schema when baseline is run.
 
 Cluster:
- * `cassandra.migration.cluster.contactpoints`: Comma separated values of node IP addresses (default=localhost)
- * `cassandra.migration.cluster.port`: CQL native transport port (default=9042)
- * `cassandra.migration.cluster.username`: Username for password authenticator (optional)
- * `cassandra.migration.cluster.password`: Password for password authenticator (optional)
- * `cassandra.migration.cluster.truststore`: Path to truststore.jar for cassandra client SSL (optional)
- * `cassandra.migration.cluster.truststore_password`: Password for truststore.jar (optional)
- * `cassandra.migration.cluster.keystore`: Path to keystore.jar for cassandra client SSL with certificate authentication (optional)
- * `cassandra.migration.cluster.keystore_password`: Password for keystore.jar (optional)
+ * `cassandra.migration.cluster.contactpoints`: Comma separated values of node IP addresses. (default=`localhost`)
+ * `cassandra.migration.cluster.port`: CQL native transport port. (default=`9042`)
+ * `cassandra.migration.cluster.username`: Username for password authenticator. (optional)
+ * `cassandra.migration.cluster.password`: Password for password authenticator. (optional)
+ * `cassandra.migration.cluster.truststore`: Path to `truststore.jar` for Cassandra client SSL. (optional)
+ * `cassandra.migration.cluster.truststore_password`: Password for `truststore.jar`. (optional)
+ * `cassandra.migration.cluster.keystore`: Path to keystore.jar for Cassandra client SSL with certificate authentication. (optional)
+ * `cassandra.migration.cluster.keystore_password`: Password for `keystore.jar`. (optional)
 
 Keyspace:
- * `cassandra.migration.keyspace.name`: Name of Cassandra keyspace (required)
+ * `cassandra.migration.keyspace.name`: Name of Cassandra keyspace. (required)
+ * `cassandra.migration.keyspace.consistency`: Keyspace write consistency levels for migrations schema tracking. (optional)
 
 ### Cluster Coordination
 
- * Schema version tracking statements use `ConsistencyLevel.ALL`
- * Users should manage their own consistency level in the migration scripts
+ * Schema version tracking statements use `ConsistencyLevel.ALL` for clustered hosts, otherwise `ConsistencyLevel.ONE` for single host.
+ * Users should manage their own consistency level in the migration scripts.
 
 ### Limitations
 
@@ -189,7 +211,7 @@ Run `mvn test` to run the unit tests.
 
 Run `mvn verify` to run the integration tests.
 
-***NOTE:** The integration test might complain about some missing SIGAR binaries, this can be safely ignored. If you wish, you can download the missing binaries and set `java.library.path` parameter to point to the containing folder (e.g. `mvn verify -Djava.library.path=lib` where `lib` is the `/lib` folder relative to the project root).*
+*NOTE: The integration test might complain about some missing SIGAR binaries, this can be safely ignored. If you wish, you can download the missing binaries and set `java.library.path` parameter to point to the containing folder (e.g. `mvn verify -Djava.library.path=lib` where `lib` is the `/lib` folder relative to the project root).*
 
 ### Travis CI Integration Test Matrix
 
@@ -221,7 +243,7 @@ Please read [CONTRIBUTING] for more details.
 
 [Flyway] project is released under the Apache 2 license. See [Flyway's project license page] for further details.
 
-## Releases
+## Release Notes
 
 https://github.com/builtamont/cassandra-migration/releases
  
@@ -240,4 +262,6 @@ https://github.com/builtamont/cassandra-migration/releases
 [Flyway's project license page]: https://github.com/flyway/flyway/blob/master/LICENSE
 [fork-and-pull]: https://help.github.com/articles/using-pull-requests
 [LICENSE]: LICENSE
+[reference.conf]: https://github.com/builtamont-oss/cassandra-migration/blob/master/src/main/resources/reference.conf
 [SIGAR]: https://support.hyperic.com/display/SIGAR/Home
+[Typesafe Config]: https://github.com/typesafehub/config

@@ -2,7 +2,7 @@
  * File     : Baseline.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -55,11 +55,11 @@ class Baseline(
         }
 
         if (schemaVersionDAO.hasBaselineMarker()) {
-            val isNotBaselineByVersion = !(baselineMigration.version?.equals(baselineVersion) ?: false)
-            val isNotBaselineByDescription = !baselineMigration.description.equals(baselineDescription)
+            val isNotBaselineByVersion = !(baselineMigration?.version?.equals(baselineVersion) ?: false)
+            val isNotBaselineByDescription = !baselineMigration?.description.equals(baselineDescription)
             if (isNotBaselineByVersion || isNotBaselineByDescription) {
                 val msg = "Unable to baseline metadata table ${schemaVersionDAO.tableName} with ($baselineVersion, $baselineDescription)" +
-                        " as it has already been initialized with (${baselineMigration.version}, ${baselineMigration.description})"
+                        " as it has already been initialized with (${baselineMigration?.version}, ${baselineMigration?.description})"
                 throw CassandraMigrationException(msg)
             }
         } else {

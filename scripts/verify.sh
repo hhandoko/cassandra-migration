@@ -3,7 +3,7 @@
 ###
 # File     : verify.sh
 # License  :
-#   Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+#   Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -22,6 +22,7 @@ echo $JAVA_HOME
 ./gradlew check \
   -Dorg.gradle.java.home=$JAVA_HOME \
   -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
+  -Dit.config.file=src/test/resources/application.it-test.conf \
   -Dcassandra.migration.cluster.contactpoints=127.0.0.1 \
   -Dcassandra.migration.cluster.port=9042 \
   -Dcassandra.migration.disable_embedded=true \

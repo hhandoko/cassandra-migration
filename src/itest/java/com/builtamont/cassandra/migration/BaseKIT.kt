@@ -2,7 +2,7 @@
  * File     : BaseKIT.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -18,10 +18,13 @@
  */
 package com.builtamont.cassandra.migration
 
+import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty
 import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
 import com.datastax.driver.core.Cluster
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.SimpleStatement
+import com.typesafe.config.ConfigFactory
+import io.github.config4k.extract
 import io.kotlintest.specs.FreeSpec
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper
 
@@ -30,49 +33,42 @@ import org.cassandraunit.utils.EmbeddedCassandraServerHelper
  */
 open class BaseKIT : FreeSpec() {
 
+    /** Configuration reader instance */
+    private val conf = ConfigFactory.load()
+
     /** Keyspace name from configuration */
-    val CASSANDRA_KEYSPACE =
-        if (System.getProperty("cassandra.migration.keyspace.name") != null)
-            System.getProperty("cassandra.migration.keyspace.name")
-        else
-            "cassandra_migration_test"
+    val CASSANDRA_KEYSPACE: String =
+            conf.extract<String?>(ConfigurationProperty.KEYSPACE_NAME.namespace)
+                ?: "cassandra_migration_test"
 
     /** Cluster contact point(s) from configuration */
-    val CASSANDRA_CONTACT_POINT =
-        if (System.getProperty("cassandra.migration.cluster.contactpoints") != null)
-            System.getProperty("cassandra.migration.cluster.contactpoints")
-        else
-            "localhost"
+    val CASSANDRA_CONTACT_POINT: String =
+            conf.extract<String?>(ConfigurationProperty.CONTACT_POINTS.namespace)
+                ?: "localhost"
 
     /** Cluster connection port from configuration */
-    val CASSANDRA_PORT =
-        if (System.getProperty("cassandra.migration.cluster.port") != null)
-            Integer.parseInt(System.getProperty("cassandra.migration.cluster.port"))
-        else
-            9147
+    val CASSANDRA_PORT: Int =
+            conf.extract<Int?>(ConfigurationProperty.PORT.namespace)
+                ?: 9147
 
     /** Cluster credentials username */
-    val CASSANDRA_USERNAME =
-        if (System.getProperty("cassandra.migration.cluster.username") != null)
-            System.getProperty("cassandra.migration.cluster.username")
-        else
-            "cassandra"
+    val CASSANDRA_USERNAME: String =
+            conf.extract<String?>(ConfigurationProperty.USERNAME.namespace)
+                ?: "cassandra"
 
     /** Cluster credentials password */
-    val CASSANDRA_PASSWORD =
-        if (System.getProperty("cassandra.migration.cluster.password") != null)
-            System.getProperty("cassandra.migration.cluster.password")
-        else
-            "cassandra"
+    val CASSANDRA_PASSWORD: String =
+            conf.extract<String?>(ConfigurationProperty.PASSWORD.namespace)
+                ?: "cassandra"
 
     /**
      * Flag to disable embedded Cassandra.
      *
      * Used when running integration tests against DSE Community or Apache Cassandra instances.
      */
-    val DISABLE_EMBEDDED =
-        System.getProperty("cassandra.migration.disable_embedded") != null &&
-                java.lang.Boolean.parseBoolean(System.getProperty("cassandra.migration.disable_embedded"))
+    val DISABLE_EMBEDDED: Boolean =
+            conf.extract<Boolean?>("cassandra.migration.disable_embedded")
+                ?: false
 
     /** Cluster connection session */
     private var session: Session? = null
@@ -154,7 +150,7 @@ open class BaseKIT : FreeSpec() {
      * Get the active connection session.
      */
     protected fun getSession(keyspaceConfig: KeyspaceConfiguration): Session {
-        if (session != null && !session!!.isClosed())
+        if (session != null && !session!!.isClosed)
             return session!!
 
         val username = keyspaceConfig.clusterConfig.username

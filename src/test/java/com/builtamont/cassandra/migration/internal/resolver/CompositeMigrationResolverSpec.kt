@@ -2,7 +2,7 @@
  * File     : CompositeMigrationResolverSpec.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -60,7 +60,8 @@ class CompositeMigrationResolverSpec : FreeSpec() {
                 val resolver = CompositeMigrationResolver(
                         Thread.currentThread().contextClassLoader,
                         Locations("migration/subdir/dir2", "migration.outoforder", "migration/subdir/dir1"),
-                        "UTF-8"
+                        "UTF-8",
+                        timeout = 0
                 )
                 val migrations = resolver.resolveMigrations()
 

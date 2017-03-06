@@ -1,8 +1,9 @@
+#!/bin/bash
+
 ###
-# File     : runtime.conf
+# File     : release.sh
 # License  :
-#   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
-#   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
+#   Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
 #
 #   Licensed under the Apache License, Version 2.0 (the "License");
 #   you may not use this file except in compliance with the License.
@@ -17,4 +18,4 @@
 #   limitations under the License.
 ###
 
-loaded=at\runtime
+mvn -P release release:clean release:prepare release:perform -B -e -Darguments="-DskipTests -Dgpg.passphrase=${GPG_PASSPHRASE}" -DskipTests --settings settings.xml

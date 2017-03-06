@@ -2,7 +2,7 @@
  * File     : CqlScript.kt
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ import com.builtamont.cassandra.migration.internal.util.StringUtils
 import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.builtamont.cassandra.migration.internal.util.scanner.Resource
 import com.datastax.driver.core.Session
+import com.datastax.driver.core.SimpleStatement
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.Reader
@@ -46,6 +47,11 @@ class CqlScript {
     val resource: Resource?
 
     /**
+     * The CQL script read timeout in milliseconds.
+     */
+    val timeout: Int
+
+    /**
      * Creates a new CQL script from this source.
      *
      * @param cqlScriptSource The cql script as a text block with all placeholders already replaced.
@@ -53,6 +59,7 @@ class CqlScript {
     constructor(cqlScriptSource: String) {
         this.cqlStatements = parse(cqlScriptSource)
         this.resource = null
+        this.timeout = 0
     }
 
     /**
@@ -60,11 +67,13 @@ class CqlScript {
      *
      * @param cqlScriptResource The resource containing the statements.
      * @param encoding The encoding to use.
+     * @param timeout The script read timeout in seconds.
      */
-    constructor(cqlScriptResource: Resource, encoding: String) {
+    constructor(cqlScriptResource: Resource, encoding: String, timeout: Int) {
         val cqlScriptSource = cqlScriptResource.loadAsString(encoding)
         this.cqlStatements = parse(cqlScriptSource)
         this.resource = cqlScriptResource
+        this.timeout = timeout * 1000 // Convert from seconds to milliseconds
     }
 
     /**
@@ -75,7 +84,10 @@ class CqlScript {
     fun execute(session: Session) {
         cqlStatements.forEach {
             LOG.debug("Executing CQL: $it")
-            session.execute(it)
+            when {
+                timeout > 0 -> session.execute(SimpleStatement(it).setReadTimeoutMillis(timeout))
+                else        -> session.execute(it)
+            }
         }
     }
 

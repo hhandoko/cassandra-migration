@@ -2,7 +2,7 @@
  * File     : ConfigurationProperty.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -38,14 +38,33 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
             "Locations of the migration scripts in CSV format"
     ),
 
-    TABLE_PREFIX(
-            "cassandra.migration.table.prefix",
-            "Prefix to be prepended to cassandra_migration_version* table names"
+    SCRIPTS_TIMEOUT(
+            "cassandra.migration.scripts.timeout",
+            "CQL scripts timeout in seconds"
     ),
 
     ALLOW_OUT_OF_ORDER(
             "cassandra.migration.scripts.allowoutoforder",
             "Allow out of order migration"
+    ),
+
+    // Table configuration properties
+    // ~~~~~~
+    TABLE_PREFIX(
+            "cassandra.migration.table.prefix",
+            "Prefix to be prepended to cassandra_migration_version* table names"
+    ),
+
+    // Baseline version configuration properties
+    // ~~~~~~
+    BASELINE_VERSION(
+            "cassandra.migration.baseline.version",
+            "Version to apply for an existing schema when baseline is run"
+    ),
+
+    BASELINE_DESCRIPTION(
+            "cassandra.migration.baseline.description",
+            "Description to apply to an existing schema when baseline is run"
     ),
 
     // Version target configuration properties
@@ -102,6 +121,11 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
     KEYSPACE_NAME(
             "cassandra.migration.keyspace.name",
             "Name of Cassandra keyspace"
+    ),
+
+    CONSISTENCY_LEVEL(
+            "cassandra.migration.keyspace.consistency",
+            "Keyspace write consistency levels for migrations schema tracking"
     )
 
 }

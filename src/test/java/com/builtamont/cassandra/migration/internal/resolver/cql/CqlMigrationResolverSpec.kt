@@ -2,7 +2,7 @@
  * File     : CqlMigrationResolverSpec.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -39,7 +39,8 @@ class CqlMigrationResolverSpec : FreeSpec() {
         return CqlMigrationResolver(
                 Thread.currentThread().contextClassLoader,
                 Location(location),
-                "UTF-8"
+                "UTF-8",
+                timeout = 0
         )
     }
 

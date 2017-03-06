@@ -2,7 +2,7 @@
  * File     : MigrationInfoServiceSpec.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -26,6 +26,7 @@ import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
 import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
 import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
+import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
 import com.nhaarman.mockito_kotlin.whenever
 import io.kotlintest.specs.FreeSpec
@@ -137,14 +138,14 @@ class MigrationInfoServiceSpec : FreeSpec() {
      * @return The mocked SchemaVersionDAO.
      */
     fun createSchemaVersionDAO(vararg appliedMigrations: AppliedMigration): SchemaVersionDAO {
-        val daoMock = mock<SchemaVersionDAO>()
         val migrations = if (appliedMigrations.isEmpty()) {
             arrayListOf<AppliedMigration>()
         } else {
             appliedMigrations.toList()
         }
-        whenever(daoMock.findAppliedMigrations()).thenReturn(migrations)
-        return daoMock
+        return mock {
+            on { findAppliedMigrations() } doReturn migrations
+        }
     }
 
     init {

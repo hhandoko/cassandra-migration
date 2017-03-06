@@ -2,7 +2,7 @@
  * File     : KeyspaceConfiguration.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -18,6 +18,10 @@
  */
 package com.builtamont.cassandra.migration.api.configuration
 
+import com.datastax.driver.core.ConsistencyLevel
+import com.typesafe.config.ConfigFactory
+import io.github.config4k.extract
+
 /**
  * Keyspace configuration.
  */
@@ -26,7 +30,7 @@ class KeyspaceConfiguration {
     /**
      * Cluster configuration.
      */
-    lateinit var clusterConfig: ClusterConfiguration
+    var clusterConfig: ClusterConfiguration = ClusterConfiguration()
 
     /**
      * Cassandra keyspace name.
@@ -35,13 +39,25 @@ class KeyspaceConfiguration {
       get set
 
     /**
+     * Keyspace consistency level.
+     */
+    var consistency: ConsistencyLevel? = null
+      get set
+
+    /**
      * KeyspaceConfiguration initialization.
      */
     init {
-        clusterConfig = ClusterConfiguration()
+        ConfigFactory.invalidateCaches()
+        ConfigFactory.load().let {
+            it.extract<String?>(ConfigurationProperty.KEYSPACE_NAME.namespace)?.let {
+                this.name = it.trim()
+            }
 
-        val keyspaceProp = System.getProperty(ConfigurationProperty.KEYSPACE_NAME.namespace)
-        if (!keyspaceProp.isNullOrBlank()) this.name = keyspaceProp.trim()
+            it.extract<String?>(ConfigurationProperty.CONSISTENCY_LEVEL.namespace)?.let {
+                this.consistency = ConsistencyLevel.valueOf(it.trim().toUpperCase())
+            }
+        }
     }
 
 }

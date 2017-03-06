@@ -2,7 +2,7 @@
  * File     : MigrationChecksumProvider.kt
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -221,9 +221,17 @@ class MigrationVersion : Comparable<MigrationVersion?> {
                 return "current".equals(version, ignoreCase = true)
             }
 
+            /**
+             * @return {@code true} if version is "LATEST".
+             */
+            fun isLatest(): Boolean {
+                return "latest".equals(version, ignoreCase = true)
+            }
+
             return when {
                 version == null           -> EMPTY
                 isCurrent()               -> CURRENT
+                isLatest()                -> LATEST
                 LATEST.version == version -> LATEST
                 else                      -> MigrationVersion(version)
             }

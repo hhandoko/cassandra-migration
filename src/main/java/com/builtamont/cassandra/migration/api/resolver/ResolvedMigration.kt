@@ -2,7 +2,7 @@
  * File     : ResolvedMigration.kt
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -29,7 +29,8 @@ interface ResolvedMigration {
     /**
      * The target version of this migration.
      */
-    var version: MigrationVersion? get
+    var version: MigrationVersion?
+        get
 
     /**
      * The description of the migration.

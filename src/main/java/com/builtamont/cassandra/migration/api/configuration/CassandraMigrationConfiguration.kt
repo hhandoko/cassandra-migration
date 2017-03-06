@@ -2,7 +2,7 @@
  * File     : CassandraMigrationConfiguration.kt
  * License  :
  *   Original   - Copyright (c) 2010 - 2016 Boxfuse GmbH
- *   Derivative - Copyright (c) 2016 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.
@@ -227,6 +227,16 @@ interface CassandraMigrationConfiguration {
     val locations: Array<String>
 
     /**
+     * Retrieves the per-host read timeout duration when executing CQL migration scripts.
+     *
+     * Set to `0` to disable timeout. Negative values are not allowed.
+     *
+     * @return The read timeout duration for the migration script execution in seconds.
+     *         (default: 60)
+     */
+    val timeout: Int
+
+    /**
      * Retrieves the migration table prefix.
      *
      * The prefix will be prepended to `cassandra_migration_version*` table names.
@@ -234,7 +244,7 @@ interface CassandraMigrationConfiguration {
      * By providing the prefix, multiple applications can have their own migration tables tracking the migration of their
      * own cassandra database assets without interfering with each other.
      *
-     * @return the prefix to be prepended to `cassandra_migration_version*` table names
+     * @return The prefix to be prepended to `cassandra_migration_version*` table names
      */
     val tablePrefix: String
 }

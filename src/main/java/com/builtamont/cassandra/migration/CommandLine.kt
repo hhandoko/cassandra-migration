@@ -29,19 +29,19 @@ import com.builtamont.cassandra.migration.internal.util.logging.console.ConsoleL
  */
 object CommandLine {
 
-    /**
-     * Command to trigger migrate action.
-     */
+    /** Debug-level flag */
+    val DEBUG_FLAG = "-X"
+
+    /** Output suppression flag */
+    val QUIET_FLAG = "-q"
+
+    /** Command to trigger migrate action */
     val MIGRATE = "migrate"
 
-    /**
-     * Command to trigger validate action.
-     */
+    /** Command to trigger validate action */
     val VALIDATE = "validate"
 
-    /**
-     * Command to trigger baseline action.
-     */
+    /** Command to trigger baseline action */
     val BASELINE = "baseline"
 
     /**
@@ -59,31 +59,17 @@ object CommandLine {
         val logLevel = getLogLevel(args)
         initLogging(logLevel)
 
-        val operations = determineOperations(args)
-        if (operations.isEmpty()) {
-            printUsage()
-            return
-        }
-
-        val operation = operations[0]
-
         val cm = CassandraMigration()
         val ks = KeyspaceConfiguration()
         cm.keyspaceConfig = ks
-        if (MIGRATE.equals(operation, ignoreCase = true)) {
-            cm.migrate()
-        } else if (VALIDATE.equals(operation, ignoreCase = true)) {
-            cm.validate()
-        } else if (BASELINE.equals(operation, ignoreCase = true)) {
-            cm.baseline()
-        }
-    }
 
-    /**
-     * Get a list of applicable operations.
-     */
-    private fun determineOperations(args: Array<String>): List<String> {
-        return args.filterNot { it.startsWith("-") }
+        val operations = getOperations(args).map(String::toLowerCase)
+        when {
+            operations.contains(MIGRATE)  -> cm.migrate()
+            operations.contains(VALIDATE) -> cm.validate()
+            operations.contains(BASELINE) -> cm.baseline()
+            else                          -> printUsage()
+        }
     }
 
     /**
@@ -98,24 +84,27 @@ object CommandLine {
      * Get logging level.
      */
     private fun getLogLevel(args: Array<String>): ConsoleLog.Level {
-        for (arg in args) {
-            if ("-X" == arg) {
-                return ConsoleLog.Level.DEBUG
-            }
-            if ("-q" == arg) {
-                return ConsoleLog.Level.WARN
-            }
+        return when {
+            args.contains(DEBUG_FLAG) -> ConsoleLog.Level.DEBUG
+            args.contains(QUIET_FLAG) -> ConsoleLog.Level.WARN
+            else                      -> ConsoleLog.Level.INFO
         }
-        return ConsoleLog.Level.INFO
+    }
+
+    /**
+     * Get all applicable operations.
+     */
+    private fun getOperations(args: Array<String>): List<String> {
+        return args.filterNot { it.startsWith("-") }
     }
 
     /**
      * Print command line runner info.
      */
     private fun printUsage() {
-        LOG.info("********")
-        LOG.info("* Usage")
-        LOG.info("********")
+        LOG.info("*********")
+        LOG.info("* Usage *")
+        LOG.info("*********")
         LOG.info("")
         LOG.info("cassandra-migration [options] command")
         LOG.info("")
@@ -125,8 +114,8 @@ object CommandLine {
         LOG.info("validate : Validates the applied migrations against the available ones")
         LOG.info("baseline : Baselines an existing database, excluding all migrations up to, and including baselineVersion")
         LOG.info("")
-        LOG.info("Add -X to print debug output")
-        LOG.info("Add -q to suppress all output, except for errors and warnings")
+        LOG.info("Add ${DEBUG_FLAG} to print debug output")
+        LOG.info("Add ${QUIET_FLAG} to suppress all output, except for errors and warnings")
         LOG.info("")
     }
 

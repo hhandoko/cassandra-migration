@@ -84,7 +84,7 @@ open class BaseKIT : FreeSpec() {
 
         EmbeddedCassandraServerHelper.startEmbeddedCassandra(
                 "cassandra-unit.yaml",
-                "target/embeddedCassandra",
+                "build/embedded-cassandra",
                 200000L
         )
     }

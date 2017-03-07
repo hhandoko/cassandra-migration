@@ -121,7 +121,7 @@ test {
 
 itest {
     systemProperties System.getProperties()
-    dependsOn test, oneJar
+    dependsOn oneJar
 }
 
 check {

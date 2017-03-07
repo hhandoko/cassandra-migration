@@ -69,7 +69,7 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
             "should run successfully provided system properties arguments" {
                 val shell =
                         """java -jar
-                         | -Dcassandra.migration.scripts.locations=filesystem:target/test-classes/migration/integ
+                         | -Dcassandra.migration.scripts.locations=filesystem:build/classes/test/migration/integ
                          | -Dcassandra.migration.cluster.contactpoints=${this.CASSANDRA_CONTACT_POINT}
                          | -Dcassandra.migration.cluster.port=${this.CASSANDRA_PORT}
                          | -Dcassandra.migration.cluster.username=${this.CASSANDRA_USERNAME}
@@ -100,12 +100,12 @@ class CassandraMigrationCommandLineKIT : BaseKIT() {
             "should run successfully provided HOCON configuration file" {
                 // NOTE: Workaround for Travis CI, config file location as passed-in args:
                 //       - Typical `mvn test` / `mvn integration-test` / `mvn verify` will use `application.test.conf` config
-                //       - In Travis CI, it will use `application.it-test.conf` for this test only
-                val file = System.getProperty("it.config.file") ?: "src/test/resources/application.test.conf"
+                //       - In Travis CI, it will use `application.itest.conf` for this test only
+                val file = System.getProperty("it.config.file") ?: "src/itest/resources/application.test.conf"
                 val shell =
                         """java -jar
                          | -Dconfig.file=${file}
-                         | target/*-jar-with-dependencies.jar
+                         | build/libs/*-jar-with-dependencies.jar
                          | migrate
                         """.trimMargin().replace("\n", "").replace("  ", " ")
                 println(shell)

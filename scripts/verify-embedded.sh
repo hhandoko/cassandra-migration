@@ -22,4 +22,5 @@ echo $JAVA_HOME
 ./gradlew check \
   -Dorg.gradle.java.home=$JAVA_HOME \
   -Dorg.gradle.jvmargs="-Xmx2048m -XX:MaxPermSize=512m -XX:+HeapDumpOnOutOfMemoryError" \
+  -Dit.config.file=src/itest/resources/application.test.conf \
   --info

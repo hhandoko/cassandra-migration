@@ -1,4 +1,4 @@
-[![License](https://img.shields.io/badge/license-Apache%202-brightgreen.svg)](LICENSE)
+[![License](https://img.shields.io/badge/license-Apache--2.0-brightgreen.svg)](LICENSE)
 [![Master Build Status](https://travis-ci.org/builtamont-oss/cassandra-migration.svg?branch=master)](https://travis-ci.org/builtamont-oss/cassandra-migration)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration)
 [![Downloads](https://img.shields.io/badge/downloads-jar-brightgreen.svg)](https://github.com/builtamont-oss/cassandra-migration/releases/download/cassandra-migration-0.10/cassandra-migration-0.10.jar)

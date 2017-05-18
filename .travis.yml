@@ -7,9 +7,13 @@ matrix:
   include:
     - jdk: openjdk7
       services: cassandra
+      before_install: jdk_switcher use oraclejdk8
+      before_script: jdk_switcher use openjdk7
       script: ./scripts/verify.sh
     - jdk: oraclejdk7
       services: cassandra
+      before_install: jdk_switcher use oraclejdk8
+      before_script: jdk_switcher use oraclejdk7
       script: ./scripts/verify.sh
     - jdk: oraclejdk8
       services: cassandra

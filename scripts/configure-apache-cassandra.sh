@@ -19,6 +19,6 @@
 ###
 
 sudo rm -rf /var/lib/cassandra/*
-wget http://www.us.apache.org/dist/cassandra/3.9/apache-cassandra-3.9-bin.tar.gz
-tar -xvzf apache-cassandra-3.9-bin.tar.gz
-sudo sh apache-cassandra-3.9/bin/cassandra -R
+wget http://www.us.apache.org/dist/cassandra/3.10/apache-cassandra-3.10-bin.tar.gz
+tar -xvzf apache-cassandra-3.10-bin.tar.gz
+sudo sh apache-cassandra-3.10/bin/cassandra -R

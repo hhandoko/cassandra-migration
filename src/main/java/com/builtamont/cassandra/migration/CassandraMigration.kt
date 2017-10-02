@@ -340,7 +340,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
 
                 // Connect to the specific Keyspace context (if already defined)
                 val keyspaces = cluster.metadata.keyspaces.map { it.name }
-                val keyspaceExists = keyspaces.first { it.equals(keyspaceConfig.name, ignoreCase = true) }.isNotEmpty()
+                val keyspaceExists = keyspaces.filter { it.equals(keyspaceConfig.name, ignoreCase = true) }.isNotEmpty()
                 if (keyspaceExists) {
                     session = cluster.connect(keyspaceConfig.name)
                 } else {

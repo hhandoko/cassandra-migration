@@ -18,7 +18,9 @@
 #   limitations under the License.
 ###
 
+export CASS_VER=3.11.1
+
 sudo rm -rf /var/lib/cassandra/*
-wget http://www.us.apache.org/dist/cassandra/3.10/apache-cassandra-3.10-bin.tar.gz
-tar -xvzf apache-cassandra-3.10-bin.tar.gz
-sudo sh apache-cassandra-3.10/bin/cassandra -R
+wget http://www.us.apache.org/dist/cassandra/${CASS_VER}/apache-cassandra-${CASS_VER}-bin.tar.gz
+tar -xvzf apache-cassandra-${CASS_VER}-bin.tar.gz
+sudo sh apache-cassandra-${CASS_VER}/bin/cassandra -R

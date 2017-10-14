@@ -4,6 +4,16 @@
 [![Downloads](https://img.shields.io/badge/downloads-jar-brightgreen.svg)](https://github.com/builtamont-oss/cassandra-migration/releases/download/cassandra-migration-0.11/cassandra-migration-0.11.jar)
 [![Downloads](https://img.shields.io/badge/downloads-jar--with--dependencies-brightgreen.svg)](https://github.com/builtamont-oss/cassandra-migration/releases/download/cassandra-migration-0.11/cassandra-migration-0.11-jar-with-dependencies.jar)
 
+### !!! IMPORTANT NOTICE !!!
+
+Dear cassandra-migration users, I will be making some significant changes to this project over the next couple of months:
+
+  - The project repository will be moved under my own account (i.e. `hhandoko/cassandra-migration`)
+  - The project organisation namespace will be updated to `com.hhandoko`
+
+I have joined a new company, but unfortunately there were no other developers in my previous company able to pick up the responsibility of maintaining this project. Rather than abandoning it, I will continue to develop and maintain it but in my personal capacity.
+
+I apologise for the inconvenience and thank you for your understanding.
 
 # Cassandra Migration
 

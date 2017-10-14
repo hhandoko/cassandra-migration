@@ -10,11 +10,6 @@ matrix:
       dist: trusty
       services: cassandra
       script: ./scripts/verify.sh
-    - jdk: oraclejdk7
-      sudo: required
-      dist: trusty
-      services: cassandra
-      script: ./scripts/verify.sh
     - jdk: oraclejdk8
       sudo: required
       dist: trusty

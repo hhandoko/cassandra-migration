@@ -309,26 +309,18 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
             )
         }
 
-        Collections.sort(migrationVersions)
+        if (migrationVersions.size == 0) {
+            return 1;
+        }
 
-        val batchStatement = BatchStatement()
+        Collections.sort(migrationVersions)
 
         // TODO: Refactor for loop with idiomatic Kotlin collection methods
         for (i in migrationVersions.indices) {
             if (version.compareTo(migrationVersions[i]) < 0) {
-                for (z in i..migrationVersions.size - 1) {
-                    val migrationVersionStr = migrationVersions[z].version
-                    batchStatement.add(
-                            boundUpdateVersionRankStmt(
-                                    migrationMetaHolders[migrationVersionStr]!!.versionRank + 1,
-                                    migrationVersionStr
-                            )
-                    )
-                }
                 return i + 1
             }
         }
-        session.execute(batchStatement)
 
         return migrationVersions.size + 1
     }

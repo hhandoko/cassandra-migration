@@ -14,8 +14,8 @@ Related tickets: #*<GitHub issue number>*
 ## Pull Request (PR) Checklist
 
 ### Documentation
-- [ ] Documentation in `README.md` or [Wiki](https://github.com/builtamont-oss/cassandra-migration/wiki) updated
-- [ ] Update [Release Notes](https://github.com/builtamont-oss/cassandra-migration/releases) if applicable -- collaborator-access only
+- [ ] Documentation in `README.md` or [Wiki](https://github.com/hhandoko/cassandra-migration/wiki) updated
+- [ ] Update [Release Notes](https://github.com/hhandoko/cassandra-migration/releases) if applicable -- collaborator-access only
 
 ### Code Review
 - [ ] Self code review -- take another pass through the changes yourself

@@ -8,7 +8,7 @@
     <description>
         Database migration tool for Cassandra
     </description>
-    <url>https://github.com/builtamont-oss/cassandra-migration</url>
+    <url>https://github.com/hhandoko/cassandra-migration</url>
 
     <licenses>
         <license>
@@ -36,9 +36,9 @@
     </distributionManagement>
 
     <scm>
-        <url>https://github.com/builtamont-oss/cassandra-migration</url>
-        <connection>scm:git:https://github.com/builtamont-oss/cassandra-migration.git</connection>
-        <developerConnection>scm:git:https://github.com/builtamont-oss/cassandra-migration.git</developerConnection>
+        <url>https://github.com/hhandoko/cassandra-migration</url>
+        <connection>scm:git:https://github.com/hhandoko/cassandra-migration.git</connection>
+        <developerConnection>scm:git:https://github.com/hhandoko/cassandra-migration.git</developerConnection>
         <tag>HEAD</tag>
     </scm>
 

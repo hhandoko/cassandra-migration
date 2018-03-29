@@ -105,6 +105,15 @@
             <artifactId>config4k</artifactId>
             <version>0.3.0</version>
         </dependency>
+        <!-- NOTE:
+          Some compatibility issues with Guava v20.
+          TODO: Need to investigate and update.
+        -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0</version>
+        </dependency>
 
         <!-- Test-specific dependencies -->
         <dependency>
@@ -156,16 +165,6 @@
                     <groupId>ch.qos.logback</groupId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <!-- NOTE:
-          Some compatibility issues with Guava v20.
-          TODO: Need to investigate and update.
-        -->
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>19.0</version>
-            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>io.kotlintest</groupId>

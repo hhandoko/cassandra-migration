@@ -16,18 +16,18 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.resolver.cql
+package com.hhandoko.cassandra.migration.internal.resolver.cql
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.builtamont.cassandra.migration.api.MigrationType
-import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
-import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
-import com.builtamont.cassandra.migration.internal.resolver.MigrationInfoHelper
-import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationComparator
-import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
-import com.builtamont.cassandra.migration.internal.util.Location
-import com.builtamont.cassandra.migration.internal.util.scanner.Resource
-import com.builtamont.cassandra.migration.internal.util.scanner.Scanner
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.api.MigrationType
+import com.hhandoko.cassandra.migration.api.resolver.MigrationResolver
+import com.hhandoko.cassandra.migration.api.resolver.ResolvedMigration
+import com.hhandoko.cassandra.migration.internal.resolver.MigrationInfoHelper
+import com.hhandoko.cassandra.migration.internal.resolver.ResolvedMigrationComparator
+import com.hhandoko.cassandra.migration.internal.resolver.ResolvedMigrationImpl
+import com.hhandoko.cassandra.migration.internal.util.Location
+import com.hhandoko.cassandra.migration.internal.util.scanner.Resource
+import com.hhandoko.cassandra.migration.internal.util.scanner.Scanner
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.StringReader

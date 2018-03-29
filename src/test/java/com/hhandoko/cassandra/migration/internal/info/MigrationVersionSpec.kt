@@ -16,10 +16,10 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.info
+package com.hhandoko.cassandra.migration.internal.info
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.builtamont.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.api.MigrationVersion
 import io.kotlintest.specs.FreeSpec
 
 /**

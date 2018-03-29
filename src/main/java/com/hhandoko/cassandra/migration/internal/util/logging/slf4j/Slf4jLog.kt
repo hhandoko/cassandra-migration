@@ -16,9 +16,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.logging.slf4j
+package com.hhandoko.cassandra.migration.internal.util.logging.slf4j
 
-import com.builtamont.cassandra.migration.internal.util.logging.Log
+import com.hhandoko.cassandra.migration.internal.util.logging.Log
 import org.slf4j.Logger
 
 /**

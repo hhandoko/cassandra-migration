@@ -16,12 +16,12 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.command
+package com.hhandoko.cassandra.migration.internal.command
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.builtamont.cassandra.migration.api.MigrationVersion
-import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
-import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.resolver.MigrationResolver
+import com.hhandoko.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 
 /**
  * Handles the baseline command.

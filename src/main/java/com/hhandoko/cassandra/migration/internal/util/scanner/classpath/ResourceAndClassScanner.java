@@ -16,11 +16,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.scanner.classpath;
+package com.hhandoko.cassandra.migration.internal.util.scanner.classpath;
 
 
-import com.builtamont.cassandra.migration.internal.util.Location;
-import com.builtamont.cassandra.migration.internal.util.scanner.Resource;
+import com.hhandoko.cassandra.migration.internal.util.Location;
+import com.hhandoko.cassandra.migration.internal.util.scanner.Resource;
 
 /**
  * Scanner for both resources and classes.

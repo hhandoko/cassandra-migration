@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-brightgreen.svg)](LICENSE)
 [![Master Build Status](https://travis-ci.org/hhandoko/cassandra-migration.svg?branch=master)](https://travis-ci.org/hhandoko/cassandra-migration)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.hhandoko/cassandra-migration/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.hhandoko/cassandra-migration)
 [![Downloads](https://img.shields.io/badge/downloads-jar-brightgreen.svg)](https://github.com/hhandoko/cassandra-migration/releases/download/cassandra-migration-0.11/cassandra-migration-0.11.jar)
 [![Downloads](https://img.shields.io/badge/downloads-jar--with--dependencies-brightgreen.svg)](https://github.com/hhandoko/cassandra-migration/releases/download/cassandra-migration-0.11/cassandra-migration-0.11-jar-with-dependencies.jar)
 

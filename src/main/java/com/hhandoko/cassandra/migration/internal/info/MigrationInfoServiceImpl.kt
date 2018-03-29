@@ -16,13 +16,13 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.info
+package com.hhandoko.cassandra.migration.internal.info
 
-import com.builtamont.cassandra.migration.api.*
-import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
-import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
-import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
-import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
+import com.hhandoko.cassandra.migration.api.*
+import com.hhandoko.cassandra.migration.api.resolver.MigrationResolver
+import com.hhandoko.cassandra.migration.api.resolver.ResolvedMigration
+import com.hhandoko.cassandra.migration.internal.dbsupport.SchemaVersionDAO
+import com.hhandoko.cassandra.migration.internal.metadatatable.AppliedMigration
 import java.util.*
 
 /**

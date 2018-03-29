@@ -16,9 +16,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util
+package com.hhandoko.cassandra.migration.internal.util
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
 
 /**
  * A location to load migrations from.

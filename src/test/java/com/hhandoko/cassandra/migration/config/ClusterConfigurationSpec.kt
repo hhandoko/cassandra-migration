@@ -16,10 +16,10 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.config
+package com.hhandoko.cassandra.migration.config
 
-import com.builtamont.cassandra.migration.api.configuration.ClusterConfiguration
-import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty
+import com.hhandoko.cassandra.migration.api.configuration.ClusterConfiguration
+import com.hhandoko.cassandra.migration.api.configuration.ConfigurationProperty
 import io.kotlintest.specs.FreeSpec
 import java.nio.file.Paths
 import java.util.*

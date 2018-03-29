@@ -16,32 +16,32 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration
+package com.hhandoko.cassandra.migration
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.builtamont.cassandra.migration.api.MigrationInfoService
-import com.builtamont.cassandra.migration.api.MigrationVersion
-import com.builtamont.cassandra.migration.api.configuration.CassandraMigrationConfiguration
-import com.builtamont.cassandra.migration.api.configuration.ConfigurationProperty
-import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
-import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
-import com.builtamont.cassandra.migration.internal.command.Baseline
-import com.builtamont.cassandra.migration.internal.command.Initialize
-import com.builtamont.cassandra.migration.internal.command.Migrate
-import com.builtamont.cassandra.migration.internal.command.Validate
-import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
-import com.builtamont.cassandra.migration.internal.info.MigrationInfoServiceImpl
-import com.builtamont.cassandra.migration.internal.resolver.CompositeMigrationResolver
-import com.builtamont.cassandra.migration.internal.util.Locations
-import com.builtamont.cassandra.migration.internal.util.StringUtils
-import com.builtamont.cassandra.migration.internal.util.VersionPrinter
-import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.datastax.driver.core.Cluster
 import com.datastax.driver.core.Metadata
 import com.datastax.driver.core.NettySSLOptions
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy
 import com.datastax.driver.core.policies.TokenAwarePolicy
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.api.MigrationInfoService
+import com.hhandoko.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.configuration.CassandraMigrationConfiguration
+import com.hhandoko.cassandra.migration.api.configuration.ConfigurationProperty
+import com.hhandoko.cassandra.migration.api.configuration.KeyspaceConfiguration
+import com.hhandoko.cassandra.migration.api.resolver.MigrationResolver
+import com.hhandoko.cassandra.migration.internal.command.Baseline
+import com.hhandoko.cassandra.migration.internal.command.Initialize
+import com.hhandoko.cassandra.migration.internal.command.Migrate
+import com.hhandoko.cassandra.migration.internal.command.Validate
+import com.hhandoko.cassandra.migration.internal.dbsupport.SchemaVersionDAO
+import com.hhandoko.cassandra.migration.internal.info.MigrationInfoServiceImpl
+import com.hhandoko.cassandra.migration.internal.resolver.CompositeMigrationResolver
+import com.hhandoko.cassandra.migration.internal.util.Locations
+import com.hhandoko.cassandra.migration.internal.util.StringUtils
+import com.hhandoko.cassandra.migration.internal.util.VersionPrinter
+import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory
 import com.typesafe.config.ConfigFactory
 import io.github.config4k.extract
 import io.netty.handler.ssl.SslContextBuilder

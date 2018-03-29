@@ -16,17 +16,17 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.scanner.filesystem;
-
-import com.builtamont.cassandra.migration.internal.util.Location;
-import com.builtamont.cassandra.migration.internal.util.logging.Log;
-import com.builtamont.cassandra.migration.internal.util.logging.LogFactory;
-import com.builtamont.cassandra.migration.internal.util.scanner.Resource;
+package com.hhandoko.cassandra.migration.internal.util.scanner.filesystem;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Set;
 import java.util.TreeSet;
+
+import com.hhandoko.cassandra.migration.internal.util.Location;
+import com.hhandoko.cassandra.migration.internal.util.logging.Log;
+import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory;
+import com.hhandoko.cassandra.migration.internal.util.scanner.Resource;
 
 /**
  * FileSystem scanner.

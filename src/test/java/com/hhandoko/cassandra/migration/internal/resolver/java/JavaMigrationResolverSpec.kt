@@ -16,12 +16,12 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.resolver.java
+package com.hhandoko.cassandra.migration.internal.resolver.java
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.builtamont.cassandra.migration.internal.resolver.java.dummy.V2__InterfaceBasedMigration
-import com.builtamont.cassandra.migration.internal.resolver.java.dummy.Version3dot5
-import com.builtamont.cassandra.migration.internal.util.Location
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.internal.resolver.java.dummy.V2__InterfaceBasedMigration
+import com.hhandoko.cassandra.migration.internal.resolver.java.dummy.Version3dot5
+import com.hhandoko.cassandra.migration.internal.util.Location
 import io.kotlintest.specs.FreeSpec
 
 /**
@@ -49,7 +49,7 @@ class JavaMigrationResolverSpec : FreeSpec() {
             "provided valid migration classes" - {
 
                 "should resolve migrations" {
-                    val resolver = createMigrationResolver("com/builtamont/cassandra/migration/internal/resolver/java/dummy")
+                    val resolver = createMigrationResolver("com/hhandoko/cassandra/migration/internal/resolver/java/dummy")
                     val migrations = resolver.resolveMigrations()
 
                     migrations.size shouldBe 3
@@ -92,7 +92,7 @@ class JavaMigrationResolverSpec : FreeSpec() {
 
                 "should throw exception" {
                     shouldThrow<CassandraMigrationException> {
-                        val resolver = createMigrationResolver("com/builtamont/cassandra/migration/internal/resolver/java/error")
+                        val resolver = createMigrationResolver("com/hhandoko/cassandra/migration/internal/resolver/java/error")
                         resolver.resolveMigrations()
                     }
                 }

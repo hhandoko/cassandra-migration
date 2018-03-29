@@ -16,12 +16,12 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.resolver.java
+package com.hhandoko.cassandra.migration.internal.resolver.java
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.builtamont.cassandra.migration.api.migration.java.JavaMigration
-import com.builtamont.cassandra.migration.api.resolver.MigrationExecutor
 import com.datastax.driver.core.Session
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.api.migration.java.JavaMigration
+import com.hhandoko.cassandra.migration.api.resolver.MigrationExecutor
 
 /**
  * Adapter for executing migrations implementing JavaMigration.

@@ -16,17 +16,17 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.scanner.classpath;
-
-import com.builtamont.cassandra.migration.internal.util.UrlUtils;
-import com.builtamont.cassandra.migration.internal.util.logging.Log;
-import com.builtamont.cassandra.migration.internal.util.logging.LogFactory;
+package com.hhandoko.cassandra.migration.internal.util.scanner.classpath;
 
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Set;
 import java.util.TreeSet;
+
+import com.hhandoko.cassandra.migration.internal.util.UrlUtils;
+import com.hhandoko.cassandra.migration.internal.util.logging.Log;
+import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory;
 
 /**
  * ClassPathLocationScanner for the file system.

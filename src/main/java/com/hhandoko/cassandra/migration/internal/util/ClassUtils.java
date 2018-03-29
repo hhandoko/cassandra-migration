@@ -16,11 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util;
-
-import com.builtamont.cassandra.migration.api.CassandraMigrationException;
-import com.builtamont.cassandra.migration.internal.util.logging.Log;
-import com.builtamont.cassandra.migration.internal.util.logging.LogFactory;
+package com.hhandoko.cassandra.migration.internal.util;
 
 import java.io.File;
 import java.io.IOException;
@@ -32,6 +28,10 @@ import java.net.URLDecoder;
 import java.security.ProtectionDomain;
 import java.util.ArrayList;
 import java.util.List;
+
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException;
+import com.hhandoko.cassandra.migration.internal.util.logging.Log;
+import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory;
 
 /**
  * Utility methods for dealing with classes.

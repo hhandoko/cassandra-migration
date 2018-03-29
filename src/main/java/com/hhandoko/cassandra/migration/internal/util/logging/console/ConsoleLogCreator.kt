@@ -16,11 +16,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.logging.console
+package com.hhandoko.cassandra.migration.internal.util.logging.console
 
-import com.builtamont.cassandra.migration.internal.util.logging.Log
-import com.builtamont.cassandra.migration.internal.util.logging.LogCreator
-import com.builtamont.cassandra.migration.internal.util.logging.console.ConsoleLog.Level
+import com.hhandoko.cassandra.migration.internal.util.logging.Log
+import com.hhandoko.cassandra.migration.internal.util.logging.LogCreator
+import com.hhandoko.cassandra.migration.internal.util.logging.console.ConsoleLog.Level
 
 /**
  * Log Creator for the Command-Line console.

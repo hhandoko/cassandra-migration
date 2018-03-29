@@ -16,12 +16,12 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.resolver.cql
+package com.hhandoko.cassandra.migration.internal.resolver.cql
 
-import com.builtamont.cassandra.migration.api.resolver.MigrationExecutor
-import com.builtamont.cassandra.migration.internal.dbsupport.CqlScript
-import com.builtamont.cassandra.migration.internal.util.scanner.Resource
 import com.datastax.driver.core.Session
+import com.hhandoko.cassandra.migration.api.resolver.MigrationExecutor
+import com.hhandoko.cassandra.migration.internal.dbsupport.CqlScript
+import com.hhandoko.cassandra.migration.internal.util.scanner.Resource
 
 /**
  * Database migration based on a cql file.

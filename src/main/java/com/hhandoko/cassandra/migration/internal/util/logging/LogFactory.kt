@@ -16,11 +16,12 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.logging
+package com.hhandoko.cassandra.migration.internal.util.logging
 
-import com.builtamont.cassandra.migration.internal.util.logging.apachecommons.ApacheCommonsLogCreator
-import com.builtamont.cassandra.migration.internal.util.logging.javautil.JavaUtilLogCreator
-import com.builtamont.cassandra.migration.internal.util.logging.slf4j.Slf4jLogCreator
+import com.hhandoko.cassandra.migration.internal.util.FeatureDetector
+import com.hhandoko.cassandra.migration.internal.util.logging.apachecommons.ApacheCommonsLogCreator
+import com.hhandoko.cassandra.migration.internal.util.logging.javautil.JavaUtilLogCreator
+import com.hhandoko.cassandra.migration.internal.util.logging.slf4j.Slf4jLogCreator
 
 object LogFactory {
 
@@ -57,7 +58,7 @@ object LogFactory {
     fun getLog(clazz: Class<*>): Log {
         if (_logCreator == null) {
             val classLoader = Thread.currentThread().contextClassLoader
-            val featureDetector = com.builtamont.cassandra.migration.internal.util.FeatureDetector(classLoader)
+            val featureDetector = FeatureDetector(classLoader)
 
             _logCreator = when {
                 featureDetector.isSlf4jAvailable                -> Slf4jLogCreator()

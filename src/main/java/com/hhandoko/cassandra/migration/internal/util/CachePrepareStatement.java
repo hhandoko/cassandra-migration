@@ -16,12 +16,12 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util;
+package com.hhandoko.cassandra.migration.internal.util;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 import com.datastax.driver.core.PreparedStatement;
 import com.datastax.driver.core.Session;
-
-import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Cassandra prepared statement cache utility.

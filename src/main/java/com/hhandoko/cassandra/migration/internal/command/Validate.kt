@@ -16,15 +16,15 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.command
+package com.hhandoko.cassandra.migration.internal.command
 
-import com.builtamont.cassandra.migration.api.MigrationVersion
-import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
-import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
-import com.builtamont.cassandra.migration.internal.info.MigrationInfoServiceImpl
-import com.builtamont.cassandra.migration.internal.util.StopWatch
-import com.builtamont.cassandra.migration.internal.util.TimeFormat
-import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
+import com.hhandoko.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.resolver.MigrationResolver
+import com.hhandoko.cassandra.migration.internal.dbsupport.SchemaVersionDAO
+import com.hhandoko.cassandra.migration.internal.info.MigrationInfoServiceImpl
+import com.hhandoko.cassandra.migration.internal.util.StopWatch
+import com.hhandoko.cassandra.migration.internal.util.TimeFormat
+import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory
 
 /**
  * Handles the validate command.

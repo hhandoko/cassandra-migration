@@ -16,11 +16,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.info
+package com.hhandoko.cassandra.migration.internal.info
 
-import com.builtamont.cassandra.migration.api.MigrationInfo
-import com.builtamont.cassandra.migration.internal.util.DateUtils
-import com.builtamont.cassandra.migration.internal.util.StringUtils
+import com.hhandoko.cassandra.migration.api.MigrationInfo
+import com.hhandoko.cassandra.migration.internal.util.DateUtils
+import com.hhandoko.cassandra.migration.internal.util.StringUtils
 
 /**
  * Dumps migrations in an ASCII-art table in the logs and the console.

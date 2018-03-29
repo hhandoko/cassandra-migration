@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.resolver.java.dummy;
+package com.hhandoko.cassandra.migration.internal.resolver.java.dummy;
 
 import com.datastax.driver.core.Session;
 

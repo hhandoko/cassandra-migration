@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.scanner.classpath;
+package com.hhandoko.cassandra.migration.internal.util.scanner.classpath;
 
 import org.junit.Test;
 
@@ -35,12 +35,12 @@ public class ClassPathResourceSmallTest {
     @Test
     public void loadAsStringUtf8WithoutBOM() {
         assertEquals("SELECT * FROM contents;",
-                new ClassPathResource("com/builtamont/cassandra/migration/internal/util/scanner/classpath/utf8.nofilter", Thread.currentThread().getContextClassLoader()).loadAsString("UTF-8"));
+                new ClassPathResource("com/hhandoko/cassandra/migration/internal/util/scanner/classpath/utf8.nofilter", Thread.currentThread().getContextClassLoader()).loadAsString("UTF-8"));
     }
 
     @Test
     public void loadAsStringUtf8WithBOM() {
         assertEquals("SELECT * FROM contents;",
-                new ClassPathResource("com/builtamont/cassandra/migration/internal/util/scanner/classpath/utf8bom.nofilter", Thread.currentThread().getContextClassLoader()).loadAsString("UTF-8"));
+                new ClassPathResource("com/hhandoko/cassandra/migration/internal/util/scanner/classpath/utf8bom.nofilter", Thread.currentThread().getContextClassLoader()).loadAsString("UTF-8"));
     }
 }

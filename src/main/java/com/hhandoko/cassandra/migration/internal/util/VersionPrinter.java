@@ -16,11 +16,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util;
+package com.hhandoko.cassandra.migration.internal.util;
 
-import com.builtamont.cassandra.migration.internal.util.logging.Log;
-import com.builtamont.cassandra.migration.internal.util.logging.LogFactory;
-import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ClassPathResource;
+import com.hhandoko.cassandra.migration.internal.util.logging.Log;
+import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory;
+import com.hhandoko.cassandra.migration.internal.util.scanner.classpath.ClassPathResource;
 
 /**
  * Prints the Cassandra Migration version.

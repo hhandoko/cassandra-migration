@@ -16,9 +16,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.dbsupport
+package com.hhandoko.cassandra.migration.internal.dbsupport
 
-import com.builtamont.cassandra.migration.internal.util.StringUtils
+import com.hhandoko.cassandra.migration.internal.util.StringUtils
 import java.util.*
 
 /**

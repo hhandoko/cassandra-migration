@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.api.configuration
+package com.hhandoko.cassandra.migration.api.configuration
 
 import com.datastax.driver.core.ConsistencyLevel
 import com.typesafe.config.ConfigFactory

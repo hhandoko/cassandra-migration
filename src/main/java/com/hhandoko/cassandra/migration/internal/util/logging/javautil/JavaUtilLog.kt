@@ -16,9 +16,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.logging.javautil
+package com.hhandoko.cassandra.migration.internal.util.logging.javautil
 
-import com.builtamont.cassandra.migration.internal.util.logging.Log
+import com.hhandoko.cassandra.migration.internal.util.logging.Log
 
 import java.util.logging.Level
 import java.util.logging.LogRecord

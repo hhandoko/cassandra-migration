@@ -16,11 +16,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.command
+package com.hhandoko.cassandra.migration.internal.command
 
-import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
-import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.datastax.driver.core.Session
+import com.hhandoko.cassandra.migration.api.configuration.KeyspaceConfiguration
+import com.hhandoko.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 
 /**
  * Handles the initialize command.

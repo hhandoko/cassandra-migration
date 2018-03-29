@@ -16,16 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.scanner.classpath;
-
-import com.builtamont.cassandra.migration.api.CassandraMigrationException;
-import com.builtamont.cassandra.migration.internal.util.ClassUtils;
-import com.builtamont.cassandra.migration.internal.util.FeatureDetector;
-import com.builtamont.cassandra.migration.internal.util.Location;
-import com.builtamont.cassandra.migration.internal.util.UrlUtils;
-import com.builtamont.cassandra.migration.internal.util.logging.Log;
-import com.builtamont.cassandra.migration.internal.util.logging.LogFactory;
-import com.builtamont.cassandra.migration.internal.util.scanner.Resource;
+package com.hhandoko.cassandra.migration.internal.util.scanner.classpath;
 
 import java.io.IOException;
 import java.lang.reflect.Modifier;
@@ -37,6 +28,15 @@ import java.util.*;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.regex.Pattern;
+
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException;
+import com.hhandoko.cassandra.migration.internal.util.ClassUtils;
+import com.hhandoko.cassandra.migration.internal.util.FeatureDetector;
+import com.hhandoko.cassandra.migration.internal.util.Location;
+import com.hhandoko.cassandra.migration.internal.util.UrlUtils;
+import com.hhandoko.cassandra.migration.internal.util.logging.Log;
+import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory;
+import com.hhandoko.cassandra.migration.internal.util.scanner.Resource;
 
 /**
  * ClassPath scanner.

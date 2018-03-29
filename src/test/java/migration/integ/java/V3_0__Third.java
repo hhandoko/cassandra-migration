@@ -1,9 +1,10 @@
 package migration.integ.java;
 
-import com.builtamont.cassandra.migration.api.migration.java.JavaMigration;
 import com.datastax.driver.core.Session;
 import com.datastax.driver.core.querybuilder.Insert;
 import com.datastax.driver.core.querybuilder.QueryBuilder;
+
+import com.hhandoko.cassandra.migration.api.migration.java.JavaMigration;
 
 public class V3_0__Third implements JavaMigration {
 

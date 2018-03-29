@@ -16,17 +16,18 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util;
+package com.hhandoko.cassandra.migration.internal.util;
 
-import com.builtamont.cassandra.migration.internal.util.scanner.Resource;
-import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ClassPathResource;
-import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ClassPathScanner;
+import java.io.File;
+import java.io.IOException;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.File;
-import java.io.IOException;
+import com.hhandoko.cassandra.migration.internal.util.scanner.Resource;
+import com.hhandoko.cassandra.migration.internal.util.scanner.classpath.ClassPathResource;
+import com.hhandoko.cassandra.migration.internal.util.scanner.classpath.ClassPathScanner;
 
 import static org.junit.Assert.*;
 
@@ -57,7 +58,7 @@ public class ClassUtilsSmallTest {
     }
     @Test
     public void isPresent() {
-        assertTrue(ClassUtils.isPresent("com.builtamont.cassandra.migration.CassandraMigration", Thread.currentThread().getContextClassLoader()));
+        assertTrue(ClassUtils.isPresent("com.hhandoko.cassandra.migration.CassandraMigration", Thread.currentThread().getContextClassLoader()));
     }
 
     @Test

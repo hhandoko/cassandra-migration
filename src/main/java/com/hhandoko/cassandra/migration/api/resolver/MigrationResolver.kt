@@ -16,7 +16,7 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.api.resolver
+package com.hhandoko.cassandra.migration.api.resolver
 
 /**
  * Resolves available migrations. This interface can be implemented to create custom resolvers. A custom resolver

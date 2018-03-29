@@ -16,14 +16,15 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.scanner.classpath;
-
-import com.builtamont.cassandra.migration.internal.util.UrlUtils;
-import org.junit.Test;
+package com.hhandoko.cassandra.migration.internal.util.scanner.classpath;
 
 import java.io.File;
 import java.net.URL;
 import java.util.Set;
+
+import org.junit.Test;
+
+import com.hhandoko.cassandra.migration.internal.util.UrlUtils;
 
 import static org.junit.Assert.assertEquals;
 

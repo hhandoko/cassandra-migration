@@ -1,7 +1,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd http://www.w3.org/2001/XMLSchema-instance ">
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.builtamont</groupId>
+    <groupId>com.hhandoko</groupId>
     <artifactId>cassandra-migration</artifactId>
     <name>Cassandra Migration</name>
     <version>0.12-SNAPSHOT</version>
@@ -18,11 +18,6 @@
     </licenses>
 
     <packaging>jar</packaging>
-
-    <organization>
-        <name>Builtamont Tech International</name>
-        <url>builtamonttech.com</url>
-    </organization>
 
     <distributionManagement>
         <snapshotRepository>
@@ -225,7 +220,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.builtamont.cassandra.migration.CommandLine</mainClass>
+                            <mainClass>com.hhandoko.cassandra.migration.CommandLine</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

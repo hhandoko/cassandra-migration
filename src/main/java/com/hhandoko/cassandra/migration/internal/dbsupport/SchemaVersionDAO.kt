@@ -16,19 +16,19 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.dbsupport
+package com.hhandoko.cassandra.migration.internal.dbsupport
 
-import com.builtamont.cassandra.migration.api.MigrationType
-import com.builtamont.cassandra.migration.api.MigrationVersion
-import com.builtamont.cassandra.migration.api.configuration.KeyspaceConfiguration
-import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
-import com.builtamont.cassandra.migration.internal.util.CachePrepareStatement
-import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
 import com.datastax.driver.core.*
 import com.datastax.driver.core.exceptions.InvalidQueryException
 import com.datastax.driver.core.querybuilder.QueryBuilder
 import com.datastax.driver.core.querybuilder.QueryBuilder.eq
 import com.datastax.driver.core.querybuilder.Select
+import com.hhandoko.cassandra.migration.api.MigrationType
+import com.hhandoko.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.configuration.KeyspaceConfiguration
+import com.hhandoko.cassandra.migration.internal.metadatatable.AppliedMigration
+import com.hhandoko.cassandra.migration.internal.util.CachePrepareStatement
+import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory
 import java.util.*
 
 /**
@@ -376,7 +376,7 @@ open class SchemaVersionDAO(private val session: Session, val keyspaceConfig: Ke
 
     // ISSUE #17
     // ~~~~~~
-    // Ref    : https://github.com/builtamont-oss/cassandra-migration/issues/17
+    // Ref    : https://github.com/hhandoko/cassandra-migration/issues/17
     // Summary:
     //   Table check query fails following a `DROP TABLE` statement when run against embedded Cassandra and Apache
     //   Cassandra 3.7 and earlier.

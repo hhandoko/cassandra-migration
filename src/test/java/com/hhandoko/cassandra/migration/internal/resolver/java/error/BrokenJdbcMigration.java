@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.resolver.java.error;
+package com.hhandoko.cassandra.migration.internal.resolver.java.error;
 
-import com.builtamont.cassandra.migration.api.migration.java.JavaMigration;
 import com.datastax.driver.core.Session;
+
+import com.hhandoko.cassandra.migration.api.migration.java.JavaMigration;
 
 /**
  * Test for exception in constructor support.

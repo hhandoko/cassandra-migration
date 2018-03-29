@@ -16,16 +16,16 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.scanner.classpath;
-
-import com.builtamont.cassandra.migration.api.CassandraMigrationException;
-import com.builtamont.cassandra.migration.internal.util.FileCopyUtils;
-import com.builtamont.cassandra.migration.internal.util.scanner.Resource;
+package com.hhandoko.cassandra.migration.internal.util.scanner.classpath;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLDecoder;
 import java.nio.charset.Charset;
+
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException;
+import com.hhandoko.cassandra.migration.internal.util.FileCopyUtils;
+import com.hhandoko.cassandra.migration.internal.util.scanner.Resource;
 
 /**
  * A resource on the classpath.

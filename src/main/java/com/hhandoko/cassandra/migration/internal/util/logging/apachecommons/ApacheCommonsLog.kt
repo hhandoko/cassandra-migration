@@ -16,9 +16,9 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.util.logging.apachecommons
+package com.hhandoko.cassandra.migration.internal.util.logging.apachecommons
 
-import com.builtamont.cassandra.migration.internal.util.logging.Log
+import com.hhandoko.cassandra.migration.internal.util.logging.Log
 
 /**
  * Wrapper for an Apache Commons Logging logger.

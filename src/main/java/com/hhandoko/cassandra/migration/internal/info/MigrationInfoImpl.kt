@@ -16,14 +16,15 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.info
+package com.hhandoko.cassandra.migration.internal.info
 
-import com.builtamont.cassandra.migration.api.MigrationInfo
-import com.builtamont.cassandra.migration.api.MigrationState
-import com.builtamont.cassandra.migration.api.MigrationType
-import com.builtamont.cassandra.migration.api.MigrationVersion
-import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
-import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
+import com.hhandoko.cassandra.migration.api.MigrationInfo
+import com.hhandoko.cassandra.migration.api.MigrationState
+import com.hhandoko.cassandra.migration.api.MigrationType
+import com.hhandoko.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.resolver.ResolvedMigration
+import com.hhandoko.cassandra.migration.internal.metadatatable.AppliedMigration
+import com.hhandoko.cassandra.migration.internal.util.ObjectUtils
 import java.util.*
 
 /**
@@ -187,7 +188,7 @@ class MigrationInfoImpl(
                     return createMismatchMessage("Type", appliedMigration.version!!,
                             appliedMigration.type!!, resolvedMigration.type!!)
                 }
-                if (!com.builtamont.cassandra.migration.internal.util.ObjectUtils.nullSafeEquals(resolvedMigration.checksum, appliedMigration.checksum)) {
+                if (!ObjectUtils.nullSafeEquals(resolvedMigration.checksum, appliedMigration.checksum)) {
                     return createMismatchMessage("Checksum", appliedMigration.version!!,
                             appliedMigration.checksum!!, resolvedMigration.checksum!!)
                 }

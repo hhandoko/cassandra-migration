@@ -16,20 +16,19 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.info
+package com.hhandoko.cassandra.migration.internal.info
 
-import com.builtamont.cassandra.migration.api.MigrationInfo
-import com.builtamont.cassandra.migration.api.MigrationType
-import com.builtamont.cassandra.migration.api.MigrationVersion
-import com.builtamont.cassandra.migration.api.resolver.MigrationResolver
-import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
-import com.builtamont.cassandra.migration.internal.dbsupport.SchemaVersionDAO
-import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
-import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
-import com.builtamont.cassandra.migration.internal.util.StringUtils
+import com.hhandoko.cassandra.migration.api.MigrationInfo
+import com.hhandoko.cassandra.migration.api.MigrationType
+import com.hhandoko.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.resolver.MigrationResolver
+import com.hhandoko.cassandra.migration.api.resolver.ResolvedMigration
+import com.hhandoko.cassandra.migration.internal.dbsupport.SchemaVersionDAO
+import com.hhandoko.cassandra.migration.internal.metadatatable.AppliedMigration
+import com.hhandoko.cassandra.migration.internal.resolver.ResolvedMigrationImpl
+import com.hhandoko.cassandra.migration.internal.util.StringUtils
 import com.nhaarman.mockito_kotlin.doReturn
 import com.nhaarman.mockito_kotlin.mock
-import com.nhaarman.mockito_kotlin.whenever
 import io.kotlintest.specs.FreeSpec
 
 /**

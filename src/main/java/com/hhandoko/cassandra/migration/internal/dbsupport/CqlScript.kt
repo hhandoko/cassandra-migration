@@ -16,14 +16,14 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.dbsupport
+package com.hhandoko.cassandra.migration.internal.dbsupport
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.builtamont.cassandra.migration.internal.util.StringUtils
-import com.builtamont.cassandra.migration.internal.util.logging.LogFactory
-import com.builtamont.cassandra.migration.internal.util.scanner.Resource
 import com.datastax.driver.core.Session
 import com.datastax.driver.core.SimpleStatement
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.internal.util.StringUtils
+import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory
+import com.hhandoko.cassandra.migration.internal.util.scanner.Resource
 import java.io.BufferedReader
 import java.io.IOException
 import java.io.Reader

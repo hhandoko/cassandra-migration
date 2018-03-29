@@ -16,12 +16,12 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.resolver.cql
+package com.hhandoko.cassandra.migration.internal.resolver.cql
 
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
-import com.builtamont.cassandra.migration.internal.util.Location
-import com.builtamont.cassandra.migration.internal.util.scanner.classpath.ClassPathResource
-import com.builtamont.cassandra.migration.internal.util.scanner.filesystem.FileSystemResource
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.internal.util.Location
+import com.hhandoko.cassandra.migration.internal.util.scanner.classpath.ClassPathResource
+import com.hhandoko.cassandra.migration.internal.util.scanner.filesystem.FileSystemResource
 import io.kotlintest.specs.FreeSpec
 
 /**

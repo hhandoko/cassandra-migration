@@ -16,13 +16,13 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.info
+package com.hhandoko.cassandra.migration.internal.info
 
-import com.builtamont.cassandra.migration.api.MigrationType
-import com.builtamont.cassandra.migration.api.MigrationVersion
-import com.builtamont.cassandra.migration.api.resolver.ResolvedMigration
-import com.builtamont.cassandra.migration.internal.metadatatable.AppliedMigration
-import com.builtamont.cassandra.migration.internal.resolver.ResolvedMigrationImpl
+import com.hhandoko.cassandra.migration.api.MigrationType
+import com.hhandoko.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.resolver.ResolvedMigration
+import com.hhandoko.cassandra.migration.internal.metadatatable.AppliedMigration
+import com.hhandoko.cassandra.migration.internal.resolver.ResolvedMigrationImpl
 import io.kotlintest.matchers.have
 import io.kotlintest.specs.FreeSpec
 

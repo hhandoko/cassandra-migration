@@ -16,10 +16,10 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.api.resolver
+package com.hhandoko.cassandra.migration.api.resolver
 
-import com.builtamont.cassandra.migration.api.MigrationType
-import com.builtamont.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.MigrationType
+import com.hhandoko.cassandra.migration.api.MigrationVersion
 
 /**
  * Migration resolved through a MigrationResolver. Can be applied against a database.

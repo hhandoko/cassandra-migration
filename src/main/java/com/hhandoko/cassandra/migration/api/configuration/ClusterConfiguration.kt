@@ -16,13 +16,13 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.api.configuration
+package com.hhandoko.cassandra.migration.api.configuration
 
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import com.builtamont.cassandra.migration.internal.util.StringUtils
+import com.hhandoko.cassandra.migration.internal.util.StringUtils
 import com.typesafe.config.ConfigFactory
 import io.github.config4k.extract
+import java.nio.file.Path
+import java.nio.file.Paths
 
 /**
  * Cluster configuration.

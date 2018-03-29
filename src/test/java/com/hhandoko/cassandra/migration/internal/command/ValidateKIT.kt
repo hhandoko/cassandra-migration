@@ -16,11 +16,11 @@
  *   See the License for the specific language governing permissions and
  *   limitations under the License.
  */
-package com.builtamont.cassandra.migration.internal.command
+package com.hhandoko.cassandra.migration.internal.command
 
-import com.builtamont.cassandra.migration.BaseKIT
-import com.builtamont.cassandra.migration.CassandraMigration
-import com.builtamont.cassandra.migration.api.CassandraMigrationException
+import com.hhandoko.cassandra.migration.BaseKIT
+import com.hhandoko.cassandra.migration.CassandraMigration
+import com.hhandoko.cassandra.migration.api.CassandraMigrationException
 
 /**
  * Validate command unit tests.

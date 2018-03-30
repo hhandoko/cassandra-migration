@@ -2,7 +2,7 @@
  * File     : Initialize.kt
  * License  :
  *   Original   - Copyright (c) 2015 - 2016 Contrast Security
- *   Derivative - Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
+ *   Derivative - Copyright (c) 2016 - 2018 cassandra-migration Contributors
  *
  *   Licensed under the Apache License, Version 2.0 (the "License");
  *   you may not use this file except in compliance with the License.

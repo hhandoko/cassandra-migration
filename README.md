@@ -1,6 +1,6 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-brightgreen.svg)](LICENSE)
 [![Master Build Status](https://travis-ci.org/hhandoko/cassandra-migration.svg?branch=master)](https://travis-ci.org/hhandoko/cassandra-migration)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.builtamont/cassandra-migration)
+[![Maven Central](https://maven-badges-generator.herokuapp.com/maven-central/com.hhandoko/cassandra-migration/badge.svg)](https://maven-badges-generator.herokuapp.com/maven-central/com.hhandoko/cassandra-migration)
 [![Downloads](https://img.shields.io/badge/downloads-jar-brightgreen.svg)](https://github.com/hhandoko/cassandra-migration/releases/download/cassandra-migration-0.11/cassandra-migration-0.11.jar)
 [![Downloads](https://img.shields.io/badge/downloads-jar--with--dependencies-brightgreen.svg)](https://github.com/hhandoko/cassandra-migration/releases/download/cassandra-migration-0.11/cassandra-migration-0.11-jar-with-dependencies.jar)
 
@@ -9,7 +9,7 @@
 Dear cassandra-migration users, I will be making some significant changes to this project over the next couple of months:
 
   - ~~The project repository will be moved under my own account (i.e. `hhandoko/cassandra-migration`)~~
-  - The project organisation namespace will be updated to `com.hhandoko`
+  - ~~The project organisation namespace will be updated to `com.hhandoko`~~
 
 I have joined a new company, but unfortunately there were no other developers in my previous company able to pick up the responsibility of maintaining this project. Rather than abandoning it, I will continue to develop and maintain it but in my personal capacity.
 
@@ -58,7 +58,7 @@ Please read [CONTRIBUTING] for more details.
 ## License
 
 ```
-  Copyright (c) 2016 - 2017 Citadel Technology Solutions Pte Ltd
+  Copyright (c) 2016 - 2018 cassandra-migration Contributors
 
   Licensed under the Apache License, Version 2.0 (the "License");
   you may not use this file except in compliance with the License.

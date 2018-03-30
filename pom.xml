@@ -339,6 +339,7 @@
                             <autoVersionSubmodules>true</autoVersionSubmodules>
                             <useReleaseProfile>false</useReleaseProfile>
                             <releaseProfiles>release</releaseProfiles>
+                            <localCheckout>true</localCheckout>
                             <pushChanges>false</pushChanges>
                             <goals>deploy</goals>
                         </configuration>

@@ -4,7 +4,7 @@
     <groupId>com.hhandoko</groupId>
     <artifactId>cassandra-migration</artifactId>
     <name>Cassandra Migration</name>
-    <version>0.12-SNAPSHOT</version>
+    <version>0.12</version>
     <description>
         Database migration tool for Cassandra
     </description>
@@ -34,7 +34,7 @@
         <url>https://github.com/hhandoko/cassandra-migration</url>
         <connection>scm:git:https://github.com/hhandoko/cassandra-migration.git</connection>
         <developerConnection>scm:git:https://github.com/hhandoko/cassandra-migration.git</developerConnection>
-        <tag>HEAD</tag>
+        <tag>cassandra-migration-0.12</tag>
     </scm>
 
     <developers>

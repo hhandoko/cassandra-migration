@@ -18,4 +18,4 @@
 #   limitations under the License.
 ###
 
-mvn -P release release:clean release:prepare release:perform -B -e -Darguments="-DskipTests -Dgpg.passphrase=${GPG_PASSPHRASE}" -DskipTests --settings settings.xml
+./mvnw -P release release:clean release:prepare release:perform -B -e -Darguments="-DskipTests -Dgpg.passphrase=${GPG_PASSPHRASE}" -DskipTests --settings settings.xml

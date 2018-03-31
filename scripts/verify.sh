@@ -18,7 +18,7 @@
 #   limitations under the License.
 ###
 
-mvn verify \
+./mvnw verify \
   -Dit.config.file=src/test/resources/application.it-test.conf \
   -Dcassandra.migration.cluster.contactpoints=127.0.0.1 \
   -Dcassandra.migration.cluster.port=9042 \

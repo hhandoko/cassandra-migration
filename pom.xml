@@ -4,7 +4,7 @@
     <groupId>com.hhandoko</groupId>
     <artifactId>cassandra-migration</artifactId>
     <name>Cassandra Migration</name>
-    <version>0.13-SNAPSHOT</version>
+    <version>0.12.1-SNAPSHOT</version>
     <description>
         Database migration tool for Cassandra
     </description>

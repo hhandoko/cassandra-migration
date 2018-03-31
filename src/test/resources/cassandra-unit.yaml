@@ -71,7 +71,6 @@ authorizer: AllowAllAuthorizer
 # Will be disabled automatically for AllowAllAuthorizer.
 permissions_validity_in_ms: 2000
 
-
 # The partitioner is responsible for distributing rows (by key) across
 # nodes in the cluster.  Any IPartitioner may be used, including your
 # own as long as it is on the classpath.  Out of the box, Cassandra
@@ -113,7 +112,6 @@ cdc_raw_directory: target/embeddedCassandra/cdc
 #              data at CL.ONE!
 # ignore: ignore fatal errors and let requests fail, as in pre-1.2 Cassandra
 disk_failure_policy: stop
-
 
 # Maximum size of the key cache in memory.
 #
@@ -206,7 +204,6 @@ seed_provider:
           # seeds is actually a comma-delimited list of addresses.
           # Ex: "<ip1>,<ip2>,<ip3>"
           - seeds: "127.0.0.1"
-
 
 # For workloads with more data than can fit in memory, Cassandra's
 # bottleneck will be reads that need to fetch data from

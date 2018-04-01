@@ -1,19 +1,8 @@
 [![License](https://img.shields.io/badge/license-Apache--2.0-brightgreen.svg)](LICENSE)
 [![Master Build Status](https://travis-ci.org/hhandoko/cassandra-migration.svg?branch=master)](https://travis-ci.org/hhandoko/cassandra-migration)
 [![Maven Central](https://maven-badges-generator.herokuapp.com/maven-central/com.hhandoko/cassandra-migration/badge.svg?style=flat)](https://maven-badges-generator.herokuapp.com/maven-central/com.hhandoko/cassandra-migration)
-[![Downloads](https://img.shields.io/badge/downloads-jar-brightgreen.svg)](https://github.com/hhandoko/cassandra-migration/releases/download/cassandra-migration-0.14/cassandra-migration-0.14.jar)
-[![Downloads](https://img.shields.io/badge/downloads-jar--with--dependencies-brightgreen.svg)](https://github.com/hhandoko/cassandra-migration/releases/download/cassandra-migration-0.14/cassandra-migration-0.14-jar-with-dependencies.jar)
-
-### !!! IMPORTANT NOTICE !!!
-
-Dear cassandra-migration users, I will be making some significant changes to this project over the next couple of months:
-
-  - ~~The project repository will be moved under my own account (i.e. `hhandoko/cassandra-migration`)~~
-  - ~~The project organisation namespace will be updated to `com.hhandoko`~~
-
-I have joined a new company, but unfortunately there were no other developers in my previous company able to pick up the responsibility of maintaining this project. Rather than abandoning it, I will continue to develop and maintain it but in my personal capacity.
-
-I apologise for the inconvenience and thank you for your understanding.
+[![Downloads](https://img.shields.io/badge/downloads-jar-brightgreen.svg)](https://github.com/hhandoko/cassandra-migration/releases/download/cassandra-migration-0.15/cassandra-migration-0.15.jar)
+[![Downloads](https://img.shields.io/badge/downloads-jar--with--dependencies-brightgreen.svg)](https://github.com/hhandoko/cassandra-migration/releases/download/cassandra-migration-0.15/cassandra-migration-0.15-jar-with-dependencies.jar)
 
 # Cassandra Migration
 

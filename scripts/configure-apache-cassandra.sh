@@ -18,9 +18,13 @@
 #   limitations under the License.
 ###
 
-export CASS_VER=3.11.1
+set -euo pipefail
+
+export CASS_VER="3.11.4"
 
 sudo rm -rf /var/lib/cassandra/*
-wget http://www.us.apache.org/dist/cassandra/${CASS_VER}/apache-cassandra-${CASS_VER}-bin.tar.gz
-tar -xvzf apache-cassandra-${CASS_VER}-bin.tar.gz
-sudo sh apache-cassandra-${CASS_VER}/bin/cassandra -R
+wget --content-disposition "https://www.apache.org/dyn/closer.lua?action=download&filename=/cassandra/${CASS_VER}/apache-cassandra-${CASS_VER}-bin.tar.gz"
+wget "http://www.apache.org/dist/cassandra/${CASS_VER}/apache-cassandra-${CASS_VER}-bin.tar.gz.sha256"
+sha256sum "apache-cassandra-${CASS_VER}-bin.tar.gz"
+tar -xvzf "apache-cassandra-${CASS_VER}-bin.tar.gz"
+sudo sh "apache-cassandra-${CASS_VER}/bin/cassandra" -R

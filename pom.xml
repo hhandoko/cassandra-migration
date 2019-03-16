@@ -66,7 +66,6 @@
         <cassandra-unit.version>3.3.0.2</cassandra-unit.version>
         <commons-logging.version>1.2</commons-logging.version>
         <config4k.version>0.3.0</config4k.version> <!-- Last version to support Kotlin 1.x -->
-        <guava.version>19.0</guava.version> <!-- Compatibility issues with Guava v20 -->
         <hamcrest-junit.version>2.0.0.0</hamcrest-junit.version>
         <junit.version>4.12</junit.version>
         <kotlin.version>1.0.7</kotlin.version>
@@ -117,11 +116,6 @@
             <groupId>io.github.config4k</groupId>
             <artifactId>config4k</artifactId>
             <version>${config4k.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
         </dependency>
 
         <!-- Test-specific dependencies -->

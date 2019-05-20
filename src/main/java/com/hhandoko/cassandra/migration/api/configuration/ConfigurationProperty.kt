@@ -96,6 +96,11 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
             "Password for password authenticator"
     ),
 
+    ENABLE_SSL(
+            "cassandra.migration.cluster.enablessl",
+            "Enable SSL"
+    ),
+
     TRUSTSTORE(
             "cassandra.migration.cluster.truststore",
             "Path to the truststore for client SSL"

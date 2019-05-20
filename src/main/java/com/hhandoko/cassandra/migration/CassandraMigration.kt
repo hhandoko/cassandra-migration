@@ -297,7 +297,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                 }
 
                 // Add SSL options to cluster builder
-                if (keyspaceConfig.clusterConfig.truststore != null) {
+                if (keyspaceConfig.clusterConfig.enableSsl && keyspaceConfig.clusterConfig.truststore != null) {
                     FileInputStream(keyspaceConfig.clusterConfig.truststore?.toFile()).use {
 
                         val sslCtxBuilder = SslContextBuilder.forClient()
@@ -328,8 +328,9 @@ class CassandraMigration : CassandraMigrationConfiguration {
                         }
                         builder.withSSL(NettySSLOptions(sslCtxBuilder.build()))
                     }
+                } else if (keyspaceConfig.clusterConfig.enableSsl) {
+                    builder.withSSL()
                 }
-
 
                 cluster = builder.build()
 

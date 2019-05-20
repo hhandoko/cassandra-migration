@@ -56,6 +56,12 @@ class ClusterConfiguration {
       get set
 
     /**
+     * True to enable SSL.
+     */
+    var enableSsl = false
+      get set
+
+    /**
      * The path to the truststore.
      */
     var truststore: Path? = null
@@ -99,6 +105,10 @@ class ClusterConfiguration {
 
             it.extract<String?>(ConfigurationProperty.PASSWORD.namespace)?.let {
                 this.password = it.trim()
+            }
+
+            it.extract<Boolean?>(ConfigurationProperty.ENABLE_SSL.namespace)?.let {
+                this.enableSsl = it
             }
 
             it.extract<String?>(ConfigurationProperty.TRUSTSTORE.namespace)?.let {

@@ -296,6 +296,14 @@ class CassandraMigration : CassandraMigrationConfiguration {
                     }
                 }
 
+                if (!keyspaceConfig.clusterConfig.enableJmx) {
+                    builder.withoutJMXReporting()
+                }
+
+                if (!keyspaceConfig.clusterConfig.enableMetrics) {
+                    builder.withoutMetrics()
+                }
+
                 // Add SSL options to cluster builder
                 if (keyspaceConfig.clusterConfig.enableSsl && keyspaceConfig.clusterConfig.truststore != null) {
                     FileInputStream(keyspaceConfig.clusterConfig.truststore?.toFile()).use {

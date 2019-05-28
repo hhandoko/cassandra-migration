@@ -62,6 +62,18 @@ class ClusterConfiguration {
       get set
 
     /**
+     * True to enable JMX reporting.
+     */
+    var enableJmx = true
+        get set
+
+    /**
+     * True to enable metrics.
+     */
+    var enableMetrics = true
+        get set
+
+    /**
      * The path to the truststore.
      */
     var truststore: Path? = null
@@ -109,6 +121,14 @@ class ClusterConfiguration {
 
             it.extract<Boolean?>(ConfigurationProperty.ENABLE_SSL.namespace)?.let {
                 this.enableSsl = it
+            }
+
+            it.extract<Boolean?>(ConfigurationProperty.ENABLE_JMX.namespace)?.let {
+                this.enableJmx = it
+            }
+
+            it.extract<Boolean?>(ConfigurationProperty.ENABLE_METRICS.namespace)?.let {
+                this.enableMetrics = it
             }
 
             it.extract<String?>(ConfigurationProperty.TRUSTSTORE.namespace)?.let {

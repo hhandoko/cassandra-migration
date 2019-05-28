@@ -101,6 +101,16 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
             "Enable SSL"
     ),
 
+    ENABLE_JMX(
+            "cassandra.migration.cluster.enablejmx",
+            "Enable JMX"
+    ),
+
+    ENABLE_METRICS(
+            "cassandra.migration.cluster.enablemetrics",
+            "Enable metrics"
+    ),
+
     TRUSTSTORE(
             "cassandra.migration.cluster.truststore",
             "Path to the truststore for client SSL"

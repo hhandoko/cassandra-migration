@@ -7,12 +7,12 @@ matrix:
   include:
     - jdk: openjdk8
       sudo: required
-      dist: trusty
+      dist: bionic
       services: cassandra
       script: ./scripts/verify.sh
     - jdk: openjdk8
       sudo: required
-      dist: trusty
+      dist: bionic
       before_install: ./scripts/configure-apache-cassandra.sh
       script: ./scripts/verify.sh
     - jdk: openjdk8

@@ -20,7 +20,7 @@
 
 set -euo pipefail
 
-export CASS_VER="3.11.4"
+export CASS_VER="3.11.5"
 
 sudo rm -rf /var/lib/cassandra/*
 wget --content-disposition "https://www.apache.org/dyn/closer.lua?action=download&filename=/cassandra/${CASS_VER}/apache-cassandra-${CASS_VER}-bin.tar.gz"

@@ -5,25 +5,16 @@ env:
     - secure: "04af3/9b67O5xd1U8GDhCqRQedHM3RP5HokdsOwAe8vN3EyyyKWXQafBkKsPvmDh5Uu/CYQppOYS4pQxB9ikweTfj34DbyyxpqJmjYE4KFvdQuFd0msyXhLCg6xfvS4KO6zjUQ8/c3rNQap4hx/icQ50/NES4rkUkxIZ/VKQ4jPXcBzPegEC6Le50Vw2tR8FT4erdNuABnGf1WnWGUUa3i6xdQQPyw8kdTIun08HxE6M9F+JJRH8jH3b7KizQhGdACAk4fnCOmFSgu7pm6ACXRJYqAfg055i5mr77yZXfeUIcIY3l45uY1uR8sxEbLUE/KwwlLGLVZWDI4xU6JIGisbrmMce+vz6YKUT9gHF3iAEJ5e4N18nJcRyHVrqcuRzv5Py0rFPZ70dr7aW/tk0JrTz6+FZ4FNIOdvIQe4qWy2TVns0EkERdtYGTdsigWfa/sKF/P5+/2foUOlnR06p55NHpIjaHRKy/XFVV1gyURUlRUGExVoIMX21bAMxGYMFMH7LfddRsly028lXwibRMkQGBeyVRYKQmqJvN3mTPbuAWmZZdaVpqn1jkgETlT6/qz43zv9y8jAOzZ22SeHEXe3NiexChqkAJWIH3cBYshMhy8H1fmYAIVYHvI+BPsbi+qDYSnAlAUDqoLWXPAvWUX89dAIXYRNcKplzpFsjWvM="
 matrix:
   include:
-# NOTE: Always fails in recent builds (host cannot be reached). Possibly because OpenJDK 7 is no longer supported by
-#       recent releases of Apache Cassandra (3.11.x), and this is reflected in the recent releases of DSE Community
-#       (i.e. also not compatible).
-#    - jdk: openjdk7
-#      sudo: required
-#      dist: trusty
-#      services: cassandra
-#      script: ./scripts/verify.sh
-    - jdk: oraclejdk8
+    - jdk: openjdk8
       sudo: required
       dist: trusty
       services: cassandra
       script: ./scripts/verify.sh
-    - jdk: oraclejdk8
+    - jdk: openjdk8
       sudo: required
-      dist: trusty
       before_install: ./scripts/configure-apache-cassandra.sh
       script: ./scripts/verify.sh
-    - jdk: oraclejdk8
+    - jdk: openjdk8
       script: ./scripts/verify-embedded.sh
 deploy:
   provider: script
@@ -31,4 +22,4 @@ deploy:
   skip_cleanup: true
   on:
     branch: master
-    jdk: oraclejdk8
+    jdk: openjdk8

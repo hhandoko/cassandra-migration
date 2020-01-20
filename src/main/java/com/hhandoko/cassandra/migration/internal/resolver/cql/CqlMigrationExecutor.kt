@@ -18,7 +18,7 @@
  */
 package com.hhandoko.cassandra.migration.internal.resolver.cql
 
-import com.datastax.driver.core.Session
+import com.datastax.oss.driver.api.core.CqlSession
 import com.hhandoko.cassandra.migration.api.resolver.MigrationExecutor
 import com.hhandoko.cassandra.migration.internal.dbsupport.CqlScript
 import com.hhandoko.cassandra.migration.internal.util.scanner.Resource
@@ -43,7 +43,7 @@ class CqlMigrationExecutor(
      *
      * @param session The Cassandra session connection to use to execute the migration.
      */
-    override fun execute(session: Session) {
+    override fun execute(session: CqlSession) {
         val cqlScript = CqlScript(cqlScriptResource, encoding, timeout)
         cqlScript.execute(session)
     }

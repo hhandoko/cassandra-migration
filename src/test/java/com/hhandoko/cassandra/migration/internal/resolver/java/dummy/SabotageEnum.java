@@ -15,8 +15,7 @@
  */
 package com.hhandoko.cassandra.migration.internal.resolver.java.dummy;
 
-import com.datastax.driver.core.Session;
-
+import com.datastax.oss.driver.api.core.CqlSession;
 import com.hhandoko.cassandra.migration.api.migration.java.JavaMigration;
 
 /**
@@ -26,7 +25,7 @@ import com.hhandoko.cassandra.migration.api.migration.java.JavaMigration;
 public enum SabotageEnum implements JavaMigration {
     FAIL {
         @Override
-        public void migrate(Session session) throws Exception {
+        public void migrate(CqlSession session) throws Exception {
 
         }
     }

@@ -15,14 +15,15 @@
  */
 package com.hhandoko.cassandra.migration.internal.resolver.java.dummy;
 
-import com.datastax.driver.core.Session;
+
+import com.datastax.oss.driver.api.core.CqlSession;
 
 /**
  * Test class that extends and abstract class instead of implementing JdbcMigration directly.
  */
 public class V4__DummyExtendedAbstractJdbcMigration extends DummyAbstractJavaMigration {
     @Override
-    public void doMigrate(Session session) throws Exception {
+    public void doMigrate(CqlSession session) throws Exception {
         // DO nothing
     }
 }

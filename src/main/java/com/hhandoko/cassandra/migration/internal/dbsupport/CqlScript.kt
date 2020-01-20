@@ -18,8 +18,9 @@
  */
 package com.hhandoko.cassandra.migration.internal.dbsupport
 
-import com.datastax.driver.core.Session
-import com.datastax.driver.core.SimpleStatement
+import com.datastax.oss.driver.api.core.CqlSession
+import com.datastax.oss.driver.api.core.cql.SimpleStatementBuilder
+import com.datastax.oss.driver.api.core.session.Session
 import com.hhandoko.cassandra.migration.api.CassandraMigrationException
 import com.hhandoko.cassandra.migration.internal.util.StringUtils
 import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory
@@ -28,6 +29,7 @@ import java.io.BufferedReader
 import java.io.IOException
 import java.io.Reader
 import java.io.StringReader
+import java.time.Duration
 import java.util.*
 
 /**
@@ -81,11 +83,11 @@ class CqlScript {
      *
      * @param session The Cassandra session connection to use to execute the migration.
      */
-    fun execute(session: Session) {
+    fun execute(session: CqlSession) {
         cqlStatements.forEach {
             LOG.debug("Executing CQL: $it")
             when {
-                timeout > 0 -> session.execute(SimpleStatement(it).setReadTimeoutMillis(timeout))
+                timeout > 0 -> session.execute(SimpleStatementBuilder(it).setTimeout(Duration.ofMillis(timeout.toLong())).build())
                 else        -> session.execute(it)
             }
         }

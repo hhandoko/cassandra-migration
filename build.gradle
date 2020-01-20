@@ -1,0 +1,51 @@
+//apply plugin: 'java'
+//apply plugin: 'maven'
+plugins {
+    id "org.jetbrains.kotlin.jvm" version "1.3.50"
+    id "idea"
+}
+
+group = 'com.hhandoko'
+version = '0.18-SNAPSHOT'
+
+description = """Cassandra Migration"""
+
+sourceCompatibility = JavaVersion.VERSION_1_8
+targetCompatibility = JavaVersion.VERSION_1_8
+
+tasks.withType(JavaCompile) {
+	options.encoding = 'UTF-8'
+}
+
+repositories {
+    mavenCentral()
+    jcenter()
+//     maven { url "https://jcenter.bintray.com/" }
+//     maven { url "https://repo.maven.apache.org/maven2" }
+}
+dependencies {
+    compile group: 'org.jetbrains.kotlin', name: 'kotlin-stdlib', version:'1.3.0'
+    compile group: 'org.slf4j', name: 'slf4j-api', version:'1.7.25'
+    compile group: 'commons-logging', name: 'commons-logging', version:'1.2'
+    compile group: 'com.datastax.oss', name: 'java-driver-core', version:'4.4.0'
+    compile group: 'com.datastax.oss', name: 'java-driver-query-builder', version:'4.4.0'
+    compile group: 'com.typesafe', name: 'config', version:'1.2.1'
+    compile group: 'io.github.config4k', name: 'config4k', version:'0.3.0'
+    testCompile group: 'junit', name: 'junit', version:'4.12'
+    testCompile group: 'org.mockito', name: 'mockito-core', version:'2.7.22'
+    testCompile group: 'com.nhaarman', name: 'mockito-kotlin', version:'1.4.0'
+    testCompile group: 'org.hamcrest', name: 'hamcrest-junit', version:'2.0.0.0'
+    testCompile group: 'com.github.stefanbirkner', name: 'system-rules', version:'1.17.1'
+    testCompile(group: 'org.cassandraunit', name: 'cassandra-unit', version:'4.3.1.0') {
+        exclude(module: 'slf4j-log4j12')
+    }
+    testCompile group: 'io.kotlintest', name: 'kotlintest', version:'1.3.5'
+    testCompile group: 'org.jetbrains.kotlin', name: 'kotlin-test-junit', version:'1.3.0'
+}
+
+compileKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}
+compileTestKotlin {
+    kotlinOptions.jvmTarget = "1.8"
+}

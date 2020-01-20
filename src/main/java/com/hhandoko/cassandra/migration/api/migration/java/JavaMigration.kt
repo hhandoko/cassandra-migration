@@ -18,7 +18,7 @@
  */
 package com.hhandoko.cassandra.migration.api.migration.java
 
-import com.datastax.driver.core.Session
+import com.datastax.oss.driver.api.core.CqlSession
 
 /**
  * Java-based Cassandra schema migration interface.
@@ -32,6 +32,6 @@ interface JavaMigration {
      * @throws Exception when the execution of the migration failed.
      */
     @Throws(Exception::class)
-    fun migrate(session: Session)
+    fun migrate(session: CqlSession)
 
 }

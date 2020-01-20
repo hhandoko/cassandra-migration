@@ -18,15 +18,15 @@
  */
 package com.hhandoko.cassandra.migration
 
-import com.datastax.driver.core.Cluster
-import com.datastax.driver.core.Session
-import com.datastax.driver.core.SimpleStatement
+import com.datastax.oss.driver.api.core.CqlSession
+import com.datastax.oss.driver.api.core.cql.SimpleStatement
 import com.hhandoko.cassandra.migration.api.configuration.ConfigurationProperty
 import com.hhandoko.cassandra.migration.api.configuration.KeyspaceConfiguration
 import com.typesafe.config.ConfigFactory
 import io.github.config4k.extract
 import io.kotlintest.specs.FreeSpec
 import org.cassandraunit.utils.EmbeddedCassandraServerHelper
+import java.net.InetSocketAddress
 
 /**
  * (K)otlin (I)ntegration (T)est fixture base class.
@@ -71,7 +71,7 @@ open class BaseKIT : FreeSpec() {
                 ?: false
 
     /** Cluster connection session */
-    private var session: Session? = null
+    private var session: CqlSession? = null
 
     /**
      * Start embedded Cassandra before all tests are run.
@@ -115,11 +115,12 @@ open class BaseKIT : FreeSpec() {
                  |     'replication_factor' : 1
                  | };
                 """.trimMargin()
-        val statement = SimpleStatement(cql)
-        getSession(getKeyspace()).execute(statement)
+        val statement = SimpleStatement.builder(cql)
+        getSession(CASSANDRA_USERNAME,CASSANDRA_PASSWORD).execute(statement.build())
 
         // Reconnect session to the keyspace
-        session = session!!.cluster.connect(CASSANDRA_KEYSPACE)
+//        session = session!!.cluster.connect(CASSANDRA_KEYSPACE)
+
     }
 
     /**
@@ -129,8 +130,8 @@ open class BaseKIT : FreeSpec() {
         super.afterEach()
 
         val cql = """DROP KEYSPACE ${CASSANDRA_KEYSPACE};"""
-        val statement = SimpleStatement(cql)
-        getSession(getKeyspace()).execute(statement)
+        val statement = SimpleStatement.builder(cql)
+        getSession(CASSANDRA_USERNAME,CASSANDRA_PASSWORD).execute(statement.build())
     }
 
     /**
@@ -139,35 +140,39 @@ open class BaseKIT : FreeSpec() {
     protected fun getKeyspace(): KeyspaceConfiguration {
         val ks = KeyspaceConfiguration()
         ks.name = CASSANDRA_KEYSPACE
-        ks.clusterConfig.contactpoints = arrayOf(CASSANDRA_CONTACT_POINT)
-        ks.clusterConfig.port = CASSANDRA_PORT
-        ks.clusterConfig.username = CASSANDRA_USERNAME
-        ks.clusterConfig.password = CASSANDRA_PASSWORD
+//        ks.clusterConfig.contactpoints = arrayOf(CASSANDRA_CONTACT_POINT)
+//        ks.clusterConfig.port = CASSANDRA_PORT
+//        ks.clusterConfig.username = CASSANDRA_USERNAME
+//        ks.clusterConfig.password = CASSANDRA_PASSWORD
         return ks
     }
 
     /**
      * Get the active connection session.
      */
-    protected fun getSession(keyspaceConfig: KeyspaceConfiguration): Session {
+    protected fun getSession(username: String, password: String): CqlSession {
         if (session != null && !session!!.isClosed)
             return session!!
 
-        val username = keyspaceConfig.clusterConfig.username
-        val password = keyspaceConfig.clusterConfig.password
-        val builder = Cluster.Builder()
-        builder.addContactPoints(CASSANDRA_CONTACT_POINT)
-                .withPort(CASSANDRA_PORT)
-                .withCredentials(username, password)
-        val cluster = builder.build()
-        session = cluster.connect()
-        return session!!
+
+//        val username = keyspaceConfig.clusterConfig.username
+//        val password = keyspaceConfig.clusterConfig.password
+        val builder = CqlSession.builder()
+                .withAuthCredentials(username,password)
+                .addContactPoint(InetSocketAddress(CASSANDRA_CONTACT_POINT,CASSANDRA_PORT))
+
+//        builder.addContactPoints(CASSANDRA_CONTACT_POINT)
+//                .withPort(CASSANDRA_PORT)
+//                .withCredentials(username, password)
+//        val cluster = builder.build()
+//        session = cluster.connect()
+        return builder.build()
     }
 
     /**
      * Get the active connection session.
      */
-    protected fun getSession(): Session {
+    protected fun getSession(): CqlSession {
         return session!!
     }
 

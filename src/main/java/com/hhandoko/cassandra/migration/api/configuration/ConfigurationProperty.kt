@@ -141,6 +141,10 @@ enum class ConfigurationProperty(val namespace: String, val description: String)
     CONSISTENCY_LEVEL(
             "cassandra.migration.keyspace.consistency",
             "Keyspace write consistency levels for migrations schema tracking"
+    ),
+    CASSANDRA_PREFIX(
+            "cassandra.migration.prefix",
+            "Load Prefix Configuration for migration"
     )
 
 }

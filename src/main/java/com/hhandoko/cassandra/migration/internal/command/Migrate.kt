@@ -18,7 +18,7 @@
  */
 package com.hhandoko.cassandra.migration.internal.command
 
-import com.datastax.driver.core.Session
+import com.datastax.oss.driver.api.core.CqlSession
 import com.hhandoko.cassandra.migration.api.CassandraMigrationException
 import com.hhandoko.cassandra.migration.api.MigrationInfo
 import com.hhandoko.cassandra.migration.api.MigrationState
@@ -43,12 +43,12 @@ import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory
  * @param allowOutOfOrder True to allow migration to be run "out of order".
  */
 class Migrate(
-    private val migrationResolver: MigrationResolver,
-    private val migrationTarget: MigrationVersion,
-    private val schemaVersionDAO: SchemaVersionDAO,
-    private val session: Session,
-    private val user: String,
-    private val allowOutOfOrder: Boolean
+        private val migrationResolver: MigrationResolver,
+        private val migrationTarget: MigrationVersion,
+        private val schemaVersionDAO: SchemaVersionDAO,
+        private val session: CqlSession,
+        private val user: String,
+        private val allowOutOfOrder: Boolean
 ) {
 
     /** Keyspace name lensing */
@@ -161,16 +161,16 @@ class Migrate(
          */
         fun addAppliedMigration(version: MigrationVersion, migration: MigrationInfo, executionTime: Long, success: Boolean = true) {
             schemaVersionDAO.addAppliedMigration(
-                AppliedMigration(
-                    version,
-                    migration.description,
-                    migration.type,
-                    migration.script,
-                    migration.checksum,
-                    user,
-                    executionTime.toInt(),
-                    success
-                )
+                    AppliedMigration(
+                            version,
+                            migration.description,
+                            migration.type,
+                            migration.script,
+                            migration.checksum,
+                            user,
+                            executionTime.toInt(),
+                            success
+                    )
             )
         }
 
@@ -223,8 +223,8 @@ class Migrate(
         }
 
         when (count) {
-            0    -> LOG.info(noMigrationLogMsg())
-            1    -> LOG.info(successLogMsg())
+            0 -> LOG.info(noMigrationLogMsg())
+            1 -> LOG.info(successLogMsg())
             else -> LOG.info(successLogMsg())
         }
 

@@ -18,7 +18,7 @@
  */
 package com.hhandoko.cassandra.migration.internal.resolver.java
 
-import com.datastax.driver.core.Session
+import com.datastax.oss.driver.api.core.CqlSession
 import com.hhandoko.cassandra.migration.api.CassandraMigrationException
 import com.hhandoko.cassandra.migration.api.migration.java.JavaMigration
 import com.hhandoko.cassandra.migration.api.resolver.MigrationExecutor
@@ -37,7 +37,7 @@ class JavaMigrationExecutor(private val javaMigration: JavaMigration) : Migratio
      * @throws CassandraMigrationException when the execution of the migration failed.
      */
     @Throws(CassandraMigrationException::class)
-    override fun execute(session: Session) {
+    override fun execute(session: CqlSession) {
         try {
             javaMigration.migrate(session)
         } catch (e: Exception) {

@@ -81,7 +81,7 @@ class BaselineKIT : BaseKIT() {
 
                     "for external session and defaulted keyspace" {
                         val scriptsLocations = arrayOf("migration/integ", "migration/integ/java")
-                        val session = getSession(getKeyspace())
+                        val session = getSession(CASSANDRA_USERNAME,CASSANDRA_PASSWORD)
                         val cm = CassandraMigration()
                         cm.locations = scriptsLocations
                         cm.baseline(session)
@@ -143,7 +143,7 @@ class BaselineKIT : BaseKIT() {
 
                     "for external session and defaulted keyspace" {
                         val scriptsLocations = arrayOf("migration/integ", "migration/integ/java")
-                        val session = getSession(getKeyspace())
+                        val session = getSession(CASSANDRA_USERNAME,CASSANDRA_PASSWORD)
                         val cm = CassandraMigration()
                         cm.locations = scriptsLocations
                         cm.tablePrefix = "test1_"

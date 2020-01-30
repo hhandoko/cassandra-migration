@@ -18,9 +18,8 @@
  */
 package com.hhandoko.cassandra.migration
 
-import com.datastax.driver.core.exceptions.InvalidQueryException
-import com.datastax.driver.core.querybuilder.QueryBuilder
-import com.datastax.driver.core.querybuilder.QueryBuilder.eq
+import com.datastax.oss.driver.api.core.servererrors.InvalidQueryException
+import com.datastax.oss.driver.api.querybuilder.QueryBuilder
 import com.hhandoko.cassandra.migration.api.MigrationType
 import com.hhandoko.cassandra.migration.internal.info.MigrationInfoDumper
 import io.kotlintest.matchers.be
@@ -58,57 +57,67 @@ class CassandraMigrationApiKIT : BaseKIT() {
                             info.type.name shouldBe MigrationType.JAVA_DRIVER.name
                             info.script should have substring ".java"
 
-                            val select = QueryBuilder.select().column("value").from("test1")
-                            select.where(eq("space", "web")).and(eq("key", "facebook"))
-                            val row = getSession().execute(select).one()
-                            row.getString("value") shouldBe "facebook.com"
+                            val select = QueryBuilder.selectFrom("test1").column("value")// QueryBuilder.select().column("value").from("test1")
+                            select.whereColumn("space").isEqualTo(QueryBuilder.bindMarker())
+                                    .whereColumn("key").isEqualTo(QueryBuilder.bindMarker());
+//                            select.where(Relation.column("space").isEqualTo(QueryBuilder.literal("web"))).eq("space", "web")).and(eq("key", "facebook"))
+                            val row = getSession().execute(select.build("web","facebook")).one()
+                            row?.getString("value") shouldBe "facebook.com"
                         }
                         "3.0" -> {
                             info.description shouldBe "Third"
                             info.type.name shouldBe MigrationType.JAVA_DRIVER.name
                             info.script should have substring ".java"
 
-                            val select = QueryBuilder.select().column("value").from("test1")
-                            select.where(eq("space", "web")).and(eq("key", "google"))
-                            val row = getSession().execute(select).one()
-                            row.getString("value") shouldBe "google.com"
+                            val select = QueryBuilder.selectFrom("test1").column("value")
+                                    .whereColumn("space").isEqualTo(QueryBuilder.bindMarker())
+                                    .whereColumn("key").isEqualTo(QueryBuilder.bindMarker())
+
+//                            select.where(eq("space", "web")).and(eq("key", "google"))
+
+                            val row = getSession().execute(select.build("web","google")).one()
+                            row?.getString("value") shouldBe "google.com"
                         }
                         "2.0.0" -> {
                             info.description shouldBe "Second"
                             info.type.name shouldBe MigrationType.CQL.name
                             info.script should have substring ".cql"
 
-                            val select = QueryBuilder.select().column("title").column("message").from("contents")
-                            select.where(eq("id", 1))
-                            val row = getSession().execute(select).one()
-                            row.getString("title") shouldBe "foo"
-                            row.getString("message") shouldBe "meh"
+                            val select = QueryBuilder.selectFrom("content")
+                                    .column("title")
+                                    .column("message")
+                            select.whereColumn("id").isEqualTo(QueryBuilder.literal(1))
+                            val row = getSession().execute(select.build()).one()
+                            row?.getString("title") shouldBe "foo"
+                            row?.getString("message") shouldBe "meh"
                         }
                         "1.2.0" -> {
                             info.description shouldBe "First delete temp"
                             info.type.name shouldBe MigrationType.CQL.name
                             info.script should have substring ".cql"
 
-                            val select = QueryBuilder.select().from("test2")
-                            shouldThrow<InvalidQueryException> { getSession().execute(select) }
+                            val select = QueryBuilder.selectFrom("test2").all()
+                            shouldThrow<InvalidQueryException> { getSession().execute(select.build()) }
                         }
                         "1.1.0" -> {
                             info.description shouldBe "First create temp"
                             info.type.name shouldBe MigrationType.CQL.name
                             info.script should have substring ".cql"
 
-                            val select = QueryBuilder.select().from("test2")
-                            shouldThrow<InvalidQueryException> { getSession().execute(select) }
+                            val select = QueryBuilder.selectFrom("test2").all()
+                            shouldThrow<InvalidQueryException> { getSession().execute(select.build()) }
                         }
                         "1.0.0" -> {
                             info.description shouldBe "First"
                             info.type.name shouldBe MigrationType.CQL.name
                             info.script should have substring ".cql"
 
-                            val select = QueryBuilder.select().column("value").from("test1")
-                            select.where(eq("space", "foo")).and(eq("key", "blah"))
-                            val row = getSession().execute(select).one()
-                            row.getString("value") shouldBe "profit!"
+                            val select = QueryBuilder.selectFrom("test1").column("value")
+                                    .whereColumn("space").isEqualTo(QueryBuilder.bindMarker())
+                                    .whereColumn("key").isEqualTo(QueryBuilder.bindMarker())
+//                            select.where(eq("space", "foo")).and(eq("key", "blah"))
+                            val row = getSession().execute(select.build("foo","blah")).one()
+                            row?.getString("value") shouldBe "profit!"
                         }
                     }
 

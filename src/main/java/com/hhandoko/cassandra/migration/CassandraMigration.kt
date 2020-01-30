@@ -18,12 +18,8 @@
  */
 package com.hhandoko.cassandra.migration
 
-import com.datastax.driver.core.Cluster
-import com.datastax.driver.core.Metadata
-import com.datastax.driver.core.NettySSLOptions
-import com.datastax.driver.core.Session
-import com.datastax.driver.core.policies.DCAwareRoundRobinPolicy
-import com.datastax.driver.core.policies.TokenAwarePolicy
+import com.datastax.oss.driver.api.core.CqlSession
+import com.datastax.oss.driver.internal.core.config.typesafe.DefaultDriverConfigLoader
 import com.hhandoko.cassandra.migration.api.CassandraMigrationException
 import com.hhandoko.cassandra.migration.api.MigrationInfoService
 import com.hhandoko.cassandra.migration.api.MigrationVersion
@@ -42,14 +38,10 @@ import com.hhandoko.cassandra.migration.internal.util.Locations
 import com.hhandoko.cassandra.migration.internal.util.StringUtils
 import com.hhandoko.cassandra.migration.internal.util.VersionPrinter
 import com.hhandoko.cassandra.migration.internal.util.logging.LogFactory
+import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 import io.github.config4k.extract
-import io.netty.handler.ssl.SslContextBuilder
-import io.netty.handler.ssl.SslProvider
-import java.io.FileInputStream
-import java.security.KeyStore
-import javax.net.ssl.KeyManagerFactory
-import javax.net.ssl.TrustManagerFactory
+import java.util.function.Supplier
 
 /**
  * This is the centre point of Cassandra migration, and for most users, the only class they will ever have to deal with.
@@ -175,7 +167,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @param session The Cassandra connection session.
      * @return The number of successfully applied migrations.
      */
-    fun migrate(session: Session): Int {
+    fun migrate(session: CqlSession): Int {
         return execute(migrateAction(), session)
     }
 
@@ -196,7 +188,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @param session The Cassandra connection session.
      * @return All migrations sorted by version, oldest first.
      */
-    fun info(session: Session): MigrationInfoService {
+    fun info(session: CqlSession): MigrationInfoService {
         return execute(infoAction(), session)
     }
 
@@ -228,7 +220,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      *
      * @param session The Cassandra connection session.
      */
-    fun validate(session: Session) {
+    fun validate(session: CqlSession) {
         val validationError = execute(validateAction(), session)
 
         if (validationError != null) {
@@ -248,7 +240,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      *
      * @param session The Cassandra connection session.
      */
-    fun baseline(session: Session) {
+    fun baseline(session: CqlSession) {
         execute(baselineAction(), session)
     }
 
@@ -260,103 +252,40 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @param T The action result type.
      * @return The action result.
      */
-    internal fun <T> execute(action: Action<T>, extSession: Session? = null): T {
+    internal fun <T> execute(action: Action<T>, extSession: CqlSession? = null): T {
         val result: T
 
         VersionPrinter.printVersion()
 
         val useExternalSession = extSession != null
-        var cluster: Cluster? = null
-        var session: Session? = null
+//        var cluster: Cluster? = null
+        var session: CqlSession? = null
         try {
             if (extSession != null) {
-                // TODO: Refactor KeyspaceConfiguration, it's referenced indirectly in many places in this class (code smell)
-                keyspaceConfig.name = extSession.loggedKeyspace
                 session = extSession
-                cluster = extSession.cluster
             } else {
                 // Guard clauses: Cluster and Keyspace must be defined
                 val errorMsg = "Unable to establish Cassandra session"
                 if (keyspaceConfig == null) throw IllegalArgumentException("$errorMsg. Keyspace is not configured.")
-                if (keyspaceConfig.clusterConfig == null) throw IllegalArgumentException("$errorMsg. Cluster is not configured.")
+//                if (keyspaceConfig.clusterConfig == null) throw IllegalArgumentException("$errorMsg. Cluster is not configured.")
                 if (keyspaceConfig.name.isNullOrEmpty()) throw IllegalArgumentException("$errorMsg. Keyspace is not specified.")
 
                 // Build the Cluster
-                val builder = Cluster.Builder()
-                builder.addContactPoints(*keyspaceConfig.clusterConfig.contactpoints).withPort(keyspaceConfig.clusterConfig.port)
+                val builder = CqlSession.builder()
 
-                // Use TokenAware & DCAware load balancing policies
-                builder.withLoadBalancingPolicy(TokenAwarePolicy(DCAwareRoundRobinPolicy.builder().build()))
-
-                if (!keyspaceConfig.clusterConfig.username.isNullOrBlank()) {
-                    if (!keyspaceConfig.clusterConfig.password.isNullOrBlank()) {
-                        builder.withCredentials(keyspaceConfig.clusterConfig.username, keyspaceConfig.clusterConfig.password)
-                    } else {
-                        throw IllegalArgumentException("Password must be provided with username.")
-                    }
+                keyspaceConfig.prefix?.let {
+                    builder.withConfigLoader(DefaultDriverConfigLoader(Supplier {
+                        ConfigFactory.invalidateCaches()
+                        val ref = ConfigFactory.load().getConfig("datastax-java-driver")
+                        val app: Config = ref.getConfig(it);
+                        app.withFallback(ref)
+                    }));
                 }
+                builder.withKeyspace(keyspaceConfig.name)
+                session = builder.build()
 
-                if (!keyspaceConfig.clusterConfig.enableJmx) {
-                    builder.withoutJMXReporting()
-                }
-
-                if (!keyspaceConfig.clusterConfig.enableMetrics) {
-                    builder.withoutMetrics()
-                }
-
-                // Add SSL options to cluster builder
-                if (keyspaceConfig.clusterConfig.enableSsl && keyspaceConfig.clusterConfig.truststore != null) {
-                    FileInputStream(keyspaceConfig.clusterConfig.truststore?.toFile()).use {
-
-                        val sslCtxBuilder = SslContextBuilder.forClient()
-                                .sslProvider(SslProvider.JDK)
-                                // The Java cryptographic extensions (JCE) are required for AES 256
-                                .ciphers(listOf("TLS_RSA_WITH_AES_256_CBC_SHA", "TLS_RSA_WITH_AES_128_CBC_SHA"))
-
-                        val truststore = KeyStore.getInstance("JKS")
-                        truststore.load(it, keyspaceConfig.clusterConfig.truststorePassword?.toCharArray() ?:
-                                throw IllegalArgumentException("Truststore password must be provided with truststore."))
-
-                        val tmf = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
-                        tmf.init(truststore)
-                        sslCtxBuilder.trustManager(tmf)
-
-                        if (keyspaceConfig.clusterConfig.keystore != null) {
-                            FileInputStream(keyspaceConfig.clusterConfig.keystore?.toFile()).use {
-
-                                val keystore = KeyStore.getInstance("JKS")
-                                val keystorePass = keyspaceConfig.clusterConfig.keystorePassword?.toCharArray() ?:
-                                        throw IllegalArgumentException("Keystore password must be provided with keystore.")
-                                keystore.load(it, keystorePass)
-
-                                val kmf = KeyManagerFactory.getInstance(KeyManagerFactory.getDefaultAlgorithm())
-                                kmf.init(keystore, keystorePass)
-                                sslCtxBuilder.keyManager(kmf)
-                            }
-                        }
-                        builder.withSSL(NettySSLOptions(sslCtxBuilder.build()))
-                    }
-                } else if (keyspaceConfig.clusterConfig.enableSsl) {
-                    builder.withSSL()
-                }
-
-                cluster = builder.build()
-
-                LOG.info(getConnectionInfo(cluster.metadata))
-
-                // Create a new Session
-                session = cluster.newSession()
-
-                // Connect to the specific Keyspace context (if already defined)
-                val keyspaces = cluster.metadata.keyspaces.map { it.name }
-                val keyspaceExists = keyspaces.filter { it.equals(keyspaceConfig.name, ignoreCase = true) }.isNotEmpty()
-                if (keyspaceExists) {
-                    session = cluster.connect(keyspaceConfig.name)
-                } else {
-                    throw CassandraMigrationException("Keyspace: ${keyspaceConfig.name} does not exist.")
-                }
+                LOG.info(getConnectionInfo(session))
             }
-
             result = action.execute(session!!)
         } finally {
             // NOTE: We don't close external sessions, and let those sessions be managed outside the Cassandra Migration
@@ -368,17 +297,11 @@ class CassandraMigration : CassandraMigrationConfiguration {
                     } catch (e: Exception) {
                         LOG.warn("Error closing Cassandra session")
                     }
-
-                if (cluster != null && !cluster.isClosed)
-                    try {
-                        cluster.close()
-                    } catch (e: Exception) {
-                        LOG.warn("Error closing Cassandra cluster")
-                    }
             }
         }
         return result
     }
+
 
     /**
      * Get Cassandra connection information.
@@ -386,16 +309,17 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * @param metadata The connected cluster metadata.
      * @return Cluster connection information.
      */
-    private fun getConnectionInfo(metadata: Metadata): String {
+    private fun getConnectionInfo(session: CqlSession): String {
+
         val sb = StringBuilder()
         sb.append("Connected to cluster: ")
-        sb.append(metadata.clusterName)
+        sb.append(session.name)
         sb.append("\n")
-        for (host in metadata.allHosts) {
+        for (host in session.metadata.nodes.values) {
             sb.append("Data center: ")
             sb.append(host.datacenter)
             sb.append("; Host: ")
-            sb.append(host.address)
+            sb.append(host.listenAddress)
         }
         return sb.toString()
     }
@@ -418,7 +342,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      *
      * @return A configured SchemaVersionDAO instance.
      */
-    private fun createSchemaVersionDAO(session: Session): SchemaVersionDAO {
+    private fun createSchemaVersionDAO(session: CqlSession): SchemaVersionDAO {
         return SchemaVersionDAO(session, keyspaceConfig, migrationTableName())
     }
 
@@ -427,7 +351,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      */
     private fun migrateAction(): Action<Int> {
         return object: Action<Int> {
-            override fun execute(session: Session): Int {
+            override fun execute(session: CqlSession): Int {
                 Initialize().run(session, keyspaceConfig, migrationTableName())
 
                 val migrationResolver = createMigrationResolver()
@@ -437,7 +361,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                         target,
                         schemaVersionDAO,
                         session,
-                        keyspaceConfig.clusterConfig.username ?: "",
+                        session.name ?: "",
                         allowOutOfOrder
                 )
 
@@ -451,7 +375,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      */
     private fun infoAction(): Action<MigrationInfoService> {
         return object : Action<MigrationInfoService> {
-            override fun execute(session: Session): MigrationInfoService {
+            override fun execute(session: CqlSession): MigrationInfoService {
                 val migrationResolver = createMigrationResolver()
                 val schemaVersionDAO = createSchemaVersionDAO(session)
                 val migrationInfoService = MigrationInfoServiceImpl(
@@ -473,7 +397,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      */
     private fun validateAction(): Action<String?> {
         return object : Action<String?> {
-            override fun execute(session: Session): String? {
+            override fun execute(session: CqlSession): String? {
                 val migrationResolver = createMigrationResolver()
                 val schemaVersionDAO = createSchemaVersionDAO(session)
                 val validate = Validate(
@@ -494,7 +418,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
      */
     private fun baselineAction(): Action<Unit> {
         return object : Action<Unit> {
-            override fun execute(session: Session): Unit {
+            override fun execute(session: CqlSession): Unit {
                 val migrationResolver = createMigrationResolver()
                 val schemaVersionDAO = createSchemaVersionDAO(session)
                 val baseline = Baseline(
@@ -502,7 +426,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
                         baselineVersion,
                         schemaVersionDAO,
                         baselineDescription,
-                        keyspaceConfig.clusterConfig.username ?: ""
+                        session.name ?: ""
                 )
                 baseline.run()
             }
@@ -522,7 +446,7 @@ class CassandraMigration : CassandraMigrationConfiguration {
          * @param session The Cassandra session connection to use to execute the migration.
          * @return The action result.
          */
-        fun execute(session: Session): T
+        fun execute(session: CqlSession): T
 
     }
 

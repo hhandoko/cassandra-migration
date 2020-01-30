@@ -18,7 +18,7 @@
  */
 package com.hhandoko.cassandra.migration.api.resolver
 
-import com.datastax.driver.core.Session
+import com.datastax.oss.driver.api.core.CqlSession
 
 /**
  * Executes a migration.
@@ -30,6 +30,6 @@ interface MigrationExecutor {
      *
      * @param session The Cassandra session connection to use to execute the migration.
      */
-    fun execute(session: Session)
+    fun execute(session: CqlSession)
 
 }

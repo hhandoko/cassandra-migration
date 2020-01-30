@@ -15,8 +15,8 @@
  */
 package com.hhandoko.cassandra.migration.internal.resolver.java.dummy;
 
-import com.datastax.driver.core.Session;
 
+import com.datastax.oss.driver.api.core.CqlSession;
 import com.hhandoko.cassandra.migration.api.MigrationVersion;
 import com.hhandoko.cassandra.migration.api.migration.MigrationChecksumProvider;
 import com.hhandoko.cassandra.migration.api.migration.MigrationInfoProvider;
@@ -25,7 +25,7 @@ import com.hhandoko.cassandra.migration.api.migration.MigrationInfoProvider;
  * Test migration.
  */
 public class Version3dot5 extends DummyAbstractJavaMigration implements MigrationInfoProvider, MigrationChecksumProvider {
-    public void doMigrate(Session session) throws Exception {
+    public void doMigrate(CqlSession session) throws Exception {
         //Do nothing.
     }
 

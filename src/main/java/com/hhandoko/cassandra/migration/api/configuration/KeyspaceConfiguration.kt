@@ -18,7 +18,8 @@
  */
 package com.hhandoko.cassandra.migration.api.configuration
 
-import com.datastax.driver.core.ConsistencyLevel
+import com.datastax.oss.driver.api.core.ConsistencyLevel
+import com.datastax.oss.driver.api.core.DefaultConsistencyLevel
 import com.typesafe.config.ConfigFactory
 import io.github.config4k.extract
 
@@ -30,12 +31,15 @@ class KeyspaceConfiguration {
     /**
      * Cluster configuration.
      */
-    var clusterConfig: ClusterConfiguration = ClusterConfiguration()
+//    var clusterConfig: ClusterConfiguration = ClusterConfiguration()
 
     /**
      * Cassandra keyspace name.
      */
     var name: String? = null
+      get set
+
+    var prefix: String? = null
       get set
 
     /**
@@ -55,7 +59,10 @@ class KeyspaceConfiguration {
             }
 
             it.extract<String?>(ConfigurationProperty.CONSISTENCY_LEVEL.namespace)?.let {
-                this.consistency = ConsistencyLevel.valueOf(it.trim().toUpperCase())
+                this.consistency = DefaultConsistencyLevel.valueOf(it.trim().toUpperCase())
+            }
+            it.extract<String?>(ConfigurationProperty.CASSANDRA_PREFIX.namespace)?.let {
+                this.prefix = it.trim()
             }
         }
     }

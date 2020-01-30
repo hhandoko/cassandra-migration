@@ -15,8 +15,7 @@
  */
 package com.hhandoko.cassandra.migration.internal.resolver.java.error;
 
-import com.datastax.driver.core.Session;
-
+import com.datastax.oss.driver.api.core.CqlSession;
 import com.hhandoko.cassandra.migration.api.migration.java.JavaMigration;
 
 /**
@@ -27,7 +26,7 @@ public class BrokenJdbcMigration implements JavaMigration {
         throw new IllegalStateException("Expected!");
     }
 
-    public final void migrate(Session session) throws Exception {
+    public final void migrate(CqlSession session) throws Exception {
         // Do nothing
     }
 }

@@ -15,15 +15,17 @@
  */
 package com.hhandoko.cassandra.migration.internal.resolver.java.dummy;
 
-import com.datastax.driver.core.Session;
 
+import com.datastax.oss.driver.api.core.CqlSession;
 import com.hhandoko.cassandra.migration.api.migration.java.JavaMigration;
+import org.jetbrains.annotations.NotNull;
 
 /**
  * Test migration.
  */
 public class V2__InterfaceBasedMigration implements JavaMigration {
-    public void migrate(Session session) throws Exception {
-        //Do nothing.
+    @Override
+    public void migrate(@NotNull CqlSession session) throws Exception {
+
     }
 }

@@ -18,7 +18,7 @@
  */
 package com.hhandoko.cassandra.migration.internal.command
 
-import com.datastax.driver.core.Session
+import com.datastax.oss.driver.api.core.CqlSession
 import com.hhandoko.cassandra.migration.api.configuration.KeyspaceConfiguration
 import com.hhandoko.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 
@@ -34,7 +34,7 @@ class Initialize {
      * @param keyspaceConfig The Cassandra keyspace to connect to.
      * @param migrationVersionTableName The Cassandra migration version table name.
      */
-    fun run(session: Session, keyspaceConfig: KeyspaceConfiguration, migrationVersionTableName: String) {
+    fun run(session: CqlSession, keyspaceConfig: KeyspaceConfiguration, migrationVersionTableName: String) {
         val dao = SchemaVersionDAO(session, keyspaceConfig, migrationVersionTableName)
         dao.createTablesIfNotExist()
     }

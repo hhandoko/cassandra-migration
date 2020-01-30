@@ -20,8 +20,8 @@ package com.hhandoko.cassandra.migration.internal.util;
 
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.datastax.driver.core.PreparedStatement;
-import com.datastax.driver.core.Session;
+import com.datastax.oss.driver.api.core.CqlSession;
+import com.datastax.oss.driver.api.core.cql.PreparedStatement;
 
 /**
  * Cassandra prepared statement cache utility.
@@ -35,14 +35,14 @@ public class CachePrepareStatement {
     /**
      * Current connection session.
      */
-    private Session session;
+    private CqlSession session;
 
     /**
      * Creates a new instance of this class.
      *
      * @param session The Cassandra driver connection session.
      */
-    public CachePrepareStatement(Session session) {
+    public CachePrepareStatement(CqlSession session) {
         this.session = session;
     }
 
@@ -53,7 +53,7 @@ public class CachePrepareStatement {
      * @param s The prepared statement string.
      * @return PreparedStatement.
      */
-    public PreparedStatement prepare(String s){
+    public PreparedStatement prepare(String s) {
         Integer hash = s.hashCode();
         PreparedStatement ps = cacheStatement.get(hash);
         if (ps == null) {

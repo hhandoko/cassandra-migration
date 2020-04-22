@@ -21,33 +21,22 @@ package com.hhandoko.cassandra.migration.internal.resolver
 import com.hhandoko.cassandra.migration.api.CassandraMigrationException
 import com.hhandoko.cassandra.migration.api.resolver.MigrationResolver
 import com.hhandoko.cassandra.migration.api.resolver.ResolvedMigration
-import com.hhandoko.cassandra.migration.internal.resolver.cql.CqlMigrationResolver
-import com.hhandoko.cassandra.migration.internal.resolver.java.JavaMigrationResolver
-import com.hhandoko.cassandra.migration.internal.util.Locations
 import java.util.*
 
 /**
  * Facility for retrieving and sorting the available migrations from the classpath through the various migration
  * resolvers.
  *
- * @param classLoader The ClassLoader for loading migrations on the classpath.
- * @param locations The locations where migrations are located.
- * @param encoding The CQL migrations encoding.
- * @param timeout The CQL migrations read timeout duration in seconds.
  * @param customMigrationResolvers Custom Migration Resolvers.
  */
 class CompositeMigrationResolver(
-    classLoader: ClassLoader,
-    locations: Locations,
-    encoding: String,
-    timeout: Int,
     vararg customMigrationResolvers: MigrationResolver
 ) : MigrationResolver {
 
     /**
      * The migration resolvers to use internally.
      */
-    private val migrationResolvers = ArrayList<MigrationResolver>()
+    public val migrationResolvers = ArrayList<MigrationResolver>()
 
     /**
      * The available migrations, sorted by version, newest first. An empty list is returned when no migrations can be
@@ -59,12 +48,7 @@ class CompositeMigrationResolver(
      * CompositeMigrationResolver initialization.
      */
     init {
-        locations.getLocations().forEach {
-            migrationResolvers.add(CqlMigrationResolver(classLoader, it, encoding, timeout))
-            migrationResolvers.add(JavaMigrationResolver(classLoader, it))
-        }
-
-        migrationResolvers.addAll(Arrays.asList(*customMigrationResolvers))
+        migrationResolvers.addAll(listOf(*customMigrationResolvers))
     }
 
     /**

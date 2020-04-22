@@ -19,6 +19,7 @@
 package com.hhandoko.cassandra.migration.api.configuration
 
 import com.hhandoko.cassandra.migration.api.MigrationVersion
+import com.hhandoko.cassandra.migration.api.resolver.MigrationResolver
 
 /**
  * Readonly interface for main Cassandra migration configuration.
@@ -58,22 +59,22 @@ interface CassandraMigrationConfiguration {
      */
     val baselineDescription: String
 
-//    /**
-//     * Retrieves the the custom MigrationResolvers to be used in addition to the built-in ones for resolving migrations to apply.
-//     *
-//     * @return The custom MigrationResolvers to be used in addition to the built-in ones for resolving migrations to apply.
-//     *         An empty array if none.
-//     *         (default: none)
-//     */
-//    val resolvers: Array<MigrationResolver>
+    /**
+     * Retrieves the the custom MigrationResolvers to be used in addition to the built-in ones for resolving migrations to apply.
+     *
+     * @return The custom MigrationResolvers to be used in addition to the built-in ones for resolving migrations to apply.
+     *         An empty array if none.
+     *         (default: none)
+     */
+    val resolvers: Array<MigrationResolver>
 
-//    /**
-//     * Whether Cassandra migration should skip the default resolvers. If true, only custom resolvers are used.
-//     *
-//     * @return Whether default built-in resolvers should be skipped.
-//     *         (default: false)
-//     */
-//    val isSkipDefaultResolvers: Boolean
+    /**
+     * Whether Cassandra migration should skip the default resolvers. If true, only custom resolvers are used.
+     *
+     * @return Whether default built-in resolvers should be skipped.
+     *         (default: false)
+     */
+    val isSkipDefaultResolvers: Boolean
 
 //    /**
 //     * Gets the callbacks for lifecycle notifications.

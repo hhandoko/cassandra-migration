@@ -38,6 +38,9 @@ import com.hhandoko.cassandra.migration.internal.command.Validate
 import com.hhandoko.cassandra.migration.internal.dbsupport.SchemaVersionDAO
 import com.hhandoko.cassandra.migration.internal.info.MigrationInfoServiceImpl
 import com.hhandoko.cassandra.migration.internal.resolver.CompositeMigrationResolver
+import com.hhandoko.cassandra.migration.internal.resolver.MigrationResolverFactory
+import com.hhandoko.cassandra.migration.internal.resolver.cql.CqlMigrationResolver
+import com.hhandoko.cassandra.migration.internal.resolver.java.JavaMigrationResolver
 import com.hhandoko.cassandra.migration.internal.util.Locations
 import com.hhandoko.cassandra.migration.internal.util.StringUtils
 import com.hhandoko.cassandra.migration.internal.util.VersionPrinter
@@ -48,6 +51,7 @@ import io.netty.handler.ssl.SslContextBuilder
 import io.netty.handler.ssl.SslProvider
 import java.io.FileInputStream
 import java.security.KeyStore
+import java.util.*
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.TrustManagerFactory
 
@@ -85,6 +89,23 @@ class CassandraMigration : CassandraMigrationConfiguration {
      * (default: "<< Cassandra Baseline >>")
      */
     override var baselineDescription = "<< Cassandra Baseline >>"
+
+    /**
+     * Retrieves the the custom MigrationResolvers to be used in addition to the built-in ones for resolving migrations to apply.
+     *
+     * @return The custom MigrationResolvers to be used in addition to the built-in ones for resolving migrations to apply.
+     *         An empty array if none.
+     *         (default: none)
+     */
+    override var resolvers: Array<MigrationResolver> = emptyArray()
+
+    /**
+     * Whether Cassandra migration should skip the default resolvers. If true, only custom resolvers are used.
+     *
+     * @return Whether default built-in resolvers should be skipped.
+     *         (default: false)
+     */
+    override var isSkipDefaultResolvers = false
 
     /**
      * The encoding of CQL migrations script encoding.
@@ -405,8 +426,16 @@ class CassandraMigration : CassandraMigrationConfiguration {
      *
      * @return A new, fully configured, MigrationResolver instance.
      */
-    private fun createMigrationResolver(): MigrationResolver {
-        return CompositeMigrationResolver(classLoader, Locations(*locations), encoding, timeout)
+    public fun createMigrationResolver(): MigrationResolver {
+        val migrationResolvers = ArrayList<MigrationResolver>(locations.size * 2)
+        if (!isSkipDefaultResolvers) {
+            migrationResolvers.addAll(MigrationResolverFactory.createDefaultResolvers(
+                    classLoader, encoding, timeout, Locations(*locations)))
+        }
+        if (resolvers.isNotEmpty()) {
+            migrationResolvers.addAll(resolvers)
+        }
+        return CompositeMigrationResolver(*migrationResolvers.toTypedArray())
     }
 
     private fun migrationTableName(): String{

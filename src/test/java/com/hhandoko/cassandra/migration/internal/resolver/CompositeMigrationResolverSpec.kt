@@ -58,10 +58,11 @@ class CompositeMigrationResolverSpec : FreeSpec() {
 
             "should resolve migrations in multiple locations" {
                 val resolver = CompositeMigrationResolver(
-                        Thread.currentThread().contextClassLoader,
-                        Locations("migration/subdir/dir2", "migration.outoforder", "migration/subdir/dir1"),
-                        "UTF-8",
-                        timeout = 0
+                        *MigrationResolverFactory.createDefaultResolvers(
+                                Thread.currentThread().contextClassLoader,
+                                "UTF-8",
+                                0,
+                                Locations("migration/subdir/dir2", "migration.outoforder", "migration/subdir/dir1"))
                 )
                 val migrations = resolver.resolveMigrations()
 
